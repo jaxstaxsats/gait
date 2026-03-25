@@ -1,0 +1,1071 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1">&lt;title&gt;GAIT — Your AI Running Coach&lt;/title&gt;</p>
+<p class="p1">&lt;link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700;900&amp;family=Instrument+Serif:ital@0;1&amp;family=DM+Mono:wght@300;400;500&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--bg: #f5f2eb;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--bg2: #edeae0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--ink: #0f0e0b;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--ink2: #2a2820;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--muted: #9a9688;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--accent: #c8f23a;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--red: #ff3d2e;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--border: rgba(15,14,11,0.1);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--display: 'Unbounded', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--serif: 'Instrument Serif', serif;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--mono: 'DM Mono', monospace;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>html { scroll-behavior: smooth; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>body { background: var(--bg); color: var(--ink); font-family: var(--mono); min-height: 100vh; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── NAV ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>nav {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 16px 24px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-bottom: 1px solid var(--border);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: sticky; top: 0; z-index: 50;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-logo { font-family: var(--display); font-weight: 900; font-size: 20px; letter-spacing: -1px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-logo .ai { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-logo .g, .nav-logo .t { color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-tab-bar { display: flex; gap: 4px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-tab {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 10px; letter-spacing: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>text-transform: uppercase; padding: 8px 14px; border-radius: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border: 1px solid var(--border); background: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); cursor: pointer; transition: all 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-tab.active { background: var(--ink); color: var(--accent); border-color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-tab:hover:not(.active) { border-color: var(--ink); color: var(--ink); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── VIEWS ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.view { display: none; padding: 32px 24px; max-width: 680px; margin: 0 auto; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.view.active { display: block; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── QUESTIONNAIRE ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.q-progress {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; gap: 4px; margin-bottom: 40px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.q-progress-bar {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height: 3px; flex: 1; background: var(--border); border-radius: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: background 0.3s;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.q-progress-bar.done { background: var(--accent); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.q-progress-bar.active { background: var(--red); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.q-label { font-family: var(--mono); font-size: 10px; letter-spacing: 4px; color: var(--red); text-transform: uppercase; margin-bottom: 12px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.q-title { font-family: var(--display); font-weight: 900; font-size: clamp(28px, 6vw, 48px); letter-spacing: -2px; line-height: 0.95; margin-bottom: 32px; color: var(--ink); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.field { margin-bottom: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.field label { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.field input, .field select, .field textarea {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 100%; background: var(--bg2); border: 1px solid var(--border);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink); font-family: var(--mono); font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 14px 16px; border-radius: 4px; outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: border-color 0.2s; appearance: none;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.field textarea { min-height: 80px; resize: vertical; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-selector { display: flex; gap: 6px; flex-wrap: wrap; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-btn {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 44px; height: 44px; border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border: 1px solid var(--border); background: var(--bg2);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700; font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>cursor: pointer; transition: all 0.15s; color: var(--ink);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-btn:hover { border-color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-btn.selected { background: var(--red); color: white; border-color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-btn.selected-low { background: var(--accent); color: var(--ink); border-color: var(--accent); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-row { display: flex; gap: 12px; margin-top: 32px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-back {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: transparent; border: 1px solid var(--border); color: var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; letter-spacing: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 14px 20px; border-radius: 4px; cursor: pointer; transition: all 0.2s; text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-back:hover { border-color: var(--ink); color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-next {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>flex: 1; background: var(--ink); color: var(--accent);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900; font-size: 18px; letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 16px 24px; border-radius: 4px; border: none; cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: all 0.2s; text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-next:hover { background: var(--ink2); transform: translateY(-1px); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── BLUEPRINT VIEW ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-header { margin-bottom: 32px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-tag {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: inline-block; font-family: var(--mono); font-size: 10px; letter-spacing: 3px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink); background: var(--accent); padding: 4px 10px; border-radius: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>text-transform: uppercase; margin-bottom: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-name { font-family: var(--display); font-weight: 900; font-size: clamp(32px, 7vw, 56px); letter-spacing: -2px; line-height: 0.95; margin-bottom: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-name .ai { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-sub { font-family: var(--mono); font-size: 12px; color: var(--muted); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-card {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 28px; margin-bottom: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-card h2 {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: -0.5px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--red); margin-bottom: 16px; padding-bottom: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-bottom: 1px solid var(--border);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-card p { font-family: var(--mono); font-size: 13px; line-height: 1.8; color: var(--ink2); margin-bottom: 10px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-card ul { padding-left: 0; list-style: none; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-card li { font-family: var(--mono); font-size: 13px; line-height: 1.8; color: var(--ink2); padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.blueprint-card li::before { content: '✦'; color: var(--accent); font-size: 9px; margin-top: 4px; flex-shrink: 0; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.loading-wrap { text-align: center; padding: 80px 24px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.spinner { width: 36px; height: 36px; border: 2px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.loading-label { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>@keyframes spin { to { transform: rotate(360deg); } }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── DAILY LOG ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.log-header { margin-bottom: 28px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.log-date { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.log-title { font-family: var(--display); font-weight: 900; font-size: clamp(28px, 6vw, 44px); letter-spacing: -2px; line-height: 0.95; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.log-section {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 24px; margin-bottom: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.log-section-title {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 10px; letter-spacing: 3px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--red); text-transform: uppercase; margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.log-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.rest-day-btn {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 100%; background: transparent; border: 1px dashed var(--border);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); font-family: var(--mono); font-size: 12px; letter-spacing: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 16px; border-radius: 4px; cursor: pointer; text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: all 0.2s; margin-bottom: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.rest-day-btn:hover { border-color: var(--muted); color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.rest-day-btn.selected { background: var(--bg2); border-color: var(--accent); border-style: solid; color: var(--ink); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-submit {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 100%; background: var(--ink); color: var(--accent);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900; font-size: 20px; letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 18px; border-radius: 4px; border: none; cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: all 0.2s; text-transform: uppercase; margin-top: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-submit:hover { background: var(--ink2); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── AI RESPONSE ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--ink); border-radius: 6px; padding: 28px; margin-top: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response.visible { display: block; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-label {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 10px; letter-spacing: 3px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--accent); text-transform: uppercase; margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-body { font-family: var(--mono); font-size: 13px; line-height: 1.9; color: rgba(245,242,235,0.85); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-body h3 { font-family: var(--display); font-weight: 700; font-size: 16px; color: var(--accent); margin: 20px 0 8px; letter-spacing: -0.5px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-body h3:first-child { margin-top: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-body p { margin-bottom: 12px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-body ul { padding-left: 0; list-style: none; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-body li { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; gap: 10px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.ai-response-body li::before { content: '✦'; color: var(--red); font-size: 9px; margin-top: 4px; flex-shrink: 0; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── LOG HISTORY ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.history-card {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 20px; margin-bottom: 12px; cursor: pointer; transition: border-color 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.history-card:hover { border-color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.history-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.history-date { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.history-km { font-family: var(--display); font-weight: 900; font-size: 22px; letter-spacing: -1px; color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.history-pain {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; gap: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; color: var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-dot { width: 8px; height: 8px; border-radius: 50%; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-dot.low { background: var(--accent); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-dot.mid { background: #ff9500; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-dot.high { background: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pain-dot.none { background: var(--muted); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.history-notes { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 4px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.empty-state { text-align: center; padding: 60px 24px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.empty-icon { font-size: 40px; margin-bottom: 16px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.empty-title { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: -1px; margin-bottom: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.empty-sub { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.7; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.section-divider { font-family: var(--mono); font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin: 28px 0 16px; display: flex; align-items: center; gap: 12px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── STATS STRIP ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.stats-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 24px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.stat-box { background: var(--bg2); padding: 16px; text-align: center; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.stat-val { font-family: var(--display); font-weight: 900; font-size: 24px; letter-spacing: -1px; color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.stat-key { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── EXPANDED LOG ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.expanded-log { display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.expanded-log.open { display: block; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.expanded-log .ai-response { margin-top: 16px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* Mobile */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>@media (max-width: 480px) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.field-row { grid-template-columns: 1fr; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>nav { padding: 12px 16px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.nav-tab { padding: 8px 10px; font-size: 9px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- NAV --&gt;</p>
+<p class="p1">&lt;nav&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="nav-logo"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;span class="g"&gt;G&lt;/span&gt;&lt;span class="ai"&gt;AI&lt;/span&gt;&lt;span class="t"&gt;T&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="nav-tab-bar"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="nav-tab active" onclick="showView('questionnaire')"&gt;Blueprint&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="nav-tab" onclick="showView('log')"&gt;Daily Log&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="nav-tab" onclick="showView('history')"&gt;History&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/nav&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- ══ QUESTIONNAIRE VIEW ══ --&gt;</p>
+<p class="p1">&lt;div class="view active" id="view-questionnaire"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="q-container"&gt;&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- ══ DAILY LOG VIEW ══ --&gt;</p>
+<p class="p1">&lt;div class="view" id="view-log"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="log-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="log-date" id="log-date"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1 class="log-title"&gt;How did&lt;br&gt;today go?&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="stats-strip" id="stats-strip"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-box"&gt;&lt;div class="stat-val" id="stat-runs"&gt;0&lt;/div&gt;&lt;div class="stat-key"&gt;Runs logged&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-box"&gt;&lt;div class="stat-val" id="stat-km"&gt;0&lt;/div&gt;&lt;div class="stat-key"&gt;Total km&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-box"&gt;&lt;div class="stat-val" id="stat-streak"&gt;0&lt;/div&gt;&lt;div class="stat-key"&gt;Day streak&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button class="rest-day-btn" id="rest-day-btn" onclick="toggleRestDay()"&gt;🛌 Mark as rest day&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="run-fields"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="log-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="log-section-title"&gt;Your run&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="field-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Distance (km)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input type="number" id="log-km" placeholder="6.37" step="0.01" min="0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Time (min:sec)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input type="text" id="log-time" placeholder="35:00"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="field-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Pace (/km)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input type="text" id="log-pace" placeholder="5:30" readonly style="background: var(--bg);"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Effort (1–10)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;select id="log-effort"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value=""&gt;Select...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;1 — Very easy&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;2 — Easy&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;3 — Comfortable&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;4 — Moderate&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;5 — Tempo&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;6 — Hard&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;7 — Very hard&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;8 — Race effort&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;9 — Maximum&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option&gt;10 — All out&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Terrain&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;select id="log-terrain"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option value=""&gt;Select...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Flat roads&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Mixed&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Hilly&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Trails&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Treadmill&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="log-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="log-section-title"&gt;Body check&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Pain or tightness before the run?&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;select id="log-pre-pain"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option value=""&gt;Select...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;None&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Slight stiffness only&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Yes — mild (1–2/10)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Yes — moderate (3–4/10)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Yes — significant (5+/10)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Any pain during or after?&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;select id="log-pain-location"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option value=""&gt;Select...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;None&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Knee — front (kneecap)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Knee — back&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Knee — side&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Calf&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Hamstring&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Hip&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Foot / ankle&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Lower back&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Multiple areas&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;option&gt;Other&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Pain level (0 = none, 10 = severe)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="pain-selector" id="pain-selector"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(0)"&gt;0&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(1)"&gt;1&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(2)"&gt;2&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(3)"&gt;3&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(4)"&gt;4&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(5)"&gt;5&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(6)"&gt;6&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(7)"&gt;7&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(8)"&gt;8&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(9)"&gt;9&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="pain-btn" onclick="selectPain(10)"&gt;10&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="log-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="log-section-title"&gt;Notes&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;How did you feel? Anything worth noting?&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;textarea id="log-notes" placeholder="e.g. Felt strong for first 4km then legs heavy. Slight tightness back of left knee before I started..."&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Sleep last night&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;select id="log-sleep"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value=""&gt;Select...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option&gt;Poor (under 5hrs)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option&gt;Average (5–6hrs)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option&gt;Good (7–8hrs)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option&gt;Great (8hrs+)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="field"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Stress level today&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;select id="log-stress"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value=""&gt;Select...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option&gt;Low&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option&gt;Moderate&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option&gt;High&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button class="btn-submit" id="submit-btn" onclick="submitLog()"&gt;Get today's coaching →&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="ai-response" id="ai-response"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="ai-response-label"&gt;GAIT coaching response&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="ai-response-body" id="ai-response-body"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="spinner" style="margin: 20px auto;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- ══ HISTORY VIEW ══ --&gt;</p>
+<p class="p1">&lt;div class="view" id="view-history"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="log-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="log-date"&gt;Your training log&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1 class="log-title"&gt;Run&lt;br&gt;history.&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="history-container"&gt;&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// JAX'S PRE-LOADED BIBLE DATA</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">const JAX_BIBLE = `</p>
+<p class="p1">RUNNER: Jax | Age: 39 | Weight: 75kg | Height: 180cm</p>
+<p class="p1">BACKGROUND: Previously very active, 10km PB 42 min, one marathon completed 4h47m in 2020.</p>
+<p class="p1">INJURY HISTORY:</p>
+<p class="p1">- Patellofemoral Pain Syndrome (PFPS): First severe episode 2020 marathon final 15km. Persisted on ALL 5km runs 2020-2025. Currently managed — mild 2/10 sensitivity on longer runs only. PRIMARY INJURY TO PROTECT.</p>
+<p class="p1">- Calf Strain: ~6 months ago (football). Occasional calf soreness returning.</p>
+<p class="p1">- Glute Soreness: particularly after hill running — weak hip stabilisers.</p>
+<p class="p1">- Recent: Back of knee soreness (biceps femoris tendon) 3/10 to touch — noted 25 March 2026.</p>
+<p class="p1">CURRENT STATS (March 2026): 96km total, longest run 11.69km, weekly volume 20-25km, pace range 5:19-6:44/km, terrain: hilly, Porto area.</p>
+<p class="p1">RECENT RUNS: Mar 1: 3.24km 4:54/km | Mar 2: 6.27km 5:39/km | Mar 3: 4.30km 6:29/km | Mar 5: 6.01km 5:22/km | Mar 9: 6.02km 5:40/km | Mar 10: 6.12km 5:19/km | Mar 12: 8.56km 5:51/km | Mar 15: 6.17km 6:44/km | Mar 17: 9.39km 5:39/km | Mar 18: 6.09km 6:18/km | Mar 20: 11.69km 5:56/km | Mar 21: 6.26km 5:46/km | Mar 23: 10.00km 5:50/km | Mar 24: 6.37km 5:22/km</p>
+<p class="p1">GOALS: Short term: pain-free 15km runs. 2026: 2-3 half marathons + 1 full marathon. 2027: Ultra marathon.</p>
+<p class="p1">WEEKLY TEMPLATE: Mon easy 6-8km @ 6:00-6:30/km | Tue strength circuit | Wed moderate 8-10km @ 5:40-6:00/km with hills | Thu rest/active recovery | Fri strength circuit | Sat long run 10-13km @ 5:50-6:30/km max 10% increase | Sun full rest + NSDR</p>
+<p class="p1">MILEAGE RULES: Never increase weekly mileage &gt;10%. Every 4th week reduce 20-30%. 2/10 knee: shorten stride, quicken cadence. 4/10+: stop, rest 3 days. Calf tightness = early warning.</p>
+<p class="p1">MILESTONES: Q1: consistent 20-25km/week, pain-free 12-15km long run. Q2: build to 35-45km/week, first half marathon sub 2:10. Q3: 45-55km/week, second half marathon sub 2:00. Q4: Full marathon sub 4:30. 2027: First ultra 50km.</p>
+<p class="p1">KEY NOTES: Lives in hilly terrain Porto. Desk work background crypto industry. Hills = disguised strength. 10% rule on ALL variables. Morning routine essential. Couch stretch nightly for PFPS prevention.</p>
+<p class="p1">`;</p>
+<p class="p2"><br></p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// STATE</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">let currentStep = 0;</p>
+<p class="p1">let answers = {};</p>
+<p class="p1">let blueprint = localStorage.getItem('gait_blueprint') || null;</p>
+<p class="p1">let logs = JSON.parse(localStorage.getItem('gait_logs') || '[]');</p>
+<p class="p1">let selectedPain = null;</p>
+<p class="p1">let isRestDay = false;</p>
+<p class="p1">let profileData = JSON.parse(localStorage.getItem('gait_profile') || 'null');</p>
+<p class="p2"><br></p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// QUESTIONNAIRE STEPS</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">const steps = [</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>label: '01 — YOU',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>title: 'Tell us about you',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>fields: [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'name', label: 'First name', type: 'text', placeholder: 'Your name' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'age', label: 'Age', type: 'number', placeholder: '39' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Non-binary', 'Prefer not to say'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'weight', label: 'Weight (kg)', type: 'number', placeholder: '75' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'height', label: 'Height (cm)', type: 'number', placeholder: '180' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'units', label: 'Preferred distance units', type: 'select', options: ['Kilometres (km)', 'Miles'] },</p>
+<p class="p1"><span class="Apple-converted-space">    </span>]</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>label: '02 — HISTORY',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>title: 'Your running background',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>fields: [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'currentPace', label: 'What is your current comfortable pace per km?', type: 'select', options: ['Under 5:00 /km', '5:00–5:30 /km', '5:30–6:00 /km', '6:00–6:30 /km', '6:30–7:00 /km', 'Over 7:00 /km', 'Not sure yet'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'proudRun', label: 'Tell us about a run you are proud of', type: 'textarea', placeholder: 'e.g. Ran 10km without stopping for the first time, finished a half marathon in 2:15, ran 5km every day for a month...' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'longestRace', label: 'Longest race ever completed', type: 'select', options: ['Never raced', '5km', '10km', 'Half marathon', 'Marathon', 'Ultra marathon'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'yearsRunning', label: 'How long have you been running?', type: 'select', options: ['Complete beginner', 'Less than 1 year', '1–3 years', '3–7 years', '7+ years', 'Returning after a break'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'weeklyKm', label: 'Current weekly km', type: 'select', options: ['0 — just starting', '5–15 km', '15–25 km', '25–40 km', '40–60 km', '60km+'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'weeklyStructure', label: 'Typical weekly training structure', type: 'select', options: ['Just easy runs — no structure yet', '2–3 easy runs per week', 'Easy runs + one long run', 'Easy runs + long run + some speed work', 'Structured plan with intervals and tempo runs'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'crossTraining', label: 'Do you do any cross-training?', type: 'select', options: ['None', 'Cycling', 'Swimming', 'Gym cardio', 'Yoga or Pilates', 'Multiple — cycling, gym, swimming etc'] },</p>
+<p class="p1"><span class="Apple-converted-space">    </span>]</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>label: '03 — INJURIES',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>title: 'Your injury history',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>fields: [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'injuries', label: 'Any current or past injuries? (be as specific as possible)', type: 'textarea', placeholder: 'e.g. Knee pain under kneecap on longer runs, calf strain 6 months ago, lower back tightness...' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'surgeries', label: 'Any surgeries related to running or sport?', type: 'textarea', placeholder: 'e.g. Knee surgery 2019, Achilles repair 2021, or None' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'chronicConditions', label: 'Any chronic conditions affecting your running?', type: 'select', options: ['None', 'Asthma or breathing issues', 'Arthritis', 'Heart condition', 'Diabetes', 'Other'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'currentPain', label: 'Any pain or discomfort right now?', type: 'select', options: ['None at all', 'Very mild — barely noticeable', 'Mild — present but manageable', 'Moderate — affecting my running', 'Significant — I need to be careful'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'previousInjuryStop', label: 'Has an injury ever stopped you running for more than 2 weeks?', type: 'select', options: ['No', 'Yes — once', 'Yes — multiple times'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'recoveryMethods', label: 'Recovery methods you currently use', type: 'select', options: ['None currently', 'Stretching only', 'Foam rolling', 'Physio or sports massage', 'Ice and heat therapy', 'Multiple — stretching, foam rolling, physio etc'] },</p>
+<p class="p1"><span class="Apple-converted-space">    </span>]</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>label: '04 — YOUR BODY',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>title: 'How your body works',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>fields: [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'terrain', label: 'What terrain do you typically run on?', type: 'select', options: ['Flat roads', 'Mixed — some hills some flat', 'Hilly', 'Trails', 'Treadmill mostly'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'daysPerWeek', label: 'How many days can you train per week?', type: 'select', options: ['2 days', '3 days', '4 days', '5 days', '6 days'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'strengthTraining', label: 'Do you currently do any strength training?', type: 'select', options: ['None', 'Occasionally', 'Once a week', 'Twice a week', '3+ times a week'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'sleepQuality', label: 'How is your sleep generally?', type: 'select', options: ['Poor — often under 6hrs', 'Average — around 6–7hrs', 'Good — 7–8hrs most nights', 'Great — 8hrs+ regularly'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'flexibility', label: 'How would you describe your flexibility and mobility?', type: 'select', options: ['Very tight — limited range of motion', 'Tight — especially hamstrings and calves', 'Average — some areas tighter than others', 'Good — generally flexible', 'Very flexible'] },</p>
+<p class="p1"><span class="Apple-converted-space">    </span>]</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>label: '05 — LIFESTYLE',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>title: 'Your life outside running',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>fields: [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'job', label: 'Type of work', type: 'select', options: ['Desk based / sedentary', 'Mixed — some sitting some moving', 'On my feet most of the day', 'Physical labour', 'Shift work'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'stressLevel', label: 'General stress levels', type: 'select', options: ['Low — pretty relaxed', 'Moderate — manageable', 'High — quite stressed often', 'Very high — affecting sleep and recovery'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'nutrition', label: 'How would you describe your diet?', type: 'select', options: ['Poor — room for improvement', 'Average — could be better', 'Good — pretty balanced', 'Excellent — very focused on nutrition'] },</p>
+<p class="p1"><span class="Apple-converted-space">    </span>]</p>
+<p class="p1"><span class="Apple-converted-space">  </span>},</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>label: '06 — GOALS',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>title: 'What are you chasing?',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>fields: [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'shortGoal', label: 'Short-term goal (next 8–12 weeks)', type: 'text', placeholder: 'e.g. Run pain-free for 15km' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'raceGoal', label: 'Race goal for the next 6 months', type: 'select', options: ['No race — just want to run consistently', 'Complete a 5km', '5km PB', 'Complete a 10km', '10km PB', 'Complete a half marathon', 'Half marathon PB', 'Complete a marathon', 'Marathon PB', 'Ultra marathon'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'racePreference', label: 'Race preference', type: 'select', options: ['Road racing', 'Trail running', 'Ultra distance', 'Mix of road and trail', 'Not sure yet'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'bigVision', label: 'Your big vision (1–2 years)', type: 'text', placeholder: 'e.g. Complete a 50km ultra injury-free' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'biggestFear', label: 'Biggest fear or obstacle', type: 'text', placeholder: 'e.g. Getting injured again before race day' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'motivation', label: 'What motivates you most?', type: 'select', options: ['Performance — times and results', 'Health — staying fit and injury-free', 'Social — running with others', 'Mental wellness — stress relief and headspace', 'Challenge — pushing my limits'] },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ key: 'secondaryGoals', label: 'Any secondary goals?', type: 'select', options: ['None — just the race goal', 'Reduce injury risk', 'Improve sleep and recovery', 'Build overall strength', 'Lose weight', 'Multiple secondary goals'] },</p>
+<p class="p1"><span class="Apple-converted-space">    </span>]</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">];</p>
+<p class="p2"><br></p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// RENDER QUESTIONNAIRE</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">function renderQ() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const container = document.getElementById('q-container');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// If blueprint exists, show it</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (blueprint) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderBlueprint();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Welcome screen with quick start option</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (currentStep === 0 &amp;&amp; Object.keys(answers).length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>container.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="q-label"&gt;Welcome to GAIT&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h1 class="q-title"&gt;Build your&lt;br&gt;Blueprint.&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="log-section" style="margin-bottom:16px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="log-section-title"&gt;Quick start — Jax&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>Your running data, injury history and goals are already loaded from your training bible. Generate your GAIT Blueprint instantly.</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn-next" onclick="generateFromBible()" style="width:100%;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>Generate My Blueprint Now →</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div style="text-align:center;margin:20px 0 8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;"&gt;or start fresh&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn-back" onclick="startFreshQ()" style="width:100%;text-align:center;padding:14px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Fill in full questionnaire →</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/button&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const step = steps[currentStep];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let html = `&lt;div class="q-progress"&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>steps.forEach((_, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;div class="q-progress-bar ${i &lt; currentStep ? 'done' : i === currentStep ? 'active' : ''}"&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>html += `&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>html += `&lt;div class="q-label"&gt;${step.label}&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>html += `&lt;h1 class="q-title"&gt;${step.title}&lt;/h1&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>step.fields.forEach(f =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;div class="field"&gt;&lt;label&gt;${f.label}&lt;/label&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (f.type === 'select') {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>html += `&lt;select id="q_${f.key}" onchange="answers['${f.key}']=this.value"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;option value=""&gt;Select...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>${f.options.map(o =&gt; `&lt;option value="${o}" ${answers[f.key] === o ? 'selected' : ''}&gt;${o}&lt;/option&gt;`).join('')}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/select&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else if (f.type === 'textarea') {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>html += `&lt;textarea id="q_${f.key}" placeholder="${f.placeholder}" oninput="answers['${f.key}']=this.value"&gt;${answers[f.key] || ''}&lt;/textarea&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>html += `&lt;input type="${f.type}" id="q_${f.key}" placeholder="${f.placeholder}" value="${answers[f.key] || ''}" oninput="answers['${f.key}']=this.value"&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>html += `&lt;div class="btn-row"&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (currentStep &gt; 0) html += `&lt;button class="btn-back" onclick="prevStep()"&gt;← Back&lt;/button&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>html += `&lt;button class="btn-next" id="next-btn" onclick="nextStep()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>${currentStep === steps.length - 1 ? 'Generate My Blueprint →' : 'Continue →'}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/button&gt;&lt;/div&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>container.innerHTML = html;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function startFreshQ() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>answers = { _started: true };</p>
+<p class="p1"><span class="Apple-converted-space">  </span>renderQ();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">async function generateFromBible() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const container = document.getElementById('q-container');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>container.innerHTML = `&lt;div class="loading-wrap"&gt;&lt;div class="spinner"&gt;&lt;/div&gt;&lt;div class="loading-label"&gt;Building your GAIT Blueprint...&lt;/div&gt;&lt;/div&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const prompt = `You are GAIT, an expert injury-aware AI running coach. Generate a personalised GAIT Blueprint for Jax based on this detailed training bible data.</p>
+<p class="p2"><br></p>
+<p class="p1">${JAX_BIBLE}</p>
+<p class="p2"><br></p>
+<p class="p1">Write the GAIT Blueprint using these exact sections with ## headings:</p>
+<p class="p2"><br></p>
+<p class="p1">## Who You Are As A Runner</p>
+<p class="p1">3-4 sentences. Personal, specific, addresses Jax's background and the #1 thing to protect based on PFPS history and the recent back-of-knee signal.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Primary Injury Risk</p>
+<p class="p1">The main risks based on Jax's history. 3 specific things to watch for and 2 non-negotiable daily habits to prevent reinjury.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Weekly Training Template</p>
+<p class="p1">Mon–Sun. Specific distances, paces, and purpose for each day. Calibrated to current 20-25km/week and targeting half marathon.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Mileage Rules</p>
+<p class="p1">6 specific rules for Jax — when to push, when to back off, based on PFPS history, hilly Porto terrain, and marathon goal.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Milestone Roadmap</p>
+<p class="p1">Month 1 (Apr), Month 2 (May), Month 3 (Jun), then Q3, Q4 2026, then 2027 ultra. Specific and motivating.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Non-Negotiable Daily Habit</p>
+<p class="p1">One thing. Specific to PFPS and patellar tendon history. Concrete. No more than 3 sentences.</p>
+<p class="p2"><br></p>
+<p class="p1">Write with authority, warmth and deep specificity. You know this runner well. No preamble or sign-off.`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const res = await fetch('/api/chat', {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>headers: { 'Content-Type': 'application/json' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>body: JSON.stringify({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>model: 'claude-sonnet-4-20250514',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>max_tokens: 1000,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>messages: [{ role: 'user', content: prompt }]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>})</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const data = await res.json();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const text = data.content?.[0]?.text;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (text) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>blueprint = text;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>profileData = { name: 'Jax', age: 39, weight: 75 };</p>
+<p class="p1"><span class="Apple-converted-space">      </span>localStorage.setItem('gait_blueprint', blueprint);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>localStorage.setItem('gait_profile', JSON.stringify(profileData));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderBlueprint();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>container.innerHTML = `&lt;p style="color:var(--red);font-family:var(--mono);font-size:13px;padding:20px;"&gt;Something went wrong. Please try again.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="btn-next" onclick="generateFromBible()" style="width:100%;margin-top:16px;"&gt;Try again →&lt;/button&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">function nextStep() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const step = steps[currentStep];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const allFilled = step.fields.every(f =&gt; answers[f.key]?.toString().trim());</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (!allFilled) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>alert('Please fill in all fields before continuing.');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (currentStep &lt; steps.length - 1) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>currentStep++;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderQ();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>generateBlueprint();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// GENERATE BLUEPRINT</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">async function generateBlueprint() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const container = document.getElementById('q-container');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>container.innerHTML = `&lt;div class="loading-wrap"&gt;&lt;div class="spinner"&gt;&lt;/div&gt;&lt;div class="loading-label"&gt;Building your GAIT Blueprint...&lt;/div&gt;&lt;/div&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const prompt = `You are GAIT, an expert injury-aware AI running coach. Generate a personalised GAIT Blueprint for this runner.</p>
+<p class="p2"><br></p>
+<p class="p1">RUNNER PROFILE:</p>
+<p class="p1">Name: ${answers.name} | Age: ${answers.age} | Gender: ${answers.gender} | Weight: ${answers.weight}kg | Height: ${answers.height}cm | Units: ${answers.units}</p>
+<p class="p1">Background: ${answers.yearsRunning} | Comfortable pace: ${answers.currentPace} | Longest race: ${answers.longestRace}</p>
+<p class="p1">A run they are proud of: ${answers.proudRun}</p>
+<p class="p1">Current weekly km: ${answers.weeklyKm} | Weekly structure: ${answers.weeklyStructure} | Cross-training: ${answers.crossTraining}</p>
+<p class="p1">Terrain: ${answers.terrain} | Training days: ${answers.daysPerWeek} | Strength training: ${answers.strengthTraining}</p>
+<p class="p1">Sleep: ${answers.sleepQuality} | Flexibility: ${answers.flexibility}</p>
+<p class="p1">Injury history: ${answers.injuries}</p>
+<p class="p1">Surgeries: ${answers.surgeries} | Chronic conditions: ${answers.chronicConditions}</p>
+<p class="p1">Current pain: ${answers.currentPain} | Previous injury stops: ${answers.previousInjuryStop}</p>
+<p class="p1">Recovery methods: ${answers.recoveryMethods}</p>
+<p class="p1">Work type: ${answers.job} | Stress: ${answers.stressLevel} | Nutrition: ${answers.nutrition}</p>
+<p class="p1">Short term goal: ${answers.shortGoal} | Race goal: ${answers.raceGoal} | Race preference: ${answers.racePreference}</p>
+<p class="p1">Big vision: ${answers.bigVision} | Biggest fear: ${answers.biggestFear}</p>
+<p class="p1">Motivation: ${answers.motivation} | Secondary goals: ${answers.secondaryGoals}</p>
+<p class="p1">Injury history: ${answers.injuries}</p>
+<p class="p1">Current pain: ${answers.currentPain} | Previous injury stops: ${answers.previousInjuryStop}</p>
+<p class="p1">Strength training: ${answers.strengthTraining} | Sleep: ${answers.sleepQuality}</p>
+<p class="p1">Work type: ${answers.job} | Stress: ${answers.stressLevel} | Nutrition: ${answers.nutrition}</p>
+<p class="p1">Short term goal: ${answers.shortGoal} | Race goal: ${answers.raceGoal}</p>
+<p class="p1">Big vision: ${answers.bigVision} | Biggest fear: ${answers.biggestFear}</p>
+<p class="p2"><br></p>
+<p class="p1">Write their GAIT Blueprint using these exact sections with ## headings:</p>
+<p class="p2"><br></p>
+<p class="p1">## Who You Are As A Runner</p>
+<p class="p1">3-4 sentences. Personal, specific, addresses their background and the #1 thing to protect based on their injury history.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Primary Injury Risk</p>
+<p class="p1">The main risk based on their history. 3 specific things to watch for and 2 non-negotiable habits to prevent it.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Weekly Training Template</p>
+<p class="p1">Mon–Sun. Specific distances, paces, and purpose for each day. Calibrated to their current level and goal.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Mileage Rules</p>
+<p class="p1">6 specific rules for THIS runner — when to push, when to back off, based on their injury history, terrain, and goal race.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Milestone Roadmap</p>
+<p class="p1">Month 1, Month 2, Month 3, then 6 months, then their big vision. Specific and motivating.</p>
+<p class="p2"><br></p>
+<p class="p1">## Your Non-Negotiable Daily Habit</p>
+<p class="p1">One thing. Specific to their injury history. Concrete. No more than 3 sentences.</p>
+<p class="p2"><br></p>
+<p class="p1">Write with authority, warmth and specificity. This is a coach who knows them well. No preamble or sign-off.`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const res = await fetch('/api/chat', {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>headers: { 'Content-Type': 'application/json' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>body: JSON.stringify({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>model: 'claude-sonnet-4-20250514',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>max_tokens: 1000,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>messages: [{ role: 'user', content: prompt }]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>})</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const data = await res.json();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const text = data.content?.[0]?.text;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (text) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>blueprint = text;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>profileData = { ...answers };</p>
+<p class="p1"><span class="Apple-converted-space">      </span>localStorage.setItem('gait_blueprint', blueprint);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>localStorage.setItem('gait_profile', JSON.stringify(profileData));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderBlueprint();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>container.innerHTML = `&lt;p style="color:var(--red);font-family:var(--mono);font-size:13px;"&gt;Something went wrong. Please try again.&lt;/p&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function renderBlueprint() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const container = document.getElementById('q-container');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const name = profileData?.name || answers.name || 'Your';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const sections = parseMarkdown(blueprint);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>let html = `&lt;div class="blueprint-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="blueprint-tag"&gt;GAIT Blueprint&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="blueprint-name"&gt;${name}'s&lt;br&gt;G&lt;span class="ai"&gt;AI&lt;/span&gt;T Plan&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="blueprint-sub"&gt;Generated ${new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>sections.forEach(s =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;div class="blueprint-card"&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (s.heading) html += `&lt;h2&gt;${s.heading}&lt;/h2&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += s.content;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>html += `&lt;div style="text-align:center;padding:24px 0;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="resetBlueprint()" style="background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:2px;padding:12px 20px;border-radius:4px;cursor:pointer;text-transform:uppercase;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>Regenerate Blueprint</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>container.innerHTML = html;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function resetBlueprint() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (!confirm('This will clear your current blueprint. Are you sure?')) return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>blueprint = null;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>localStorage.removeItem('gait_blueprint');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>currentStep = 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>answers = {};</p>
+<p class="p1"><span class="Apple-converted-space">  </span>renderQ();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// DAILY LOG</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">function initLog() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const now = new Date();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('log-date').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });</p>
+<p class="p1"><span class="Apple-converted-space">  </span>updateStats();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Auto calculate pace</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('log-km').addEventListener('input', calcPace);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('log-time').addEventListener('input', calcPace);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function calcPace() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const km = parseFloat(document.getElementById('log-km').value);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const timeStr = document.getElementById('log-time').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (!km || !timeStr) return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const parts = timeStr.split(':');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (parts.length !== 2) return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const totalMins = parseInt(parts[0]) + parseInt(parts[1]) / 60;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (!totalMins || km === 0) return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const paceMin = Math.floor(totalMins / km);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const paceSec = Math.round(((totalMins / km) - paceMin) * 60);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('log-pace').value = `${paceMin}:${paceSec.toString().padStart(2, '0')}`;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function selectPain(val) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>selectedPain = val;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.querySelectorAll('.pain-btn').forEach((btn, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>btn.className = 'pain-btn';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (i === val) btn.className += val &lt;= 2 ? ' selected-low' : ' selected';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function toggleRestDay() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>isRestDay = !isRestDay;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const btn = document.getElementById('rest-day-btn');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const fields = document.getElementById('run-fields');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>btn.className = isRestDay ? 'rest-day-btn selected' : 'rest-day-btn';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>btn.textContent = isRestDay ? '✓ Rest day marked' : '🛌 Mark as rest day';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>fields.style.display = isRestDay ? 'none' : 'block';</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">async function submitLog() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const btn = document.getElementById('submit-btn');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const responseEl = document.getElementById('ai-response');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const bodyEl = document.getElementById('ai-response-body');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const notes = document.getElementById('log-notes').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const sleep = document.getElementById('log-sleep').value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const stress = document.getElementById('log-stress').value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (!isRestDay) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const km = document.getElementById('log-km').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const effort = document.getElementById('log-effort').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!km || !effort) { alert('Please fill in your run distance and effort level.'); return; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (!notes) { alert('Please add some notes about how you felt.'); return; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>btn.disabled = true;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>btn.textContent = 'Getting your coaching...';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>responseEl.classList.add('visible');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>bodyEl.innerHTML = '&lt;div class="spinner" style="margin:20px auto;"&gt;&lt;/div&gt;';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const km = document.getElementById('log-km').value || '0';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const time = document.getElementById('log-time').value || '—';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const pace = document.getElementById('log-pace').value || '—';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const effort = document.getElementById('log-effort').value || '—';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const terrain = document.getElementById('log-terrain').value || '—';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const prePain = document.getElementById('log-pre-pain').value || 'Not specified';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const painLoc = document.getElementById('log-pain-location').value || 'None';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const painScore = selectedPain !== null ? selectedPain : 'Not specified';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const todayLog = { date: new Date().toISOString(), km, time, pace, effort, terrain, prePain, painLoc, painScore, notes, sleep, stress, isRestDay };</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Use Jax's bible if no profile generated yet, otherwise use stored profile</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const bibleContext = blueprint || JAX_BIBLE;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const recentLogs = logs.slice(-7).map(l =&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>`${new Date(l.date).toLocaleDateString('en-GB')}: ${l.isRestDay ? 'REST DAY' : `${l.km}km @ ${l.pace}/km, effort ${l.effort}`} | Pain: ${l.painScore}/10 at ${l.painLoc} | Notes: ${l.notes}`</p>
+<p class="p1"><span class="Apple-converted-space">  </span>).join('\n');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const prompt = `You are GAIT, an expert injury-aware AI running coach. Respond to today's training log entry.</p>
+<p class="p2"><br></p>
+<p class="p1">RUNNER'S BLUEPRINT &amp; HISTORY:</p>
+<p class="p1">${bibleContext}</p>
+<p class="p2"><br></p>
+<p class="p1">RECENT LOG HISTORY (last 7 entries):</p>
+<p class="p1">${recentLogs || 'No previous logs yet'}</p>
+<p class="p2"><br></p>
+<p class="p1">TODAY'S LOG:</p>
+<p class="p1">Date: ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+<p class="p1">${isRestDay ? 'REST DAY' : `Distance: ${km}km | Time: ${time} | Pace: ${pace}/km | Effort: ${effort} | Terrain: ${terrain}`}</p>
+<p class="p1">Pre-run pain/tightness: ${prePain}</p>
+<p class="p1">Pain during/after: ${painLoc} | Pain score: ${painScore}/10</p>
+<p class="p1">Sleep last night: ${sleep || 'Not specified'}</p>
+<p class="p1">Stress level: ${stress || 'Not specified'}</p>
+<p class="p1">Notes: ${notes}</p>
+<p class="p2"><br></p>
+<p class="p1">Respond with these exact sections using ### headings:</p>
+<p class="p2"><br></p>
+<p class="p1">### Today's Assessment</p>
+<p class="p1">2-3 sentences. Be specific about what today's data tells you — reference their injury history where relevant.</p>
+<p class="p2"><br></p>
+<p class="p1">### Tonight's Recovery</p>
+<p class="p1">Specific stretches or exercises for tonight based exactly on what they logged. If pain is present be very specific about what helps that exact location.</p>
+<p class="p2"><br></p>
+<p class="p1">### Tomorrow's Plan</p>
+<p class="p1">What should they do tomorrow based on today? Be specific — rest, easy run, strength circuit, specific km and pace if running.</p>
+<p class="p2"><br></p>
+<p class="p1">### Watch This Week</p>
+<p class="p1">One specific thing to monitor or adjust this week based on today's patterns. Reference their recent log history if relevant.</p>
+<p class="p2"><br></p>
+<p class="p1">Be direct, specific, and personal. Reference their actual data. No generic advice.`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const res = await fetch('/api/chat', {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>headers: { 'Content-Type': 'application/json' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>body: JSON.stringify({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>model: 'claude-sonnet-4-20250514',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>max_tokens: 1000,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>messages: [{ role: 'user', content: prompt }]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>})</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const data = await res.json();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const text = data.content?.[0]?.text;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (text) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>todayLog.aiResponse = text;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>logs.push(todayLog);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>localStorage.setItem('gait_logs', JSON.stringify(logs));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bodyEl.innerHTML = formatAIResponse(text);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateStats();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>bodyEl.innerHTML = '&lt;p style="color:var(--red)"&gt;Something went wrong. Please try again.&lt;/p&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>btn.disabled = false;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>btn.textContent = 'Get today\'s coaching →';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>responseEl.scrollIntoView({ behavior: 'smooth', block: 'start' });</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function formatAIResponse(text) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return text</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.replace(/### (.+)/g, '&lt;h3&gt;$1&lt;/h3&gt;')</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.replace(/## (.+)/g, '&lt;h3&gt;$1&lt;/h3&gt;')</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.replace(/\*\*(.+?)\*\*/g, '&lt;strong&gt;$1&lt;/strong&gt;')</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.replace(/^- (.+)/gm, '&lt;li&gt;$1&lt;/li&gt;')</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.replace(/\n\n/g, '&lt;/p&gt;&lt;p&gt;')</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.replace(/^(?!&lt;[hl])/gm, '')</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.split('\n').map(line =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (line.startsWith('&lt;h') || line.startsWith('&lt;li') || line === '') return line;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return `&lt;p&gt;${line}&lt;/p&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}).join('');</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// HISTORY</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">function renderHistory() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const container = document.getElementById('history-container');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (logs.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>container.innerHTML = `&lt;div class="empty-state"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="empty-icon"&gt;🏃&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="empty-title"&gt;No runs logged yet&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="empty-sub"&gt;Head to Daily Log to record your first run.&lt;br&gt;Your history will build up here over time.&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const totalKm = logs.filter(l =&gt; !l.isRestDay).reduce((s, l) =&gt; s + parseFloat(l.km || 0), 0);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const totalRuns = logs.filter(l =&gt; !l.isRestDay).length;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>let html = `&lt;div class="stats-strip" style="margin-bottom:24px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-box"&gt;&lt;div class="stat-val"&gt;${totalRuns}&lt;/div&gt;&lt;div class="stat-key"&gt;Total runs&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-box"&gt;&lt;div class="stat-val"&gt;${totalKm.toFixed(1)}&lt;/div&gt;&lt;div class="stat-key"&gt;Total km&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-box"&gt;&lt;div class="stat-val"&gt;${logs.length}&lt;/div&gt;&lt;div class="stat-key"&gt;Days logged&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>html += `&lt;div class="section-divider"&gt;Recent entries&lt;/div&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>[...logs].reverse().forEach((log, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const d = new Date(log.date);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const dateStr = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const painClass = log.painScore === 0 || log.painScore === 'Not specified' ? 'none' : log.painScore &lt;= 2 ? 'low' : log.painScore &lt;= 4 ? 'mid' : 'high';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>html += `&lt;div class="history-card" onclick="toggleExpanded(${logs.length - 1 - i})"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="history-card-top"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="history-date"&gt;${dateStr}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="history-km"&gt;${log.isRestDay ? 'Rest day' : `${log.km} km`}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="history-pain"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="pain-dot ${painClass}"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>${log.isRestDay ? 'Recovery' : `Pain ${log.painScore}/10`}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>${!log.isRestDay ? `&lt;div class="history-notes"&gt;${log.pace}/km · ${log.effort} · ${log.terrain}&lt;/div&gt;` : ''}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>${log.notes ? `&lt;div class="history-notes" style="margin-top:6px;"&gt;${log.notes.substring(0, 100)}${log.notes.length &gt; 100 ? '...' : ''}&lt;/div&gt;` : ''}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="expanded-log" id="expanded-${logs.length - 1 - i}"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>${log.aiResponse ? `&lt;div class="ai-response visible" style="margin-bottom:16px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="ai-response-label"&gt;GAIT coaching response&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="ai-response-body"&gt;${formatAIResponse(log.aiResponse)}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;` : ''}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>container.innerHTML = html;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function toggleExpanded(idx) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const el = document.getElementById(`expanded-${idx}`);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>el.classList.toggle('open');</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// UTILS</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">function updateStats() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const runs = logs.filter(l =&gt; !l.isRestDay);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const totalKm = runs.reduce((s, l) =&gt; s + parseFloat(l.km || 0), 0);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('stat-runs').textContent = runs.length;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('stat-km').textContent = totalKm.toFixed(1);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Streak</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let streak = 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const today = new Date().toDateString();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>for (let i = logs.length - 1; i &gt;= 0; i--) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const d = new Date(logs[i].date);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const expected = new Date();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>expected.setDate(expected.getDate() - streak);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (d.toDateString() === expected.toDateString()) streak++;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>else break;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('stat-streak').textContent = streak;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function parseMarkdown(text) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const lines = text.split('\n');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const sections = [];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>let current = null;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>for (const line of lines) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (line.startsWith('## ')) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (current) sections.push(current);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>current = { heading: line.replace('## ', ''), content: '' };</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else if (current) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (line.startsWith('- ') || line.startsWith('• ')) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>current.content += `&lt;ul&gt;&lt;li&gt;${line.replace(/^[-•]\s/, '')}&lt;/li&gt;&lt;/ul&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else if (line.trim()) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>current.content += `&lt;p&gt;${line}&lt;/p&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (current) sections.push(current);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return sections;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function showView(name) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.querySelectorAll('.view').forEach(v =&gt; v.classList.remove('active'));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.querySelectorAll('.nav-tab').forEach(t =&gt; t.classList.remove('active'));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById(`view-${name}`).classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>event.target.classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (name === 'history') renderHistory();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">// INIT</p>
+<p class="p1">// ══════════════════════════════════════════</p>
+<p class="p1">renderQ();</p>
+<p class="p1">initLog();</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>

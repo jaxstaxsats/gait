@@ -1,0 +1,812 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1">&lt;title&gt;G​A​IT — Your AI Running Coach&lt;/title&gt;</p>
+<p class="p1">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</p>
+<p class="p1">&lt;link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700;900&amp;family=Instrument+Serif:ital@0;1&amp;family=DM+Mono:wght@300;400&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--bg: #f5f2eb;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--bg2: #edeae0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--ink: #0f0e0b;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--ink2: #2a2820;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--muted: #9a9688;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--accent: #c8f23a;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--red: #ff3d2e;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--white: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--display: 'Unbounded', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--serif: 'Instrument Serif', serif;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--mono: 'DM Mono', monospace;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>html { scroll-behavior: smooth; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>overflow-x: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>cursor: none;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.cursor {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 10px; height: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--red);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-radius: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: fixed;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>pointer-events: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>z-index: 9999;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transform: translate(-50%, -50%);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: transform 0.1s, width 0.2s, height 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>mix-blend-mode: multiply;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.cursor.grow { width: 48px; height: 48px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>body::before {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>content: '';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: fixed; inset: 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>pointer-events: none; z-index: 100; opacity: 0.4;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── NAV ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>nav {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: fixed; top: 0; left: 0; right: 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 16px 40px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>z-index: 50;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: rgba(245,242,235,0.92);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>backdrop-filter: blur(12px);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-bottom: 1px solid rgba(15,14,11,0.08);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* Logo mark — always G·AI·T with AI red */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-logo {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 22px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: -1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>line-height: 1;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>gap: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-logo .g, .nav-logo .t { color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-logo .ai { color: var(--red); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-links a {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; letter-spacing: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); text-decoration: none; text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: color 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-links a:hover { color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-cta {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--ink); color: var(--accent) !important;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 10px 20px; border-radius: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display) !important;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-weight: 700 !important; font-size: 12px !important;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: 1px !important;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: background 0.2s !important;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.nav-cta:hover { background: var(--ink2) !important; color: var(--accent) !important; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── HERO ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>min-height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>grid-template-rows: 1fr auto;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 0 24px 48px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-bg-text { display: none; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-content {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding-top: 120px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: relative; z-index: 2;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-eyebrow {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; letter-spacing: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 28px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>opacity: 0; animation: fadeUp 0.8s 0.2s forwards;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-eyebrow::before {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>content: '';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: inline-block; width: 24px; height: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--red);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-headline {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: clamp(56px, 10vw, 140px);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>line-height: 0.88;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: -4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>opacity: 0; animation: fadeUp 0.8s 0.4s forwards;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-headline .red { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-headline em {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--serif);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-style: italic;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-weight: 400;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--red);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: -2px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-sub {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-top: 36px; max-width: 480px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 13px; line-height: 1.8;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>opacity: 0; animation: fadeUp 0.8s 0.6s forwards;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hero-cta-row {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; gap: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-top: 48px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>opacity: 0; animation: fadeUp 0.8s 0.8s forwards;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-primary {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--ink); color: var(--accent);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 14px; letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 18px 36px; border: none; border-radius: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>cursor: none; text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: background 0.2s, transform 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>text-decoration: none; display: inline-block;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-primary:hover { background: var(--ink2); transform: translateY(-2px); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-ghost {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; letter-spacing: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>text-decoration: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-bottom: 1px solid var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding-bottom: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: color 0.2s, border-color 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.btn-ghost:hover { color: var(--ink); border-color: var(--ink); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* Ticker */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.running-line {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-top: 1px solid var(--ink2);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding-top: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: relative; z-index: 2;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.running-ticker {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; gap: 48px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>animation: ticker 18s linear infinite;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>white-space: nowrap; flex-shrink: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.running-ticker span {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 12px; letter-spacing: 3px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.running-ticker span.dot { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── SECTIONS ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>section { padding: 120px 40px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.section-label {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 10px; letter-spacing: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); text-transform: uppercase; margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── HOW IT WORKS ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.how { background: var(--ink); color: var(--bg); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.how-header {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: flex-start; justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 80px; gap: 40px; flex-wrap: wrap;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.how-title {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: clamp(40px, 6vw, 80px);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: -2px; line-height: 0.9; color: var(--bg);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.how-title .red { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.how-desc {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>max-width: 340px; font-family: var(--mono); font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>line-height: 1.8; color: var(--muted); padding-top: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.steps-grid {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>gap: 1px; background: rgba(255,255,255,0.08);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.step-card {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--ink); padding: 40px 32px; transition: background 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.step-card:hover { background: var(--ink2); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.step-num {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 64px; color: var(--accent);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>line-height: 1; margin-bottom: 24px; letter-spacing: -2px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.step-name {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 20px; letter-spacing: -0.5px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--bg); margin-bottom: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.step-desc {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>line-height: 1.8; color: var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── FEATURES ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.features { background: var(--bg2); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.features-grid {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>grid-template-columns: 1fr 1fr;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>gap: 2px; margin-top: 60px; background: rgba(0,0,0,0.1);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.features-grid .feature-card:last-child {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>grid-column: 1 / -1;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.feature-card {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg2); padding: 48px 40px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: relative; overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.feature-card::before {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>content: ''; position: absolute; top: 0; left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 3px; height: 0; background: var(--red);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: height 0.3s;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.feature-card:hover::before { height: 100%; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.feature-icon { font-size: 28px; margin-bottom: 20px; display: block; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.feature-title {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 22px; letter-spacing: -0.5px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink); margin-bottom: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.feature-body {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>line-height: 1.8; color: var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── STATS ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.stats {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--accent); padding: 60px 40px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.stat-item { text-align: center; padding: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.stat-num {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: clamp(40px, 6vw, 72px);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: -3px; color: var(--ink); line-height: 1;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.stat-label {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; letter-spacing: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink2); text-transform: uppercase; margin-top: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── VERSUS ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus { background: var(--ink); padding: 120px 40px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-title {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: clamp(36px, 5vw, 64px);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: -2px; line-height: 0.95;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--bg); margin-bottom: 60px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-title .red { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-grid {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: grid; grid-template-columns: 1fr 1fr; gap: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: rgba(255,255,255,0.06);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-col { padding: 48px 40px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-col.them { background: rgba(255,255,255,0.03); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-col.us { background: rgba(200,242,58,0.06); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-col-label {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 10px; letter-spacing: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>text-transform: uppercase; margin-bottom: 32px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-col.them .versus-col-label { color: var(--muted); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-col.us .versus-col-label { color: var(--accent); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-item {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: flex-start; gap: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-icon { font-size: 16px; margin-top: 2px; flex-shrink: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-text {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 13px; line-height: 1.7;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-col.them .versus-text { color: var(--muted); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.versus-col.us .versus-text { color: var(--bg); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── PRICING ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing { background: var(--bg); padding: 120px 40px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-title {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: clamp(36px, 5vw, 64px);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: -2px; line-height: 0.95; margin-bottom: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-sub {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 13px; color: var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>line-height: 1.8; margin-bottom: 64px; max-width: 480px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-grid {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>gap: 2px; background: rgba(0,0,0,0.08);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg); padding: 48px 40px; position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-top: 4px solid var(--red);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-badge {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: inline-block;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 10px; letter-spacing: 3px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>text-transform: uppercase; padding: 4px 10px; border-radius: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card:not(.featured) .pricing-badge {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg2); color: var(--red);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-badge {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg2); color: var(--red);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-price { color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-name { color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-features li {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); border-color: rgba(0,0,0,0.06);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-features li::before { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-btn {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--ink); color: var(--accent);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-btn:hover { background: var(--ink2); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-period { color: var(--muted); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-price {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 64px; letter-spacing: -3px; line-height: 1;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card:not(.featured) .pricing-price { color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-price { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-period {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 12px; letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); margin-bottom: 32px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-name {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 24px; letter-spacing: -0.5px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin-bottom: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card:not(.featured) .pricing-name { color: var(--ink); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-name { color: var(--bg); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-features { list-style: none; margin-bottom: 40px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-features li {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 12px; line-height: 1.8;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 8px 0; border-bottom: 1px solid;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; gap: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink2);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card:not(.featured) .pricing-features li {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-color: rgba(0,0,0,0.06);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-features li {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink2); border-color: rgba(0,0,0,0.06);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-features li::before {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>content: '✦'; font-size: 8px; flex-shrink: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card:not(.featured) .pricing-features li::before { color: var(--accent); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-features li::before { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-btn {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: block; text-align: center; text-decoration: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 16px; letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 16px 24px; border-radius: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>text-transform: uppercase; transition: all 0.2s; cursor: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border: none; width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card:not(.featured) .pricing-btn {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--ink); color: var(--accent);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card:not(.featured) .pricing-btn:hover { background: var(--ink2); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-btn {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--accent); color: var(--ink);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.pricing-card.featured .pricing-btn:hover { background: #d4f94a; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── TESTIMONIAL ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.testimonial {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--bg2); text-align: center; padding: 120px 40px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.quote-mark {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--serif); font-style: italic;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 120px; color: rgba(0,0,0,0.06);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>line-height: 0.5; display: block; margin-bottom: 32px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.quote-text {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--serif); font-style: italic;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: clamp(24px, 4vw, 44px);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--ink); line-height: 1.3;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>max-width: 800px; margin: 0 auto 32px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.quote-attr {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; letter-spacing: 3px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── WAITLIST ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.waitlist {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--ink); text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 120px 40px; position: relative; overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.waitlist::before {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>content: 'G​A​IT';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: absolute; top: 50%; left: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transform: translate(-50%, -50%);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 400px; color: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>-webkit-text-stroke: 1px rgba(255,255,255,0.03);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>pointer-events: none; letter-spacing: -20px; white-space: nowrap;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.waitlist-eyebrow {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; letter-spacing: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--red); text-transform: uppercase; margin-bottom: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.waitlist-title {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: clamp(48px, 8vw, 100px);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>letter-spacing: -3px; line-height: 0.9;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--bg); margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.waitlist-title em {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--serif); font-style: italic;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-weight: 400; color: var(--accent);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.waitlist-sub {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 13px; line-height: 1.8;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted); max-width: 420px; margin: 0 auto 48px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.email-form {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; flex-direction: column; max-width: 480px; width: 100%; margin: 0 auto;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border: 1px solid rgba(255,255,255,0.15);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-radius: 2px; overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>@media (min-width: 480px) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.email-form { flex-direction: row; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.email-form input {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>flex: 1; background: transparent; border: none; outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 18px 20px; font-family: var(--mono); font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--bg);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.email-form input::placeholder { color: rgba(255,255,255,0.25); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.email-form button {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--accent); color: var(--ink);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 13px; letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 18px 20px; border: none; cursor: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>text-transform: uppercase; transition: background 0.2s;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>white-space: nowrap; flex-shrink: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.email-form button:hover { background: #d4f94a; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.success-msg {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: none; font-family: var(--mono); font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--accent); letter-spacing: 1px; margin-top: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── FOOTER ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>footer {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: var(--ink);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-top: 1px solid rgba(255,255,255,0.06);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>padding: 32px 40px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; align-items: center; justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>flex-wrap: wrap; gap: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.footer-logo {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--display); font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 18px; letter-spacing: -1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex; gap: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.footer-logo .g, .footer-logo .t { color: var(--bg); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.footer-logo .ai { color: var(--red); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.footer-right {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: var(--mono); font-size: 11px; letter-spacing: 1px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: var(--muted);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.footer-right a { color: var(--muted); text-decoration: none; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.footer-right a:hover { color: var(--accent); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── ANIMATIONS ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>@keyframes fadeUp {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>from { opacity: 0; transform: translateY(24px); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>to { opacity: 1; transform: translateY(0); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s, transform 0.7s; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.reveal.visible { opacity: 1; transform: none; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* ── MOBILE ── */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>@media (max-width: 768px) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>nav { padding: 16px 24px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.nav-links { display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.hero { padding: 0 24px 40px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>section { padding: 80px 24px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.features-grid { grid-template-columns: 1fr; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.stats { grid-template-columns: 1fr; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.how-header { flex-direction: column; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.versus-grid { grid-template-columns: 1fr; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.pricing-grid { grid-template-columns: 1fr; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>footer { padding: 24px; flex-direction: column; gap: 12px; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="cursor" id="cursor"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- NAV --&gt;</p>
+<p class="p1">&lt;nav&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="nav-logo"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;span class="g"&gt;G&lt;/span&gt;&lt;span class="ai"&gt;AI&lt;/span&gt;&lt;span class="t"&gt;T&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;ul class="nav-links"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;li&gt;&lt;a href="#how"&gt;How it works&lt;/a&gt;&lt;/li&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;li&gt;&lt;a href="#pricing"&gt;Pricing&lt;/a&gt;&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;li&gt;&lt;a href="#waitlist" class="nav-cta"&gt;Join waitlist&lt;/a&gt;&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/ul&gt;</p>
+<p class="p1">&lt;/nav&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- HERO --&gt;</p>
+<p class="p1">&lt;section class="hero"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="hero-bg-text"&gt;GAIT&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="hero-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="hero-eyebrow"&gt;gait.run — AI running coach&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1 class="hero-headline"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>Your gait.&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;em&gt;&lt;span class="red"&gt;Your&lt;/span&gt;&lt;/em&gt; plan.&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>Your pace.</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="hero-sub"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>GAIT builds your personalised GAIT Blueprint — injury history, terrain, goals, and all. Then adapts it every single day based on how your body actually feels. No generic plans. No guesswork.</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="hero-cta-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;a href="#waitlist" class="btn-primary"&gt;Get your blueprint&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;a href="#how" class="btn-ghost"&gt;See how it works&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="running-line"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="running-ticker"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Injury-aware training&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Your GAIT Blueprint&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Daily body check&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Half marathon&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Marathon&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Ultra marathon&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Built for real runners&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Injury-aware training&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Your GAIT Blueprint&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Daily body check&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Half marathon&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Marathon&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Ultra marathon&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span&gt;Built for real runners&lt;/span&gt;&lt;span class="dot"&gt;✦&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- HOW IT WORKS --&gt;</p>
+<p class="p1">&lt;section class="how" id="how"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="how-header reveal"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="section-label" style="color: rgba(255,255,255,0.3)"&gt;How it works&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;h2 class="how-title"&gt;Built around&lt;br&gt;&lt;span class="red"&gt;you.&lt;/span&gt;&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="how-desc"&gt;Five minutes. Your injury history. Your goals. A GAIT Blueprint that adapts every day based on how your body actually feels.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="steps-grid reveal"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="step-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="step-num"&gt;01&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="step-name"&gt;Tell us about you&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="step-desc"&gt;Age, weight, injury history, current mileage, terrain. The stuff that actually matters to your knees.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="step-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="step-num"&gt;02&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="step-name"&gt;Get your Blueprint&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="step-desc"&gt;Your personalised GAIT Blueprint — weekly plan, milestones, injury rules, strength circuit, daily habits.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="step-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="step-num"&gt;03&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="step-name"&gt;Log daily&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="step-desc"&gt;Each day log your run, your pace, and how your body felt. Any pain, any niggles, any stiffness.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="step-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="step-num"&gt;04&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="step-name"&gt;GAIT adapts&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="step-desc"&gt;Based on your log, GAIT updates your plan, prescribes tonight's recovery, and adjusts tomorrow's session.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- FEATURES --&gt;</p>
+<p class="p1">&lt;section class="features" id="features"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;p class="section-label reveal"&gt;What you get&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h2 class="reveal" style="font-family: var(--display); font-weight: 900; font-size: clamp(36px, 5vw, 64px); letter-spacing: -2px; line-height: 0.95; margin-bottom: 0;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>Everything a coach&lt;br&gt;would tell you.</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="features-grid reveal"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="feature-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="feature-icon"&gt;🦵&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="feature-title"&gt;Injury-aware planning&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="feature-body"&gt;GAIT maps your full injury history to every recommendation. PFPS, calf strain, IT band — it knows what to protect and builds every session around it.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="feature-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="feature-icon"&gt;📋&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="feature-title"&gt;Your GAIT Blueprint&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="feature-body"&gt;Not a generic plan. A living document built around you — weekly template, milestones, strength circuit, daily habits. Updated as you progress.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="feature-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="feature-icon"&gt;🌅&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="feature-title"&gt;Morning movements&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="feature-body"&gt;Every morning GAIT gives you a personalised 10 minute routine — mobility, activation and stretches based on yesterday's run and how your body feels today.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="feature-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="feature-icon"&gt;📊&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="feature-title"&gt;Daily body log&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="feature-body"&gt;Log your km, pace, pain score, and niggles every day. GAIT reads the patterns across weeks — not just today's run in isolation.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="feature-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="feature-icon"&gt;🎯&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="feature-title"&gt;Tonight's recovery&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="feature-body"&gt;Every log entry generates a specific recovery protocol for that evening — stretches, exercises, rest guidance. No Googling. Just open GAIT.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- STATS --&gt;</p>
+<p class="p1">&lt;div class="stats reveal"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="stat-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-num"&gt;5&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-label"&gt;minutes to your blueprint&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="stat-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-num"&gt;0&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-label"&gt;generic plans&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="stat-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-num"&gt;∞&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="stat-label"&gt;daily adaptations&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- PRICING --&gt;</p>
+<p class="p1">&lt;section class="pricing" id="pricing"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;p class="section-label reveal"&gt;Pricing&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h2 class="pricing-title reveal"&gt;Simple.&lt;br&gt;No surprises.&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;p class="pricing-sub reveal"&gt;Start free. Upgrade when you're ready. No annual contracts, no hidden fees.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="pricing-grid reveal" style="grid-template-columns: repeat(auto-fit, minmax(280px, 480px)); justify-content: center;"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="pricing-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="pricing-badge"&gt;Free forever&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="pricing-price"&gt;€0&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="pricing-period"&gt;no card required&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="pricing-name"&gt;GAIT Blueprint&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ul class="pricing-features"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Full personalised GAIT Blueprint&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Injury-aware weekly plan&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Milestone roadmap to race day&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Bulletproof strength circuit&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;One generation, yours to keep&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;a href="#waitlist" class="pricing-btn"&gt;Get started free&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="pricing-card featured"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="pricing-badge"&gt;Most popular&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="pricing-price"&gt;€4.99&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="pricing-period"&gt;per month — cancel anytime&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="pricing-name"&gt;GAIT Pro&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ul class="pricing-features"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Everything in free&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Daily run log dashboard&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;AI body check after every run&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Tonight's recovery protocol&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Blueprint updates as you progress&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Injury pattern tracking&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;AI meal planner for runners&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;Race week nutrition plan&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;a href="#waitlist" class="pricing-btn"&gt;Start for €4.99/month&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- TESTIMONIAL --&gt;</p>
+<p class="p1">&lt;section class="testimonial"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;span class="quote-mark reveal"&gt;"&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;blockquote class="quote-text reveal"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>I went from knee pain on every 5 km run to training for a marathon. Having a plan that actually knows my injury history changed everything.</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/blockquote&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;p class="quote-attr reveal"&gt;Jax — comeback runner, PFPS survivor, future ultra runner&lt;/p&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- WAITLIST --&gt;</p>
+<p class="p1">&lt;section class="waitlist" id="waitlist"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;p class="waitlist-eyebrow"&gt;Early access&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h2 class="waitlist-title"&gt;Run with&lt;br&gt;&lt;em&gt;intelligence.&lt;/em&gt;&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;p class="waitlist-sub"&gt;GAIT is launching soon. Join the waitlist and be first to get your personalised GAIT Blueprint — free.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="email-form"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="email" id="emailInput" placeholder="your@email.com" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="handleJoin()"&gt;Get early access&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;p class="success-msg" id="successMsg"&gt;✦ You're on the list. We'll be in touch.&lt;/p&gt;</p>
+<p class="p1">&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- FOOTER --&gt;</p>
+<p class="p1">&lt;footer&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="footer-logo"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;span class="g"&gt;G&lt;/span&gt;&lt;span class="ai"&gt;AI&lt;/span&gt;&lt;span class="t"&gt;T&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="footer-right"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>gait.run &amp;nbsp;·&amp;nbsp; &lt;a href="https://instagram.com/gait.run"&gt;@gait.run&lt;/a&gt; &amp;nbsp;·&amp;nbsp; © 2026</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/footer&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const cursor = document.getElementById('cursor');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.addEventListener('mousemove', e =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>cursor.style.left = e.clientX + 'px';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>cursor.style.top = e.clientY + 'px';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.querySelectorAll('a, button, input').forEach(el =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>el.addEventListener('mouseenter', () =&gt; cursor.classList.add('grow'));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>el.addEventListener('mouseleave', () =&gt; cursor.classList.remove('grow'));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const reveals = document.querySelectorAll('.reveal');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const observer = new IntersectionObserver(entries =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>entries.forEach(e =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}, { threshold: 0.1 });</p>
+<p class="p1"><span class="Apple-converted-space">  </span>reveals.forEach(r =&gt; observer.observe(r));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>function handleJoin() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const email = document.getElementById('emailInput').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!email || !email.includes('@')) return;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.querySelector('.email-form').style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('successMsg').style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('emailInput').addEventListener('keydown', e =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (e.key === 'Enter') handleJoin();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
