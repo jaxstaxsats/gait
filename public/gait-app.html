@@ -222,6 +222,204 @@
   .stat-val { font-family: var(--display); font-weight: 900; font-size: 24px; letter-spacing: -1px; color: var(--ink); }
   .stat-key { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
 
+  /* ── PREMIUM BLUEPRINT ── */
+  .bp-wrap { padding-bottom: 40px; }
+  .bp-hero {
+    background: var(--ink); border-radius: 8px;
+    padding: 28px; margin-bottom: 16px; position: relative; overflow: hidden;
+  }
+  .bp-hero::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--red), var(--accent));
+  }
+  .bp-hero-tag {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 3px;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 10px;
+  }
+  .bp-hero-name {
+    font-family: var(--display); font-weight: 900;
+    font-size: clamp(28px, 6vw, 44px); letter-spacing: -2px;
+    color: white; line-height: 1; margin-bottom: 10px;
+  }
+  .bp-hero-name .ai { color: var(--red); }
+  .bp-hero-tagline {
+    font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.6);
+    line-height: 1.6; margin-bottom: 16px;
+  }
+  .bp-focus-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,242,58,0.12); border: 1px solid rgba(200,242,58,0.3);
+    border-radius: 20px; padding: 6px 14px;
+    font-family: var(--mono); font-size: 11px; color: var(--accent);
+  }
+
+  .bp-section { margin-bottom: 16px; }
+  .bp-section-label {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 3px;
+    color: var(--red); text-transform: uppercase; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .bp-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Injury alert */
+  .bp-injury {
+    border-radius: 8px; padding: 20px; margin-bottom: 16px;
+    border-left: 4px solid var(--red); background: var(--bg2);
+  }
+  .bp-injury-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .bp-injury-badge {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
+    background: var(--red); color: white;
+  }
+  .bp-injury-title {
+    font-family: var(--display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.5px; color: var(--ink);
+  }
+  .bp-injury-desc {
+    font-family: var(--mono); font-size: 12px; color: var(--ink2);
+    line-height: 1.7; margin-bottom: 12px;
+  }
+  .bp-rules { list-style: none; }
+  .bp-rules li {
+    font-family: var(--mono); font-size: 11px; line-height: 1.6;
+    padding: 6px 0; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .bp-rules li:last-child { border-bottom: none; }
+  .bp-rule-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
+  }
+  .bp-rule-dot.green { background: #22c55e; }
+  .bp-rule-dot.amber { background: #f59e0b; }
+  .bp-rule-dot.red { background: var(--red); }
+
+  /* Weekly grid */
+  .bp-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  @media (max-width: 600px) { .bp-week { grid-template-columns: repeat(4, 1fr); } }
+  .bp-day {
+    border-radius: 6px; padding: 10px 6px; text-align: center;
+    border: 1px solid var(--border); background: var(--bg2);
+    transition: transform 0.2s;
+  }
+  .bp-day:hover { transform: translateY(-2px); }
+  .bp-day-name {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 6px;
+  }
+  .bp-day-icon { font-size: 20px; margin-bottom: 6px; display: block; }
+  .bp-day-type {
+    font-family: var(--display); font-weight: 700; font-size: 9px;
+    letter-spacing: -0.3px; color: var(--ink); margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .bp-day-detail {
+    font-family: var(--mono); font-size: 8px; color: var(--muted);
+    line-height: 1.4;
+  }
+  .bp-day.green { border-top: 3px solid #22c55e; }
+  .bp-day.yellow { border-top: 3px solid #f59e0b; }
+  .bp-day.orange { border-top: 3px solid #f97316; }
+  .bp-day.blue { border-top: 3px solid #3b82f6; }
+  .bp-day.gray { border-top: 3px solid var(--muted); }
+
+  /* Exercises */
+  .bp-exercise {
+    background: var(--bg2); border-radius: 8px;
+    padding: 16px; margin-bottom: 10px;
+    border: 1px solid var(--border);
+  }
+  .bp-ex-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+  }
+  .bp-ex-icon {
+    width: 44px; height: 44px; border-radius: 8px;
+    background: var(--ink); display: flex; align-items: center;
+    justify-content: center; font-size: 22px; flex-shrink: 0;
+  }
+  .bp-ex-title {
+    font-family: var(--display); font-weight: 700; font-size: 15px;
+    letter-spacing: -0.5px; color: var(--ink); margin-bottom: 2px;
+  }
+  .bp-ex-sets {
+    font-family: var(--mono); font-size: 11px; color: var(--red);
+    letter-spacing: 1px;
+  }
+  .bp-ex-why {
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    line-height: 1.6; margin-bottom: 10px; font-style: italic;
+  }
+  .bp-ex-steps { list-style: none; margin-bottom: 8px; }
+  .bp-ex-steps li {
+    font-family: var(--mono); font-size: 11px; color: var(--ink2);
+    line-height: 1.6; padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bp-ex-steps li:last-child { border-bottom: none; }
+  .bp-ex-step-num {
+    background: var(--ink); color: var(--accent);
+    font-family: var(--display); font-weight: 700; font-size: 9px;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .bp-ex-cue {
+    background: rgba(200,242,58,0.1); border-left: 3px solid var(--accent);
+    padding: 6px 10px; border-radius: 0 4px 4px 0;
+    font-family: var(--mono); font-size: 10px; color: var(--ink2);
+  }
+
+  /* Milestones */
+  .bp-milestones { display: flex; flex-direction: column; gap: 8px; }
+  .bp-milestone {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px; background: var(--bg2); border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .bp-milestone-period {
+    font-family: var(--display); font-weight: 900; font-size: 11px;
+    color: white; background: var(--ink); padding: 4px 8px;
+    border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    min-width: 68px; text-align: center;
+  }
+  .bp-milestone-target {
+    font-family: var(--display); font-weight: 700; font-size: 13px;
+    letter-spacing: -0.3px; color: var(--ink); margin-bottom: 2px;
+  }
+  .bp-milestone-focus {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+  }
+  .bp-milestone:last-child .bp-milestone-period {
+    background: var(--red);
+  }
+
+  /* Daily habit */
+  .bp-habit {
+    background: var(--ink); border-radius: 8px; padding: 20px;
+    border-top: 4px solid var(--accent);
+  }
+  .bp-habit-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .bp-habit-title {
+    font-family: var(--display); font-weight: 700; font-size: 16px;
+    letter-spacing: -0.5px; color: white;
+  }
+  .bp-habit-duration {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+    color: var(--accent); text-transform: uppercase;
+  }
+  .bp-habit-desc {
+    font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.7);
+    line-height: 1.7; margin-bottom: 8px;
+  }
+  .bp-habit-why {
+    font-family: var(--mono); font-size: 11px; color: var(--accent);
+    font-style: italic;
+  }
+
   /* ── QUOTES ── */
   .quote-block {
     border-left: 3px solid var(--red);
@@ -467,7 +665,11 @@ KEY NOTES: Lives in hilly terrain Porto. Desk work background crypto industry. H
 // ══════════════════════════════════════════
 let currentStep = 0;
 let answers = {};
-let blueprint = localStorage.getItem('gait_blueprint') || null;
+let blueprintRaw = localStorage.getItem('gait_blueprint') || null;
+let blueprint = null;
+if (blueprintRaw) {
+  try { blueprint = JSON.parse(blueprintRaw); } catch(e) { blueprint = blueprintRaw; }
+}
 let logs = JSON.parse(localStorage.getItem('gait_logs') || '[]');
 let selectedPain = null;
 let isRestDay = false;
@@ -796,7 +998,7 @@ GOAL-SPECIFIC TRAINING PRINCIPLES:
 
   const prompt = `${GAIT_SYSTEM}
 
-Generate a personalised GAIT Blueprint for this runner. Use everything you know about their profile to make this feel like it was written specifically for them — not a template.
+Generate a personalised GAIT Blueprint for this runner. Respond ONLY with a valid JSON object — no markdown, no backticks, no explanation before or after.
 
 RUNNER PROFILE:
 Name: ${answers.name} | Age: ${answers.age} | Gender: ${answers.gender} | Weight: ${answers.weight}kg | Height: ${answers.height}cm
@@ -824,30 +1026,55 @@ Biggest fear: ${answers.biggestFear}
 Primary motivation: ${answers.motivation}
 Secondary goals: ${answers.secondaryGoals}
 
-Write their GAIT Blueprint using these exact sections with ## headings:
+Return this exact JSON structure:
+{
+  "name": "runner's first name",
+  "tagline": "one sentence that captures exactly who this runner is — personal and specific",
+  "primaryFocus": "the single most important thing to protect or build for this runner in one sentence",
+  "injuryAlert": {
+    "title": "main injury risk name",
+    "level": "high/medium/low",
+    "description": "2 sentences on what to watch for specific to this runner",
+    "rules": ["rule 1", "rule 2", "rule 3"]
+  },
+  "weeklyPlan": [
+    {"day": "MON", "type": "Easy Run", "detail": "6-8km @ 6:00-6:30/km", "purpose": "Build aerobic base", "icon": "🏃", "color": "green"},
+    {"day": "TUE", "type": "Strength", "detail": "Bulletproof circuit", "purpose": "Injury prevention", "icon": "💪", "color": "blue"},
+    {"day": "WED", "type": "Moderate Run", "detail": "8-10km @ 5:40-6:00/km", "purpose": "Aerobic development", "icon": "🏃", "color": "yellow"},
+    {"day": "THU", "type": "Rest", "detail": "Mobility only", "purpose": "Recovery", "icon": "🧘", "color": "gray"},
+    {"day": "FRI", "type": "Strength", "detail": "Bulletproof circuit", "purpose": "Injury prevention", "icon": "💪", "color": "blue"},
+    {"day": "SAT", "type": "Long Run", "detail": "10-13km @ 5:50-6:30/km", "purpose": "Endurance build", "icon": "🏃", "color": "orange"},
+    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + body scan", "purpose": "Full recovery", "icon": "😴", "color": "gray"}
+  ],
+  "exercises": [
+    {
+      "name": "Exercise Name",
+      "sets": "3 × 15",
+      "icon": "emoji that represents the exercise",
+      "why": "One sentence explaining exactly why this exercise matters for THIS runner based on their injury history",
+      "steps": ["Step 1 instruction", "Step 2 instruction", "Step 3 instruction"],
+      "cue": "One coaching cue — the most important thing to focus on"
+    }
+  ],
+  "mileageRules": [
+    {"rule": "rule text", "type": "green/amber/red"}
+  ],
+  "milestones": [
+    {"period": "Month 1", "target": "specific target", "focus": "key focus area"},
+    {"period": "Month 2", "target": "specific target", "focus": "key focus area"},
+    {"period": "Month 3", "target": "specific target", "focus": "key focus area"},
+    {"period": "6 Months", "target": "specific target", "focus": "race goal"},
+    {"period": "Big Vision", "target": "their stated big vision", "focus": "ultimate goal"}
+  ],
+  "dailyHabit": {
+    "title": "habit name",
+    "duration": "e.g. 2 minutes daily",
+    "description": "exactly what to do",
+    "why": "why this prevents their specific injury"
+  }
+}
 
-## Who You Are As A Runner
-3-4 sentences. Personal and specific. Name their background, their #1 strength, and the single most important thing to protect based on their injury history. Make them feel understood.
-
-## Your Primary Injury Risk
-The main injury risk for THIS runner based on their history and goals. Name it specifically. Give 3 concrete warning signs to watch for and 2 non-negotiable daily habits that prevent it. Reference their specific injuries by name.
-
-## Your Bulletproof Strength Circuit
-A personalised 3-4 exercise circuit from the GAIT exercise library, chosen specifically for their injury history and weak points. For each exercise: name, sets/reps, and one sentence explaining why it matters for THEM specifically.
-
-## Your Weekly Training Template
-Mon-Sun plan. For each day: session type, specific distance range, specific pace range, and one sentence of purpose. Calibrated to their current weekly km, terrain, and available training days. Conservative and buildable.
-
-## Your Mileage Rules
-6 rules written specifically for this runner. When to push, when to back off, what to watch for. Reference their specific injuries, terrain and goal race. Make these feel personal not generic.
-
-## Your Milestone Roadmap
-Month 1, Month 2, Month 3, then 6 months, then their big vision target. Specific numbers and targets. Motivating but realistic.
-
-## Your Non-Negotiable Daily Habit
-One specific habit tied directly to their injury history. Name the injury it prevents. Takes under 5 minutes. Concrete enough that they know exactly what to do.
-
-Write with authority, warmth and deep specificity. No preamble, no sign-off. Every sentence should feel like it could only have been written for this exact runner.`;
+Make all content specific to this runner. Use their actual injury names, terrain, goals and pace. Include 4-5 exercises tailored to their injury history. Include 5-6 mileage rules. Make it feel personal not generic.`;
 
   try {
     const res = await fetch('/api/chat', {
@@ -862,9 +1089,14 @@ Write with authority, warmth and deep specificity. No preamble, no sign-off. Eve
     const data = await res.json();
     const text = data.content?.[0]?.text;
     if (text) {
-      blueprint = text;
+      try {
+        const clean = text.replace(/```json|```/g, '').trim();
+        blueprint = JSON.parse(clean);
+      } catch(e) {
+        blueprint = text;
+      }
       profileData = { ...answers };
-      localStorage.setItem('gait_blueprint', blueprint);
+      localStorage.setItem('gait_blueprint', JSON.stringify(blueprint));
       localStorage.setItem('gait_profile', JSON.stringify(profileData));
       renderBlueprint();
     }
@@ -879,26 +1111,131 @@ Write with authority, warmth and deep specificity. No preamble, no sign-off. Eve
 
 function renderBlueprint() {
   const container = document.getElementById('q-container');
-  const name = profileData?.name || answers.name || 'Your';
-  const sections = parseMarkdown(blueprint);
+  const b = typeof blueprint === 'string' ? JSON.parse(blueprint) : blueprint;
+  const name = b.name || profileData?.name || answers.name || 'Your';
 
-  let html = `<div class="blueprint-header">
-    <div class="blueprint-tag">GAIT Blueprint</div>
-    <div class="blueprint-name">${name}'s<br>G<span class="ai">AI</span>T Plan</div>
-    <div class="blueprint-sub">Generated ${new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})}</div>
-  </div>`;
+  const ruleColor = (type) => {
+    if (type === 'green') return 'green';
+    if (type === 'amber') return 'amber';
+    return 'red';
+  };
 
-  sections.forEach(s => {
-    html += `<div class="blueprint-card">`;
-    if (s.heading) html += `<h2>${s.heading}</h2>`;
-    html += s.content;
-    html += `</div>`;
-  });
+  const dayColorClass = (color) => color || 'gray';
 
-  html += `<div style="text-align:center;padding:24px 0;">
-    <button onclick="resetBlueprint()" style="background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:2px;padding:12px 20px;border-radius:4px;cursor:pointer;text-transform:uppercase;">
-      Regenerate Blueprint
+  let html = `<div class="bp-wrap">
+
+  <!-- HERO -->
+  <div class="bp-hero">
+    <div class="bp-hero-tag">✦ GAIT Blueprint — Generated ${new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})}</div>
+    <div class="bp-hero-name">${name}'s<br>G<span class="ai">AI</span>T Plan</div>
+    <div class="bp-hero-tagline">${b.tagline || ''}</div>
+    <div class="bp-focus-pill">🎯 ${b.primaryFocus || ''}</div>
+  </div>
+
+  <!-- INJURY ALERT -->
+  <div class="bp-section-label">Injury alert</div>
+  <div class="bp-injury">
+    <div class="bp-injury-header">
+      <div class="bp-injury-badge">${b.injuryAlert?.level || 'monitor'}</div>
+      <div class="bp-injury-title">${b.injuryAlert?.title || ''}</div>
+    </div>
+    <div class="bp-injury-desc">${b.injuryAlert?.description || ''}</div>
+    <ul class="bp-rules">
+      ${(b.injuryAlert?.rules || []).map((r, i) => `
+        <li>
+          <div class="bp-rule-dot ${i === 0 ? 'green' : i === 1 ? 'amber' : 'red'}"></div>
+          <span>${r}</span>
+        </li>`).join('')}
+    </ul>
+  </div>
+
+  <!-- WEEKLY PLAN -->
+  <div class="bp-section-label">Your week</div>
+  <div class="bp-week">
+    ${(b.weeklyPlan || []).map(d => `
+      <div class="bp-day ${dayColorClass(d.color)}">
+        <div class="bp-day-name">${d.day}</div>
+        <span class="bp-day-icon">${d.icon}</span>
+        <div class="bp-day-type">${d.type}</div>
+        <div class="bp-day-detail">${d.detail}</div>
+      </div>`).join('')}
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:8px;">
+    ${(b.weeklyPlan || []).map(d => `
+      <div style="background:var(--bg2);border-radius:6px;padding:8px 10px;border:1px solid var(--border);">
+        <div style="font-family:var(--display);font-weight:700;font-size:10px;color:var(--ink);margin-bottom:3px;">${d.day} — ${d.type}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;">${d.purpose}</div>
+      </div>`).join('')}
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="bp-section-label" style="margin-top:20px;">Your strength circuit</div>
+  ${(b.exercises || []).map(ex => `
+    <div class="bp-exercise">
+      <div class="bp-ex-header">
+        <div class="bp-ex-icon">${ex.icon}</div>
+        <div>
+          <div class="bp-ex-title">${ex.name}</div>
+          <div class="bp-ex-sets">${ex.sets}</div>
+        </div>
+      </div>
+      <div class="bp-ex-why">"${ex.why}"</div>
+      <ul class="bp-ex-steps">
+        ${(ex.steps || []).map((s, i) => `
+          <li>
+            <div class="bp-ex-step-num">${i+1}</div>
+            <span>${s}</span>
+          </li>`).join('')}
+      </ul>
+      <div class="bp-ex-cue">💡 ${ex.cue}</div>
+    </div>`).join('')}
+
+  <!-- MILEAGE RULES -->
+  <div class="bp-section-label" style="margin-top:20px;">Mileage rules</div>
+  <div style="background:var(--bg2);border-radius:8px;padding:16px;border:1px solid var(--border);">
+    <ul class="bp-rules">
+      ${(b.mileageRules || []).map(r => `
+        <li>
+          <div class="bp-rule-dot ${ruleColor(r.type)}"></div>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--ink2);line-height:1.6;">${r.rule}</span>
+        </li>`).join('')}
+    </ul>
+  </div>
+
+  <!-- MILESTONES -->
+  <div class="bp-section-label" style="margin-top:20px;">Your roadmap</div>
+  <div class="bp-milestones">
+    ${(b.milestones || []).map(m => `
+      <div class="bp-milestone">
+        <div class="bp-milestone-period">${m.period}</div>
+        <div>
+          <div class="bp-milestone-target">${m.target}</div>
+          <div class="bp-milestone-focus">${m.focus}</div>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <!-- DAILY HABIT -->
+  <div class="bp-section-label" style="margin-top:20px;">Daily non-negotiable</div>
+  <div class="bp-habit">
+    <div class="bp-habit-header">
+      <div class="bp-habit-title">${b.dailyHabit?.title || ''}</div>
+      <div class="bp-habit-duration">${b.dailyHabit?.duration || ''}</div>
+    </div>
+    <div class="bp-habit-desc">${b.dailyHabit?.description || ''}</div>
+    <div class="bp-habit-why">Why: ${b.dailyHabit?.why || ''}</div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
+    <button onclick="resetBlueprint()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:2px;padding:14px 20px;border-radius:4px;cursor:pointer;text-transform:uppercase;min-width:140px;">
+      Regenerate
     </button>
+    <button onclick="showView('log')" style="flex:2;background:var(--ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;padding:14px 20px;border-radius:4px;border:none;cursor:pointer;text-transform:uppercase;min-width:160px;">
+      Start Daily Log →
+    </button>
+  </div>
+
   </div>`;
 
   container.innerHTML = html;
@@ -912,7 +1249,6 @@ function resetBlueprint() {
   answers = {};
   renderQ();
 }
-
 // ══════════════════════════════════════════
 // QUOTES
 // ══════════════════════════════════════════
