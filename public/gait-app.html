@@ -667,8 +667,85 @@ function nextStep() {
     currentStep++;
     renderQ();
   } else {
-    generateBlueprint();
+    showEmailCapture();
   }
+}
+
+function showEmailCapture() {
+  const container = document.getElementById('q-container');
+  container.innerHTML = `
+    <div class="q-label">Almost there</div>
+    <h1 class="q-title">Where should<br>we send it?</h1>
+    <p style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:28px;">
+      Your GAIT Blueprint is ready to generate. Enter your email and we'll also send you a PDF copy to keep.
+    </p>
+    <div class="field">
+      <label>Email address</label>
+      <input type="email" id="capture-email" placeholder="your@email.com" oninput="answers.email=this.value">
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:28px;padding:16px;background:var(--bg2);border-radius:4px;">
+      <input type="checkbox" id="newsletter-opt" checked style="margin-top:3px;accent-color:var(--red);width:16px;height:16px;flex-shrink:0;">
+      <label for="newsletter-opt" style="font-family:var(--mono);font-size:12px;color:var(--ink2);line-height:1.7;cursor:pointer;">
+        Yes, keep me updated with GAIT news and tips — training advice, injury prevention, and early access to new features.
+      </label>
+    </div>
+    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.6;margin-bottom:24px;">
+      No spam. Unsubscribe anytime. Your data is never shared.
+    </p>
+    <div class="btn-row">
+      <button class="btn-back" onclick="currentStep=steps.length-1;renderQ();">← Back</button>
+      <button class="btn-next" onclick="captureEmailAndGenerate()">Generate My Blueprint →</button>
+    </div>`;
+}
+
+async function captureEmailAndGenerate() {
+  const email = document.getElementById('capture-email').value;
+  const newsletter = document.getElementById('newsletter-opt').checked;
+
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  answers.email = email;
+  answers.newsletterOptIn = newsletter;
+
+  // Store email in localStorage for reference
+  const signups = JSON.parse(localStorage.getItem('gait_signups') || '[]');
+  signups.push({
+    date: new Date().toISOString(),
+    email,
+    newsletter,
+    name: answers.name,
+    goal: answers.raceGoal
+  });
+  localStorage.setItem('gait_signups', JSON.stringify(signups));
+
+  // Send to Airtable
+  try {
+    await fetch('https://api.airtable.com/v0/appYB6RXdFVOpFSwk/tblCiXzb05zec7XrO', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer patrA6ZGqysLHSmIq.3a84a38fc13ae6765a25582ebe0191d0e6b036ccd4f275bbd5bce51f1a8780c4'
+      },
+      body: JSON.stringify({
+        fields: {
+          Name: answers.name || '',
+          Email: email,
+          Newsletter: newsletter,
+          Goal: answers.raceGoal || '',
+          Injuries: answers.injuries || '',
+          Terrain: answers.terrain || '',
+          Date: new Date().toISOString().split('T')[0]
+        }
+      })
+    });
+  } catch (e) {
+    // Fail silently — don't block blueprint generation
+  }
+
+  generateBlueprint();
 }
 
 // ══════════════════════════════════════════
