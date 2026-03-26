@@ -975,7 +975,7 @@ Return ONLY this JSON — no text before or after, no markdown backticks:
   "primaryFocus": "the #1 thing to protect in one sentence",
   "injuryAlert": {
     "title": "main injury name",
-    "level": "high",
+    "level": "high/medium/low",
     "description": "2 sentences specific to this runner",
     "rules": ["rule 1", "rule 2", "rule 3"]
   },
@@ -988,18 +988,56 @@ Return ONLY this JSON — no text before or after, no markdown backticks:
     {"day": "SAT", "type": "Long Run", "detail": "10-13km @ 6:00/km", "purpose": "Endurance", "icon": "🏃", "color": "orange"},
     {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Full recovery", "icon": "😴", "color": "gray"}
   ],
-  "exercises": [
-    {"name": "Exercise 1", "sets": "3 × 15", "icon": "🦵", "why": "one sentence why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "key coaching cue"},
-    {"name": "Exercise 2", "sets": "3 × 12", "icon": "💪", "why": "one sentence why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "key coaching cue"},
-    {"name": "Exercise 3", "sets": "2 × 10", "icon": "🏋️", "why": "one sentence why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "key coaching cue"},
-    {"name": "Exercise 4", "sets": "3 × 15", "icon": "🧘", "why": "one sentence why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "key coaching cue"}
-  ],
+  "strengthCircuit": {
+    "upperBody": [
+      {"name": "exercise name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
+      {"name": "exercise name", "sets": "3 × 10", "icon": "🏋️", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
+      {"name": "exercise name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"}
+    ],
+    "legs": [
+      {"name": "exercise name", "sets": "3 × 15", "icon": "🦵", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
+      {"name": "exercise name", "sets": "3 × 12", "icon": "🦵", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
+      {"name": "exercise name", "sets": "3 × 10", "icon": "🦵", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"}
+    ],
+    "core": [
+      {"name": "exercise name", "sets": "3 × 10", "icon": "🔥", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
+      {"name": "exercise name", "sets": "30 sec hold", "icon": "🔥", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
+      {"name": "exercise name", "sets": "3 × 12", "icon": "🔥", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"}
+    ]
+  },
+  "morningRoutine": {
+    "note": "any injury-specific note e.g. skip X if groin active",
+    "spineSection": [
+      {"name": "movement name", "duration": "1 min", "icon": "🌅", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
+      {"name": "movement name", "duration": "30 sec each side", "icon": "🌅", "instruction": "exactly how in one sentence", "why": "why for their injuries"}
+    ],
+    "hipSection": [
+      {"name": "movement name", "duration": "10 reps each side", "icon": "🔄", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
+      {"name": "movement name", "duration": "60 sec", "icon": "🔄", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
+      {"name": "movement name", "duration": "20 sec each side", "icon": "🔄", "instruction": "exactly how in one sentence", "why": "why for their injuries"}
+    ],
+    "activationSection": [
+      {"name": "movement name", "duration": "2 × 12 reps", "icon": "⚡", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
+      {"name": "movement name", "duration": "10 reps each side", "icon": "⚡", "instruction": "exactly how in one sentence", "why": "why for their injuries"}
+    ]
+  },
+  "eveningRoutine": {
+    "note": "any specific note e.g. non-negotiable for PFPS",
+    "stretches": [
+      {"name": "stretch name", "duration": "60-90 sec each side", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
+      {"name": "stretch name", "duration": "60 sec", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
+      {"name": "stretch name", "duration": "90 sec each side", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
+      {"name": "stretch name", "duration": "60 sec each leg", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
+      {"name": "stretch name", "duration": "60 sec", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"}
+    ]
+  },
   "mileageRules": [
     {"rule": "rule 1", "type": "green"},
     {"rule": "rule 2", "type": "amber"},
     {"rule": "rule 3", "type": "red"},
     {"rule": "rule 4", "type": "amber"},
-    {"rule": "rule 5", "type": "green"}
+    {"rule": "rule 5", "type": "green"},
+    {"rule": "rule 6", "type": "red"}
   ],
   "milestones": [
     {"period": "Month 1", "target": "specific target", "focus": "focus area"},
@@ -1008,16 +1046,15 @@ Return ONLY this JSON — no text before or after, no markdown backticks:
     {"period": "6 Months", "target": "race goal target", "focus": "race focus"},
     {"period": "Big Vision", "target": "their big vision", "focus": "ultimate goal"}
   ],
-  "morningRoutine": [
-    {"name": "Movement name", "duration": "1 min", "icon": "🌅", "instruction": "exactly how to do it in one sentence", "why": "why this matters for their specific injuries"}
-  ],
-  "eveningRoutine": [
-    {"name": "Stretch/recovery name", "duration": "1 min each side", "icon": "🌙", "instruction": "exactly how to do it in one sentence", "why": "why this matters for their specific injuries"}
-  ],
   "dailyHabit": {
     "title": "habit name",
     "duration": "X minutes daily",
     "description": "exactly what to do in 2 sentences",
+    "why": "why this prevents their specific injury"
+  }
+}
+
+Use ONLY equipment the runner has. Fill every field with content specific to this runner's injuries, terrain, goals and equipment.
     "why": "why this prevents their specific injury"
   }
 }
@@ -1064,6 +1101,47 @@ Fill in all fields with content specific to this runner. Use their actual injury
       </p>
       <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
   }
+}
+
+function renderExerciseCard(ex) {
+  return `<div class="bp-exercise">
+    <div class="bp-ex-header">
+      <div class="bp-ex-icon">${ex.icon}</div>
+      <div>
+        <div class="bp-ex-title">${ex.name}</div>
+        <div class="bp-ex-sets">${ex.sets}</div>
+      </div>
+    </div>
+    <div class="bp-ex-why">"${ex.why}"</div>
+    <ul class="bp-ex-steps">
+      ${(ex.steps || []).map((s, i) => `
+        <li>
+          <div class="bp-ex-step-num">${i+1}</div>
+          <span>${s}</span>
+        </li>`).join('')}
+    </ul>
+    <div class="bp-ex-cue">💡 ${ex.cue}</div>
+  </div>`;
+}
+
+function renderRoutineItem(item, dark) {
+  const bg = dark ? 'rgba(255,255,255,0.08)' : 'var(--ink)';
+  const nameColor = dark ? 'white' : 'var(--ink)';
+  const durationColor = dark ? 'var(--accent)' : 'var(--red)';
+  const bodyColor = dark ? 'rgba(255,255,255,0.7)' : 'var(--ink2)';
+  const whyColor = dark ? 'rgba(255,255,255,0.4)' : 'var(--muted)';
+  const borderColor = dark ? 'rgba(255,255,255,0.08)' : 'var(--border)';
+  return `<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid ${borderColor};">
+    <div style="width:36px;height:36px;background:${bg};border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${item.icon}</div>
+    <div style="flex:1;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+        <div style="font-family:var(--display);font-weight:700;font-size:13px;color:${nameColor};">${item.name}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:${durationColor};letter-spacing:1px;">${item.duration}</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;color:${bodyColor};line-height:1.6;margin-bottom:3px;">${item.instruction}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:${whyColor};font-style:italic;">${item.why}</div>
+    </div>
+  </div>`;
 }
 
 function renderBlueprint() {
@@ -1125,62 +1203,39 @@ function renderBlueprint() {
       </div>`).join('')}
   </div>
 
-  <!-- EXERCISES -->
-  <div class="bp-section-label" style="margin-top:20px;">Your strength circuit</div>
-  ${(b.exercises || []).map(ex => `
-    <div class="bp-exercise">
-      <div class="bp-ex-header">
-        <div class="bp-ex-icon">${ex.icon}</div>
-        <div>
-          <div class="bp-ex-title">${ex.name}</div>
-          <div class="bp-ex-sets">${ex.sets}</div>
-        </div>
-      </div>
-      <div class="bp-ex-why">"${ex.why}"</div>
-      <ul class="bp-ex-steps">
-        ${(ex.steps || []).map((s, i) => `
-          <li>
-            <div class="bp-ex-step-num">${i+1}</div>
-            <span>${s}</span>
-          </li>`).join('')}
-      </ul>
-      <div class="bp-ex-cue">💡 ${ex.cue}</div>
-    </div>`).join('')}
+  <!-- STRENGTH CIRCUIT -->
+  <div class="bp-section-label" style="margin-top:20px;">Strength circuit</div>
+
+  <!-- Upper Body -->
+  <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px;">💪 Upper body <span style="flex:1;height:1px;background:var(--border);display:inline-block;"></span></div>
+  ${((b.strengthCircuit?.upperBody) || b.exercises || []).map(ex => renderExerciseCard(ex)).join('')}
+
+  <!-- Legs -->
+  <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;gap:8px;">🦵 Legs <span style="flex:1;height:1px;background:var(--border);display:inline-block;"></span></div>
+  ${(b.strengthCircuit?.legs || []).map(ex => renderExerciseCard(ex)).join('')}
+
+  <!-- Core -->
+  <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;gap:8px;">🔥 Core & abs <span style="flex:1;height:1px;background:var(--border);display:inline-block;"></span></div>
+  ${(b.strengthCircuit?.core || []).map(ex => renderExerciseCard(ex)).join('')}
 
   <!-- MORNING ROUTINE -->
-  <div class="bp-section-label" style="margin-top:20px;">Morning routine</div>
+  <div class="bp-section-label" style="margin-top:20px;">Morning routine <span style="font-weight:400;color:var(--muted);font-size:9px;">— 15 to 45 min</span></div>
   <div style="background:var(--bg2);border-radius:8px;padding:16px;border:1px solid var(--border);">
-    <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Do this every morning before your run or within 30 minutes of waking. Takes 8–12 minutes.</p>
-    ${(b.morningRoutine || []).map((m, i) => `
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-        <div style="width:36px;height:36px;background:var(--ink);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${m.icon}</div>
-        <div style="flex:1;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-            <div style="font-family:var(--display);font-weight:700;font-size:13px;color:var(--ink);">${m.name}</div>
-            <div style="font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:1px;">${m.duration}</div>
-          </div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--ink2);line-height:1.6;margin-bottom:3px;">${m.instruction}</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);font-style:italic;">${m.why}</div>
-        </div>
-      </div>`).join('')}
+    ${b.morningRoutine?.note ? `<div style="background:rgba(255,61,46,0.08);border-left:3px solid var(--red);padding:8px 12px;border-radius:0 4px 4px 0;font-family:var(--mono);font-size:11px;color:var(--red);margin-bottom:14px;">⚠️ ${b.morningRoutine.note}</div>` : ''}
+    ${b.morningRoutine?.spineSection?.length ? `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px;">Spine & back</div>` : ''}
+    ${(b.morningRoutine?.spineSection || []).map(m => renderRoutineItem(m, false)).join('')}
+    ${b.morningRoutine?.hipSection?.length ? `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin:12px 0 8px;">Hip & joint mobility</div>` : ''}
+    ${(b.morningRoutine?.hipSection || []).map(m => renderRoutineItem(m, false)).join('')}
+    ${b.morningRoutine?.activationSection?.length ? `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin:12px 0 8px;">Activation</div>` : ''}
+    ${(b.morningRoutine?.activationSection || []).map(m => renderRoutineItem(m, false)).join('')}
+    ${Array.isArray(b.morningRoutine) ? b.morningRoutine.map(m => renderRoutineItem(m, false)).join('') : ''}
   </div>
 
   <!-- EVENING ROUTINE -->
-  <div class="bp-section-label" style="margin-top:20px;">Evening routine</div>
+  <div class="bp-section-label" style="margin-top:20px;">Evening routine <span style="font-weight:400;color:var(--muted);font-size:9px;">— 15 to 30 min, hold 60-90 sec each</span></div>
   <div style="background:var(--ink);border-radius:8px;padding:16px;">
-    <p style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:14px;line-height:1.6;">Do this every evening, especially after runs. Takes 10–15 minutes. Hold each stretch 60–90 seconds.</p>
-    ${(b.eveningRoutine || []).map((e, i) => `
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08);">
-        <div style="width:36px;height:36px;background:rgba(255,255,255,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${e.icon}</div>
-        <div style="flex:1;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-            <div style="font-family:var(--display);font-weight:700;font-size:13px;color:white;">${e.name}</div>
-            <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:1px;">${e.duration}</div>
-          </div>
-          <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:3px;">${e.instruction}</div>
-          <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4);font-style:italic;">${e.why}</div>
-        </div>
-      </div>`).join('')}
+    ${b.eveningRoutine?.note ? `<div style="background:rgba(200,242,58,0.1);border-left:3px solid var(--accent);padding:8px 12px;border-radius:0 4px 4px 0;font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:14px;">💡 ${b.eveningRoutine.note}</div>` : ''}
+    ${(b.eveningRoutine?.stretches || (Array.isArray(b.eveningRoutine) ? b.eveningRoutine : [])).map(e => renderRoutineItem(e, true)).join('')}
   </div>
 
   <!-- MILEAGE RULES -->
