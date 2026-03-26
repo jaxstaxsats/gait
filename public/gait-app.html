@@ -1041,18 +1041,20 @@ async function generateBlueprint() {
     <span class="loading-quote-attr">— ${lq.attr}</span>
   </div>`;
 
-  const prompt = `Generate a personalised GAIT Blueprint. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
-
-RUNNER: ${answers.name}, ${answers.age}yo, ${answers.gender}, ${answers.weight}kg, ${answers.height}cm
+  const runnerContext = `RUNNER: ${answers.name}, ${answers.age}yo, ${answers.gender}, ${answers.weight}kg, ${answers.height}cm
 RUNNING: ${answers.yearsRunning} | Pace: ${answers.currentPace} | Best race: ${answers.longestRace} | Weekly: ${answers.weeklyKm}
-TERRAIN: ${answers.terrain} | Days/week: ${answers.daysPerWeek} | Equipment: ${answers.equipment || 'unknown'} (${answers.equipmentDetail || ''})
+TERRAIN: ${answers.terrain} | Days/week: ${answers.daysPerWeek} | Equipment: ${answers.equipment || 'bodyweight only'} (${answers.equipmentDetail || ''})
 INJURIES: ${answers.injuries} | Current pain: ${answers.currentPain} | Surgery: ${answers.surgeries}
 LIFESTYLE: ${answers.job} | Sleep: ${answers.sleepQuality} | Stress: ${answers.stressLevel}
-GOALS: Short: ${answers.shortGoal} | Race: ${answers.raceGoal} | Vision: ${answers.bigVision} | Fear: ${answers.biggestFear}
+GOALS: Short: ${answers.shortGoal} | Race: ${answers.raceGoal} | Vision: ${answers.bigVision} | Fear: ${answers.biggestFear}`;
 
-Return ONLY this JSON — no text before or after, no markdown backticks:
+  const prompt1 = `Generate part 1 of a GAIT Blueprint for this runner. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
+
+${runnerContext}
+
+Return ONLY this JSON:
 {
-  "name": "first name only",
+  "name": "first name",
   "tagline": "one sentence about who this runner is",
   "primaryFocus": "the #1 thing to protect in one sentence",
   "injuryAlert": {
@@ -1062,55 +1064,63 @@ Return ONLY this JSON — no text before or after, no markdown backticks:
     "rules": ["rule 1", "rule 2", "rule 3"]
   },
   "weeklyPlan": [
-    {"day": "MON", "type": "Easy Run", "detail": "6-8km @ 6:00/km", "purpose": "Aerobic base", "icon": "🏃", "color": "green"},
-    {"day": "TUE", "type": "Strength", "detail": "30 min circuit", "purpose": "Injury prevention", "icon": "💪", "color": "blue"},
-    {"day": "WED", "type": "Moderate Run", "detail": "8-10km @ 5:45/km", "purpose": "Fitness build", "icon": "🏃", "color": "yellow"},
+    {"day": "MON", "type": "session type", "detail": "km and pace", "purpose": "one word purpose", "icon": "🏃", "color": "green"},
+    {"day": "TUE", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue"},
+    {"day": "WED", "type": "session type", "detail": "km and pace", "purpose": "purpose", "icon": "🏃", "color": "yellow"},
     {"day": "THU", "type": "Rest", "detail": "Mobility only", "purpose": "Recovery", "icon": "🧘", "color": "gray"},
-    {"day": "FRI", "type": "Strength", "detail": "30 min circuit", "purpose": "Injury prevention", "icon": "💪", "color": "blue"},
-    {"day": "SAT", "type": "Long Run", "detail": "10-13km @ 6:00/km", "purpose": "Endurance", "icon": "🏃", "color": "orange"},
-    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Full recovery", "icon": "😴", "color": "gray"}
+    {"day": "FRI", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue"},
+    {"day": "SAT", "type": "Long Run", "detail": "km and pace", "purpose": "Endurance", "icon": "🏃", "color": "orange"},
+    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Recovery", "icon": "😴", "color": "gray"}
   ],
   "strengthCircuit": {
     "upperBody": [
-      {"name": "exercise name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
-      {"name": "exercise name", "sets": "3 × 10", "icon": "🏋️", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
-      {"name": "exercise name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"}
+      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner in one sentence", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
     ],
     "legs": [
-      {"name": "exercise name", "sets": "3 × 15", "icon": "🦵", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
-      {"name": "exercise name", "sets": "3 × 12", "icon": "🦵", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
-      {"name": "exercise name", "sets": "3 × 10", "icon": "🦵", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"}
+      {"name": "name", "sets": "3 × 15", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 10", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
     ],
     "core": [
-      {"name": "exercise name", "sets": "3 × 10", "icon": "🔥", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
-      {"name": "exercise name", "sets": "30 sec hold", "icon": "🔥", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"},
-      {"name": "exercise name", "sets": "3 × 12", "icon": "🔥", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "coaching cue"}
+      {"name": "name", "sets": "3 × 10", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "30 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 12", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
     ]
-  },
+  }
+}`;
+
+  const prompt2 = `Generate part 2 of a GAIT Blueprint for this runner. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
+
+${runnerContext}
+
+Return ONLY this JSON:
+{
   "morningRoutine": {
-    "note": "any injury-specific note e.g. skip X if groin active",
+    "note": "injury note or empty string",
     "spineSection": [
-      {"name": "movement name", "duration": "1 min", "icon": "🌅", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
-      {"name": "movement name", "duration": "30 sec each side", "icon": "🌅", "instruction": "exactly how in one sentence", "why": "why for their injuries"}
+      {"name": "name", "duration": "1 min", "icon": "🌅", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "30 sec each side", "icon": "🌅", "instruction": "how to do it", "why": "why"}
     ],
     "hipSection": [
-      {"name": "movement name", "duration": "10 reps each side", "icon": "🔄", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
-      {"name": "movement name", "duration": "60 sec", "icon": "🔄", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
-      {"name": "movement name", "duration": "20 sec each side", "icon": "🔄", "instruction": "exactly how in one sentence", "why": "why for their injuries"}
+      {"name": "name", "duration": "10 reps each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "60 sec", "icon": "🔄", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "20 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"}
     ],
     "activationSection": [
-      {"name": "movement name", "duration": "2 × 12 reps", "icon": "⚡", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
-      {"name": "movement name", "duration": "10 reps each side", "icon": "⚡", "instruction": "exactly how in one sentence", "why": "why for their injuries"}
+      {"name": "name", "duration": "2 × 12 reps", "icon": "⚡", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "10 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"}
     ]
   },
   "eveningRoutine": {
-    "note": "any specific note e.g. non-negotiable for PFPS",
+    "note": "injury note or empty string",
     "stretches": [
-      {"name": "stretch name", "duration": "60-90 sec each side", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
-      {"name": "stretch name", "duration": "60 sec", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
-      {"name": "stretch name", "duration": "90 sec each side", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
-      {"name": "stretch name", "duration": "60 sec each leg", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"},
-      {"name": "stretch name", "duration": "60 sec", "icon": "🌙", "instruction": "exactly how in one sentence", "why": "why for their injuries"}
+      {"name": "name", "duration": "60-90 sec each side", "icon": "🌙", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "60 sec", "icon": "🌙", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "90 sec each side", "icon": "🌙", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "60 sec each leg", "icon": "🌙", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "60 sec", "icon": "🌙", "instruction": "how to do it", "why": "why"}
     ]
   },
   "mileageRules": [
@@ -1122,48 +1132,47 @@ Return ONLY this JSON — no text before or after, no markdown backticks:
     {"rule": "rule 6", "type": "red"}
   ],
   "milestones": [
-    {"period": "Month 1", "target": "specific target", "focus": "focus area"},
-    {"period": "Month 2", "target": "specific target", "focus": "focus area"},
-    {"period": "Month 3", "target": "specific target", "focus": "focus area"},
-    {"period": "6 Months", "target": "race goal target", "focus": "race focus"},
-    {"period": "Big Vision", "target": "their big vision", "focus": "ultimate goal"}
+    {"period": "Month 1", "target": "target", "focus": "focus"},
+    {"period": "Month 2", "target": "target", "focus": "focus"},
+    {"period": "Month 3", "target": "target", "focus": "focus"},
+    {"period": "6 Months", "target": "target", "focus": "focus"},
+    {"period": "Big Vision", "target": "target", "focus": "focus"}
   ],
   "dailyHabit": {
     "title": "habit name",
-    "duration": "X minutes daily",
-    "description": "exactly what to do in 2 sentences",
-    "why": "why this prevents their specific injury"
+    "duration": "X min daily",
+    "description": "what to do",
+    "why": "why this prevents their injury"
   }
-}
-
-Use ONLY equipment the runner has. Fill every field with content specific to this runner's injuries, terrain, goals and equipment.
-    "why": "why this prevents their specific injury"
-  }
-}
-
-Fill in all fields with content specific to this runner. Use their actual injury names, pace, terrain and goals.`;
+}`;
 
   try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000,
-        messages: [{ role: 'user', content: prompt }]
+    // Two parallel API calls
+    const [res1, res2] = await Promise.all([
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt1 }] })
+      }),
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt2 }] })
       })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text;
-    if (text) {
+    ]);
+
+    const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+    const text1 = data1.content?.[0]?.text;
+    const text2 = data2.content?.[0]?.text;
+
+    if (text1 && text2) {
       try {
-        const clean = text.replace(/```json|```/g, '').trim();
-        blueprint = JSON.parse(clean);
+        const part1 = JSON.parse(text1.replace(/```json|```/g, '').trim());
+        const part2 = JSON.parse(text2.replace(/```json|```/g, '').trim());
+        blueprint = { ...part1, ...part2 };
       } catch(parseErr) {
-        // If JSON parse fails, show the raw text so we can debug
         container.innerHTML = `
-          <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">JSON parse error. Raw response:</p>
-          <pre style="font-size:10px;overflow:auto;background:var(--bg2);padding:12px;border-radius:4px;">${text.substring(0, 500)}</pre>
+          <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">Something went wrong generating your blueprint. Please try again.</p>
           <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
         return;
       }
@@ -1171,19 +1180,14 @@ Fill in all fields with content specific to this runner. Use their actual injury
       localStorage.setItem('gait_blueprint', JSON.stringify(blueprint));
       localStorage.setItem('gait_profile', JSON.stringify(profileData));
       renderBlueprint();
-    } else if (data.error) {
-      container.innerHTML = `
-        <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">API Error: ${data.error?.message || JSON.stringify(data.error)}</p>
-        <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
     }
   } catch (e) {
     container.innerHTML = `
-      <p style="color:var(--red);font-family:var(--mono);font-size:13px;padding:20px 0;">
-        Error: ${e.message}. Please try again.
-      </p>
+      <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">Error: ${e.message}. Please try again.</p>
       <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
   }
 }
+
 
 function renderExerciseCard(ex) {
   return `<div class="bp-exercise">
