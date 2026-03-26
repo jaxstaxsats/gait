@@ -222,6 +222,32 @@
   .stat-val { font-family: var(--display); font-weight: 900; font-size: 24px; letter-spacing: -1px; color: var(--ink); }
   .stat-key { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
 
+  /* ── QUOTES ── */
+  .quote-block {
+    border-left: 3px solid var(--red);
+    padding: 12px 16px;
+    margin-bottom: 24px;
+  }
+  .quote-text {
+    font-family: var(--serif); font-style: italic;
+    font-size: 15px; color: var(--ink2); line-height: 1.6;
+    margin-bottom: 4px;
+  }
+  .quote-attr {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .loading-quote {
+    font-family: var(--serif); font-style: italic;
+    font-size: 16px; color: var(--muted); line-height: 1.6;
+    max-width: 380px; margin: 20px auto 8px; text-align: center;
+  }
+  .loading-quote-attr {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+    color: var(--border); text-transform: uppercase; text-align: center;
+    display: block;
+  }
+
   /* ── EXPANDED LOG ── */
   .expanded-log { display: none; }
   .expanded-log.open { display: block; }
@@ -260,6 +286,7 @@
     <div class="log-date" id="log-date"></div>
     <h1 class="log-title">How did<br>today go?</h1>
   </div>
+  <div class="quote-block" id="daily-quote"></div>
 
   <div class="stats-strip" id="stats-strip">
     <div class="stat-box"><div class="stat-val" id="stat-runs">0</div><div class="stat-key">Runs logged</div></div>
@@ -647,53 +674,107 @@ function nextStep() {
 // ══════════════════════════════════════════
 async function generateBlueprint() {
   const container = document.getElementById('q-container');
-  container.innerHTML = `<div class="loading-wrap"><div class="spinner"></div><div class="loading-label">Building your GAIT Blueprint...</div></div>`;
+  const lq = getRandomQuote(LOADING_QUOTES);
+  container.innerHTML = `<div class="loading-wrap">
+    <div class="spinner"></div>
+    <div class="loading-label">Building your GAIT Blueprint...</div>
+    <div class="loading-quote">"${lq.text}"</div>
+    <span class="loading-quote-attr">— ${lq.attr}</span>
+  </div>`;
 
-  const prompt = `You are GAIT, an expert injury-aware AI running coach. Generate a personalised GAIT Blueprint for this runner.
+  const GAIT_SYSTEM = `You are GAIT, an expert injury-aware AI running coach with deep knowledge of sports science, rehabilitation, strength and conditioning, and endurance training. You were built specifically for comeback runners, injury-prone runners, and anyone who has been let down by generic training plans.
+
+GAIT COACHING PHILOSOPHY — apply these always:
+- Injury prevention always comes before performance. A runner who stays healthy improves faster than one who trains hard and breaks down.
+- Every recommendation must be filtered through the runner's full injury history. There are no generic plans.
+- The 10% rule applies to ALL variables — mileage, elevation, intensity, and frequency. Never increase more than one variable at a time.
+- Pain signals are data. 1-2/10 = whisper, modify and monitor. 3-4/10 = warning, reduce load significantly. 5+/10 = stop sign, rest only.
+- Desk-based and sedentary runners always need extra glute activation and hip stability work — years of sitting creates gluteal amnesia that directly causes knee and back injuries.
+- Conservative is always better than aggressive for comeback runners. Build the base before adding intensity.
+- The goal is always to get the runner to the start line healthy, not just trained.
+
+EXERCISE SELECTION PRINCIPLES — use your full knowledge of exercise science:
+- Choose exercises based on the runner's specific injury history, weak points, terrain, and goal race — not from a fixed list
+- For any injury, always prescribe exercises that address the ROOT CAUSE not just the symptom (e.g. PFPS root cause = weak VMO and glute medius, not just tight quads)
+- Match exercise complexity to the runner's experience level — beginners need simpler progressions
+- For marathon and ultra runners: prioritise eccentric strength, single-leg stability, and posterior chain work
+- For hilly terrain runners: add extra quad eccentric strength (downhill control) and calf resilience work
+- For desk workers: always start with glute activation before any lower body strength work
+- Balance the circuit: always include hip stability, knee strength, core anti-rotation, and calf/ankle work
+- Mobility work should always address the specific tight areas caused by the runner's injury history and lifestyle
+
+INJURY-SPECIFIC RULES — these are non-negotiable:
+- PFPS (kneecap pain): Always include VMO strengthening and glute medius work. Never prescribe deep knee flexion when pain is above 2/10. Isometric exercises (wall sit) are safest when flaring.
+- Calf strain: Always include both gastrocnemius AND soleus stretches. Eccentric heel drops for long-term prevention. No speed work or hills until 0/10 for 3 days.
+- Groin strain: Remove all split squats, deep lunges and aggressive hip flexor stretches. Use passive adductor stretches only. No return to speed work until 0/10 for 5 days.
+- IT band syndrome: Prioritise hip abductor strength and glute medius work. Avoid steep downhills when active. Foam rolling the IT band does not fix it — the root cause is hip weakness.
+- Plantar fasciitis: Calf flexibility is critical. Intrinsic foot strengthening. Avoid barefoot running on hard surfaces when active.
+- Lower back: Always include deep core stabilisation (bird dogs, dead bugs) and glute activation before any run or workout. Never prescribe heavy loaded flexion when active.
+- Achilles tendinopathy: Eccentric heel drops are the gold standard. No aggressive stretching when acutely painful. Load management is everything.
+- General rule: If any pain is 4/10 or above — prescribe rest and recovery only. Never train through it.
+
+GOAL-SPECIFIC TRAINING PRINCIPLES:
+- 5km/10km: Higher intensity tolerance needed. More interval work once base is solid. Speed development matters.
+- Half marathon: Aerobic base is everything. Long runs at conversational pace. One quality session per week maximum.
+- Marathon: Conservative mileage build. Back-to-back long runs later in training. Race-specific long runs over 26km.
+- Ultra marathon: Time on feet over pace. Trail-specific strength. Back-to-back long runs essential. Mental resilience training.
+- Beginners: No speed work in first 8 weeks. Build to 30 min continuous before adding distance. Strength twice a week from day one.
+- Comeback runners: Treat first 6-8 weeks as pure base building regardless of previous fitness. Connective tissue adapts slower than cardiovascular fitness.`;
+
+  const prompt = `${GAIT_SYSTEM}
+
+Generate a personalised GAIT Blueprint for this runner. Use everything you know about their profile to make this feel like it was written specifically for them — not a template.
 
 RUNNER PROFILE:
-Name: ${answers.name} | Age: ${answers.age} | Gender: ${answers.gender} | Weight: ${answers.weight}kg | Height: ${answers.height}cm | Units: ${answers.units}
-Background: ${answers.yearsRunning} | Comfortable pace: ${answers.currentPace} | Longest race: ${answers.longestRace}
+Name: ${answers.name} | Age: ${answers.age} | Gender: ${answers.gender} | Weight: ${answers.weight}kg | Height: ${answers.height}cm
+Years running: ${answers.yearsRunning} | Comfortable pace: ${answers.currentPace} | Longest race: ${answers.longestRace}
 A run they are proud of: ${answers.proudRun}
 Current weekly km: ${answers.weeklyKm} | Weekly structure: ${answers.weeklyStructure} | Cross-training: ${answers.crossTraining}
-Terrain: ${answers.terrain} | Training days: ${answers.daysPerWeek} | Strength training: ${answers.strengthTraining}
-Sleep: ${answers.sleepQuality} | Flexibility: ${answers.flexibility}
-Injury history: ${answers.injuries}
-Surgeries: ${answers.surgeries} | Chronic conditions: ${answers.chronicConditions}
-Current pain: ${answers.currentPain} | Previous injury stops: ${answers.previousInjuryStop}
-Recovery methods: ${answers.recoveryMethods}
+Terrain: ${answers.terrain} | Training days available: ${answers.daysPerWeek} | Strength training: ${answers.strengthTraining}
+Flexibility: ${answers.flexibility} | Sleep: ${answers.sleepQuality}
 Work type: ${answers.job} | Stress: ${answers.stressLevel} | Nutrition: ${answers.nutrition}
-Short term goal: ${answers.shortGoal} | Race goal: ${answers.raceGoal} | Race preference: ${answers.racePreference}
-Big vision: ${answers.bigVision} | Biggest fear: ${answers.biggestFear}
-Motivation: ${answers.motivation} | Secondary goals: ${answers.secondaryGoals}
-Injury history: ${answers.injuries}
-Current pain: ${answers.currentPain} | Previous injury stops: ${answers.previousInjuryStop}
-Strength training: ${answers.strengthTraining} | Sleep: ${answers.sleepQuality}
-Work type: ${answers.job} | Stress: ${answers.stressLevel} | Nutrition: ${answers.nutrition}
-Short term goal: ${answers.shortGoal} | Race goal: ${answers.raceGoal}
-Big vision: ${answers.bigVision} | Biggest fear: ${answers.biggestFear}
+
+INJURY & HEALTH HISTORY:
+Injuries: ${answers.injuries}
+Surgeries: ${answers.surgeries}
+Chronic conditions: ${answers.chronicConditions}
+Current pain level: ${answers.currentPain}
+Has injury stopped running before: ${answers.previousInjuryStop}
+Current recovery methods: ${answers.recoveryMethods}
+
+GOALS:
+Short term (8-12 weeks): ${answers.shortGoal}
+Race goal (6 months): ${answers.raceGoal}
+Race preference: ${answers.racePreference}
+Big vision (1-2 years): ${answers.bigVision}
+Biggest fear: ${answers.biggestFear}
+Primary motivation: ${answers.motivation}
+Secondary goals: ${answers.secondaryGoals}
 
 Write their GAIT Blueprint using these exact sections with ## headings:
 
 ## Who You Are As A Runner
-3-4 sentences. Personal, specific, addresses their background and the #1 thing to protect based on their injury history.
+3-4 sentences. Personal and specific. Name their background, their #1 strength, and the single most important thing to protect based on their injury history. Make them feel understood.
 
 ## Your Primary Injury Risk
-The main risk based on their history. 3 specific things to watch for and 2 non-negotiable habits to prevent it.
+The main injury risk for THIS runner based on their history and goals. Name it specifically. Give 3 concrete warning signs to watch for and 2 non-negotiable daily habits that prevent it. Reference their specific injuries by name.
+
+## Your Bulletproof Strength Circuit
+A personalised 3-4 exercise circuit from the GAIT exercise library, chosen specifically for their injury history and weak points. For each exercise: name, sets/reps, and one sentence explaining why it matters for THEM specifically.
 
 ## Your Weekly Training Template
-Mon–Sun. Specific distances, paces, and purpose for each day. Calibrated to their current level and goal.
+Mon-Sun plan. For each day: session type, specific distance range, specific pace range, and one sentence of purpose. Calibrated to their current weekly km, terrain, and available training days. Conservative and buildable.
 
 ## Your Mileage Rules
-6 specific rules for THIS runner — when to push, when to back off, based on their injury history, terrain, and goal race.
+6 rules written specifically for this runner. When to push, when to back off, what to watch for. Reference their specific injuries, terrain and goal race. Make these feel personal not generic.
 
 ## Your Milestone Roadmap
-Month 1, Month 2, Month 3, then 6 months, then their big vision. Specific and motivating.
+Month 1, Month 2, Month 3, then 6 months, then their big vision target. Specific numbers and targets. Motivating but realistic.
 
 ## Your Non-Negotiable Daily Habit
-One thing. Specific to their injury history. Concrete. No more than 3 sentences.
+One specific habit tied directly to their injury history. Name the injury it prevents. Takes under 5 minutes. Concrete enough that they know exactly what to do.
 
-Write with authority, warmth and specificity. This is a coach who knows them well. No preamble or sign-off.`;
+Write with authority, warmth and deep specificity. No preamble, no sign-off. Every sentence should feel like it could only have been written for this exact runner.`;
 
   try {
     const res = await fetch('/api/chat', {
@@ -701,7 +782,7 @@ Write with authority, warmth and specificity. This is a coach who knows them wel
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        max_tokens: 2000,
         messages: [{ role: 'user', content: prompt }]
       })
     });
@@ -760,12 +841,67 @@ function resetBlueprint() {
 }
 
 // ══════════════════════════════════════════
+// QUOTES
+// ══════════════════════════════════════════
+const RUNNING_QUOTES = [
+  { text: "It never gets easier, you just get faster.", attr: "Greg LeMond" },
+  { text: "Run when you can, walk if you have to, crawl if you must. Just never give up.", attr: "Dean Karnazes" },
+  { text: "The miracle isn't that I finished. The miracle is that I had the courage to start.", attr: "John Bingham" },
+  { text: "Your body will argue that there is no justifiable reason to continue. Your only recourse is to call on your spirit.", attr: "Tim Noakes" },
+  { text: "Every champion was once a contender that refused to give up.", attr: "Unknown" },
+  { text: "Pain is inevitable. Suffering is optional.", attr: "Haruki Murakami" },
+  { text: "The long run is what puts the tiger in the cat.", attr: "Bill Squires" },
+  { text: "Ask yourself: can I give more? The answer is always yes.", attr: "Unknown" },
+  { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", attr: "Aristotle" },
+  { text: "Somewhere in the world someone is training when you are not. When you race him, he will win.", attr: "Tom Fleming" },
+  { text: "The obsession with running is really an obsession with the potential for more and more life.", attr: "George Sheehan" },
+  { text: "You have to wonder at times what you're doing out there. Over the years I've given myself a thousand reasons to keep running, but it always comes back to where it started — it comes down to self-satisfaction and a sense of achievement.", attr: "Steve Prefontaine" },
+  { text: "No matter how slow you go, you're still lapping everyone on the couch.", attr: "Unknown" },
+  { text: "To give anything less than your best is to sacrifice the gift.", attr: "Steve Prefontaine" },
+  { text: "The will to win means nothing without the will to prepare.", attr: "Juma Ikangaa" },
+  { text: "Believe in yourself, take on your challenges, dig deep within yourself to conquer fears.", attr: "Chantal Sutherland" },
+  { text: "Running is alone time that lets my brain unspool the tangles that build up over days.", attr: "Rob Haneisen" },
+  { text: "I always loved running. It was something you could do by yourself, and under your own power.", attr: "Jesse Owens" },
+  { text: "The human body is capable of amazing physical deeds. If we could just free ourselves from our perceived limitations and tap into our internal fire.", attr: "Dean Karnazes" },
+  { text: "Every morning in Africa, a gazelle wakes up. It knows it must outrun the fastest lion or it will be killed. Every morning in Africa, a lion wakes up. It knows it must run faster than the slowest gazelle or it will starve. It doesn't matter whether you're the lion or a gazelle — when the sun comes up, you'd better be running.", attr: "Unknown" },
+  { text: "Running is a road to self-awareness and reliance.", attr: "Doris Brown Heritage" },
+  { text: "The voice inside your head that says you can't do this is a liar.", attr: "Unknown" },
+  { text: "Fall seven times, stand up eight.", attr: "Japanese Proverb" },
+  { text: "One run can change your day. Many runs can change your life.", attr: "Unknown" },
+  { text: "You are one run away from a good mood.", attr: "Unknown" },
+];
+
+const LOADING_QUOTES = [
+  { text: "Champions are made in the moments they want to stop.", attr: "Unknown" },
+  { text: "The best view comes after the hardest climb.", attr: "Unknown" },
+  { text: "Your future self is watching you right now through your memories.", attr: "Aubrey de Grey" },
+  { text: "Don't dream of winning. Train for it.", attr: "Mo Farah" },
+  { text: "Tough times never last, but tough people do.", attr: "Robert H. Schuller" },
+  { text: "The only bad run is the one that didn't happen.", attr: "Unknown" },
+];
+
+function getDailyQuote() {
+  const day = new Date().getDay();
+  return RUNNING_QUOTES[day % RUNNING_QUOTES.length];
+}
+
+function getRandomQuote(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ══════════════════════════════════════════
 // DAILY LOG
 // ══════════════════════════════════════════
 function initLog() {
   const now = new Date();
   document.getElementById('log-date').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   updateStats();
+
+  // Daily quote
+  const q = getDailyQuote();
+  document.getElementById('daily-quote').innerHTML = `
+    <div class="quote-text">"${q.text}"</div>
+    <div class="quote-attr">— ${q.attr}</div>`;
 
   // Auto calculate pace
   document.getElementById('log-km').addEventListener('input', calcPace);
@@ -841,17 +977,37 @@ async function submitLog() {
     `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.isRestDay ? 'REST DAY' : `${l.km}km @ ${l.pace}/km, effort ${l.effort}`} | Pain: ${l.painScore}/10 at ${l.painLoc} | Notes: ${l.notes}`
   ).join('\n');
 
-  const prompt = `You are GAIT, an expert injury-aware AI running coach. Respond to today's training log entry.
+  const prompt = `You are GAIT, an expert injury-aware AI running coach. Your job is to respond to today's training log with specific, personalised coaching — not generic advice.
 
-RUNNER'S BLUEPRINT & HISTORY:
+GAIT COACHING RULES:
+- Always reference the runner's specific injury history when giving advice
+- Pain at 1-2/10 = modify and monitor. Pain at 3-4/10 = reduce load significantly. Pain at 5+/10 = stop and rest.
+- Never prescribe speed work or long runs when any injury signal is above 2/10
+- Recovery protocol must be specific to the exact pain location logged — not generic stretching
+- Always cross-reference today's data against the recent log history for patterns
+- If the runner has logged the same pain location 3+ times this week, escalate the response
+- Sleep under 6hrs and high stress = reduce tomorrow's planned load by 20-30%
+
+RECOVERY PRINCIPLES — use your full knowledge to prescribe the right recovery:
+- Match recovery to the exact pain location and injury type logged today
+- For acute pain (new or sharp): ice, rest, no stretching of the affected area
+- For chronic tightness (familiar, dull): targeted stretching and mobility work
+- For muscle fatigue (no pain, just tired): gentle mobility, foam rolling, elevation
+- For tendon issues: isometric exercises reduce pain fastest — prescribe these first
+- Always address the ROOT CAUSE not just the symptom location
+- Recovery after easy runs: 10-15 min mobility only
+- Recovery after hard runs: full stretching protocol plus targeted injury work
+- Recovery after long runs: elevation, nutrition focus, sleep priority, light mobility only next morning
+
+RUNNER'S BLUEPRINT & FULL HISTORY:
 ${bibleContext}
 
 RECENT LOG HISTORY (last 7 entries):
-${recentLogs || 'No previous logs yet'}
+${recentLogs || 'No previous logs yet — this is their first entry'}
 
 TODAY'S LOG:
 Date: ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
-${isRestDay ? 'REST DAY' : `Distance: ${km}km | Time: ${time} | Pace: ${pace}/km | Effort: ${effort} | Terrain: ${terrain}`}
+${isRestDay ? 'REST DAY — no running today' : `Distance: ${km}km | Time: ${time} | Pace: ${pace}/km | Effort: ${effort} | Terrain: ${terrain}`}
 Pre-run pain/tightness: ${prePain}
 Pain during/after: ${painLoc} | Pain score: ${painScore}/10
 Sleep last night: ${sleep || 'Not specified'}
@@ -861,18 +1017,18 @@ Notes: ${notes}
 Respond with these exact sections using ### headings:
 
 ### Today's Assessment
-2-3 sentences. Be specific about what today's data tells you — reference their injury history where relevant.
+2-3 sentences. Be specific — reference their injury history, today's numbers, and what the pattern means. Tell them something they might not have noticed themselves.
 
 ### Tonight's Recovery
-Specific stretches or exercises for tonight based exactly on what they logged. If pain is present be very specific about what helps that exact location.
+2-4 specific exercises or stretches from the approved list above, chosen for their exact pain location today. Name each one, give the duration/reps, and explain in one sentence why it helps their specific issue. If no pain: give a general recovery protocol based on today's effort level.
 
 ### Tomorrow's Plan
-What should they do tomorrow based on today? Be specific — rest, easy run, strength circuit, specific km and pace if running.
+Be specific — exactly what they should do tomorrow. If running: exact km range, exact pace range, terrain recommendation. If strength: which circuit. If rest: why rest is the right call today. Reference today's data to justify the recommendation.
 
 ### Watch This Week
-One specific thing to monitor or adjust this week based on today's patterns. Reference their recent log history if relevant.
+One specific pattern or risk to monitor this week. Reference their recent log history if available. Give one concrete action to address it.
 
-Be direct, specific, and personal. Reference their actual data. No generic advice.`;
+Be direct, personal and specific. Every sentence should reference their actual data. No generic running advice.`;
 
   try {
     const res = await fetch('/api/chat', {
