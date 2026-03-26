@@ -721,24 +721,18 @@ async function captureEmailAndGenerate() {
   });
   localStorage.setItem('gait_signups', JSON.stringify(signups));
 
-  // Send to Airtable
+  // Send to secure backend which calls Airtable
   try {
-    await fetch('https://api.airtable.com/v0/appYB6RXdFVOpFSwk/tblCiXzb05zec7XrO', {
+    await fetch('/api/signup', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer patrA6ZGqysLHSmIq.3a84a38fc13ae6765a25582ebe0191d0e6b036ccd4f275bbd5bce51f1a8780c4'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        fields: {
-          Name: answers.name || '',
-          Email: email,
-          Newsletter: newsletter,
-          Goal: answers.raceGoal || '',
-          Injuries: answers.injuries || '',
-          Terrain: answers.terrain || '',
-          Date: new Date().toISOString().split('T')[0]
-        }
+        name: answers.name || '',
+        email,
+        newsletter,
+        goal: answers.raceGoal || '',
+        injuries: answers.injuries || '',
+        terrain: answers.terrain || ''
       })
     });
   } catch (e) {
