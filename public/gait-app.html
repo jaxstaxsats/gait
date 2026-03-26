@@ -1026,55 +1026,55 @@ Biggest fear: ${answers.biggestFear}
 Primary motivation: ${answers.motivation}
 Secondary goals: ${answers.secondaryGoals}
 
-Return this exact JSON structure:
+Return ONLY this JSON — no text before or after, no markdown backticks:
 {
-  "name": "runner's first name",
-  "tagline": "one sentence that captures exactly who this runner is — personal and specific",
-  "primaryFocus": "the single most important thing to protect or build for this runner in one sentence",
+  "name": "first name only",
+  "tagline": "one sentence about who this runner is",
+  "primaryFocus": "the #1 thing to protect in one sentence",
   "injuryAlert": {
-    "title": "main injury risk name",
-    "level": "high/medium/low",
-    "description": "2 sentences on what to watch for specific to this runner",
+    "title": "main injury name",
+    "level": "high",
+    "description": "2 sentences specific to this runner",
     "rules": ["rule 1", "rule 2", "rule 3"]
   },
   "weeklyPlan": [
-    {"day": "MON", "type": "Easy Run", "detail": "6-8km @ 6:00-6:30/km", "purpose": "Build aerobic base", "icon": "🏃", "color": "green"},
-    {"day": "TUE", "type": "Strength", "detail": "Bulletproof circuit", "purpose": "Injury prevention", "icon": "💪", "color": "blue"},
-    {"day": "WED", "type": "Moderate Run", "detail": "8-10km @ 5:40-6:00/km", "purpose": "Aerobic development", "icon": "🏃", "color": "yellow"},
+    {"day": "MON", "type": "Easy Run", "detail": "6-8km @ 6:00/km", "purpose": "Aerobic base", "icon": "🏃", "color": "green"},
+    {"day": "TUE", "type": "Strength", "detail": "30 min circuit", "purpose": "Injury prevention", "icon": "💪", "color": "blue"},
+    {"day": "WED", "type": "Moderate Run", "detail": "8-10km @ 5:45/km", "purpose": "Fitness build", "icon": "🏃", "color": "yellow"},
     {"day": "THU", "type": "Rest", "detail": "Mobility only", "purpose": "Recovery", "icon": "🧘", "color": "gray"},
-    {"day": "FRI", "type": "Strength", "detail": "Bulletproof circuit", "purpose": "Injury prevention", "icon": "💪", "color": "blue"},
-    {"day": "SAT", "type": "Long Run", "detail": "10-13km @ 5:50-6:30/km", "purpose": "Endurance build", "icon": "🏃", "color": "orange"},
-    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + body scan", "purpose": "Full recovery", "icon": "😴", "color": "gray"}
+    {"day": "FRI", "type": "Strength", "detail": "30 min circuit", "purpose": "Injury prevention", "icon": "💪", "color": "blue"},
+    {"day": "SAT", "type": "Long Run", "detail": "10-13km @ 6:00/km", "purpose": "Endurance", "icon": "🏃", "color": "orange"},
+    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Full recovery", "icon": "😴", "color": "gray"}
   ],
   "exercises": [
-    {
-      "name": "Exercise Name",
-      "sets": "3 × 15",
-      "icon": "emoji that represents the exercise",
-      "why": "One sentence explaining exactly why this exercise matters for THIS runner based on their injury history",
-      "steps": ["Step 1 instruction", "Step 2 instruction", "Step 3 instruction"],
-      "cue": "One coaching cue — the most important thing to focus on"
-    }
+    {"name": "Exercise 1", "sets": "3 × 15", "icon": "🦵", "why": "one sentence why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "key coaching cue"},
+    {"name": "Exercise 2", "sets": "3 × 12", "icon": "💪", "why": "one sentence why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "key coaching cue"},
+    {"name": "Exercise 3", "sets": "2 × 10", "icon": "🏋️", "why": "one sentence why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "key coaching cue"},
+    {"name": "Exercise 4", "sets": "3 × 15", "icon": "🧘", "why": "one sentence why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "key coaching cue"}
   ],
   "mileageRules": [
-    {"rule": "rule text", "type": "green/amber/red"}
+    {"rule": "rule 1", "type": "green"},
+    {"rule": "rule 2", "type": "amber"},
+    {"rule": "rule 3", "type": "red"},
+    {"rule": "rule 4", "type": "amber"},
+    {"rule": "rule 5", "type": "green"}
   ],
   "milestones": [
-    {"period": "Month 1", "target": "specific target", "focus": "key focus area"},
-    {"period": "Month 2", "target": "specific target", "focus": "key focus area"},
-    {"period": "Month 3", "target": "specific target", "focus": "key focus area"},
-    {"period": "6 Months", "target": "specific target", "focus": "race goal"},
-    {"period": "Big Vision", "target": "their stated big vision", "focus": "ultimate goal"}
+    {"period": "Month 1", "target": "specific target", "focus": "focus area"},
+    {"period": "Month 2", "target": "specific target", "focus": "focus area"},
+    {"period": "Month 3", "target": "specific target", "focus": "focus area"},
+    {"period": "6 Months", "target": "race goal target", "focus": "race focus"},
+    {"period": "Big Vision", "target": "their big vision", "focus": "ultimate goal"}
   ],
   "dailyHabit": {
     "title": "habit name",
-    "duration": "e.g. 2 minutes daily",
-    "description": "exactly what to do",
+    "duration": "X minutes daily",
+    "description": "exactly what to do in 2 sentences",
     "why": "why this prevents their specific injury"
   }
 }
 
-Make all content specific to this runner. Use their actual injury names, terrain, goals and pace. Include 4-5 exercises tailored to their injury history. Include 5-6 mileage rules. Make it feel personal not generic.`;
+Fill in all fields with content specific to this runner. Use their actual injury names, pace, terrain and goals.`;
 
   try {
     const res = await fetch('/api/chat', {
