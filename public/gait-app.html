@@ -959,75 +959,14 @@ async function generateBlueprint() {
     <span class="loading-quote-attr">— ${lq.attr}</span>
   </div>`;
 
-  const GAIT_SYSTEM = `You are GAIT, an expert injury-aware AI running coach with deep knowledge of sports science, rehabilitation, strength and conditioning, and endurance training. You were built specifically for comeback runners, injury-prone runners, and anyone who has been let down by generic training plans.
+  const prompt = `Generate a personalised GAIT Blueprint. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
 
-GAIT COACHING PHILOSOPHY — apply these always:
-- Injury prevention always comes before performance. A runner who stays healthy improves faster than one who trains hard and breaks down.
-- Every recommendation must be filtered through the runner's full injury history. There are no generic plans.
-- The 10% rule applies to ALL variables — mileage, elevation, intensity, and frequency. Never increase more than one variable at a time.
-- Pain signals are data. 1-2/10 = whisper, modify and monitor. 3-4/10 = warning, reduce load significantly. 5+/10 = stop sign, rest only.
-- Desk-based and sedentary runners always need extra glute activation and hip stability work — years of sitting creates gluteal amnesia that directly causes knee and back injuries.
-- Conservative is always better than aggressive for comeback runners. Build the base before adding intensity.
-- The goal is always to get the runner to the start line healthy, not just trained.
-
-EXERCISE SELECTION PRINCIPLES — use your full knowledge of exercise science:
-- Choose exercises based on the runner's specific injury history, weak points, terrain, and goal race — not from a fixed list
-- For any injury, always prescribe exercises that address the ROOT CAUSE not just the symptom (e.g. PFPS root cause = weak VMO and glute medius, not just tight quads)
-- Match exercise complexity to the runner's experience level — beginners need simpler progressions
-- For marathon and ultra runners: prioritise eccentric strength, single-leg stability, and posterior chain work
-- For hilly terrain runners: add extra quad eccentric strength (downhill control) and calf resilience work
-- For desk workers: always start with glute activation before any lower body strength work
-- Balance the circuit: always include hip stability, knee strength, core anti-rotation, and calf/ankle work
-- Mobility work should always address the specific tight areas caused by the runner's injury history and lifestyle
-
-INJURY-SPECIFIC RULES — these are non-negotiable:
-- PFPS (kneecap pain): Always include VMO strengthening and glute medius work. Never prescribe deep knee flexion when pain is above 2/10. Isometric exercises (wall sit) are safest when flaring.
-- Calf strain: Always include both gastrocnemius AND soleus stretches. Eccentric heel drops for long-term prevention. No speed work or hills until 0/10 for 3 days.
-- Groin strain: Remove all split squats, deep lunges and aggressive hip flexor stretches. Use passive adductor stretches only. No return to speed work until 0/10 for 5 days.
-- IT band syndrome: Prioritise hip abductor strength and glute medius work. Avoid steep downhills when active. Foam rolling the IT band does not fix it — the root cause is hip weakness.
-- Plantar fasciitis: Calf flexibility is critical. Intrinsic foot strengthening. Avoid barefoot running on hard surfaces when active.
-- Lower back: Always include deep core stabilisation (bird dogs, dead bugs) and glute activation before any run or workout. Never prescribe heavy loaded flexion when active.
-- Achilles tendinopathy: Eccentric heel drops are the gold standard. No aggressive stretching when acutely painful. Load management is everything.
-- General rule: If any pain is 4/10 or above — prescribe rest and recovery only. Never train through it.
-
-GOAL-SPECIFIC TRAINING PRINCIPLES:
-- 5km/10km: Higher intensity tolerance needed. More interval work once base is solid. Speed development matters.
-- Half marathon: Aerobic base is everything. Long runs at conversational pace. One quality session per week maximum.
-- Marathon: Conservative mileage build. Back-to-back long runs later in training. Race-specific long runs over 26km.
-- Ultra marathon: Time on feet over pace. Trail-specific strength. Back-to-back long runs essential. Mental resilience training.
-- Beginners: No speed work in first 8 weeks. Build to 30 min continuous before adding distance. Strength twice a week from day one.
-- Comeback runners: Treat first 6-8 weeks as pure base building regardless of previous fitness. Connective tissue adapts slower than cardiovascular fitness.`;
-
-  const prompt = `${GAIT_SYSTEM}
-
-Generate a personalised GAIT Blueprint for this runner. Respond ONLY with a valid JSON object — no markdown, no backticks, no explanation before or after.
-
-RUNNER PROFILE:
-Name: ${answers.name} | Age: ${answers.age} | Gender: ${answers.gender} | Weight: ${answers.weight}kg | Height: ${answers.height}cm
-Years running: ${answers.yearsRunning} | Comfortable pace: ${answers.currentPace} | Longest race: ${answers.longestRace}
-A run they are proud of: ${answers.proudRun}
-Current weekly km: ${answers.weeklyKm} | Weekly structure: ${answers.weeklyStructure} | Cross-training: ${answers.crossTraining}
-Terrain: ${answers.terrain} | Training days available: ${answers.daysPerWeek} | Strength training: ${answers.strengthTraining}
-Equipment: ${answers.equipment || 'Not specified'} | Equipment details: ${answers.equipmentDetail || 'None specified'}
-Flexibility: ${answers.flexibility} | Sleep: ${answers.sleepQuality}
-Work type: ${answers.job} | Stress: ${answers.stressLevel} | Nutrition: ${answers.nutrition}
-
-INJURY & HEALTH HISTORY:
-Injuries: ${answers.injuries}
-Surgeries: ${answers.surgeries}
-Chronic conditions: ${answers.chronicConditions}
-Current pain level: ${answers.currentPain}
-Has injury stopped running before: ${answers.previousInjuryStop}
-Current recovery methods: ${answers.recoveryMethods}
-
-GOALS:
-Short term (8-12 weeks): ${answers.shortGoal}
-Race goal (6 months): ${answers.raceGoal}
-Race preference: ${answers.racePreference}
-Big vision (1-2 years): ${answers.bigVision}
-Biggest fear: ${answers.biggestFear}
-Primary motivation: ${answers.motivation}
-Secondary goals: ${answers.secondaryGoals}
+RUNNER: ${answers.name}, ${answers.age}yo, ${answers.gender}, ${answers.weight}kg, ${answers.height}cm
+RUNNING: ${answers.yearsRunning} | Pace: ${answers.currentPace} | Best race: ${answers.longestRace} | Weekly: ${answers.weeklyKm}
+TERRAIN: ${answers.terrain} | Days/week: ${answers.daysPerWeek} | Equipment: ${answers.equipment || 'unknown'} (${answers.equipmentDetail || ''})
+INJURIES: ${answers.injuries} | Current pain: ${answers.currentPain} | Surgery: ${answers.surgeries}
+LIFESTYLE: ${answers.job} | Sleep: ${answers.sleepQuality} | Stress: ${answers.stressLevel}
+GOALS: Short: ${answers.shortGoal} | Race: ${answers.raceGoal} | Vision: ${answers.bigVision} | Fear: ${answers.biggestFear}
 
 Return ONLY this JSON — no text before or after, no markdown backticks:
 {
