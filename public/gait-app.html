@@ -532,29 +532,6 @@ function renderQ() {
     return;
   }
 
-  // Welcome screen with quick start option
-  if (currentStep === 0 && Object.keys(answers).length === 0) {
-    container.innerHTML = `
-      <div class="q-label">Welcome to GAIT</div>
-      <h1 class="q-title">Build your<br>Blueprint.</h1>
-      <div class="log-section" style="margin-bottom:16px;">
-        <div class="log-section-title">Quick start — Jax</div>
-        <p style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px;">
-          Your running data, injury history and goals are already loaded from your training bible. Generate your GAIT Blueprint instantly.
-        </p>
-        <button class="btn-next" onclick="generateFromBible()" style="width:100%;">
-          Generate My Blueprint Now →
-        </button>
-      </div>
-      <div style="text-align:center;margin:20px 0 8px;">
-        <span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">or start fresh</span>
-      </div>
-      <button class="btn-back" onclick="startFreshQ()" style="width:100%;text-align:center;padding:14px;">
-        Fill in full questionnaire →
-      </button>`;
-    return;
-  }
-
   const step = steps[currentStep];
   let html = `<div class="q-progress">`;
   steps.forEach((_, i) => {
@@ -738,7 +715,11 @@ Write with authority, warmth and specificity. This is a coach who knows them wel
       renderBlueprint();
     }
   } catch (e) {
-    container.innerHTML = `<p style="color:var(--red);font-family:var(--mono);font-size:13px;">Something went wrong. Please try again.</p>`;
+    container.innerHTML = `
+      <p style="color:var(--red);font-family:var(--mono);font-size:13px;padding:20px 0;">
+        Error: ${e.message}. Please try again.
+      </p>
+      <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
   }
 }
 
