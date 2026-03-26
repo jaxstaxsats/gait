@@ -426,6 +426,32 @@
     font-style: italic;
   }
 
+  .multiselect-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  }
+  @media (max-width: 480px) { .multiselect-grid { grid-template-columns: 1fr; } }
+  .multiselect-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 4px;
+    border: 1px solid var(--border); background: var(--bg2);
+    cursor: pointer; transition: all 0.15s;
+    font-family: var(--mono); font-size: 11px; color: var(--ink2);
+    user-select: none;
+  }
+  .multiselect-option:hover { border-color: var(--red); }
+  .multiselect-option.selected { background: var(--ink); color: white; border-color: var(--ink); }
+  .multiselect-option.selected .ms-check { background: var(--accent); border-color: var(--accent); }
+  .ms-check {
+    width: 16px; height: 16px; border-radius: 3px;
+    border: 1.5px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; transition: all 0.15s;
+  }
+  .q-subtitle {
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    line-height: 1.6; margin-bottom: 24px; margin-top: -16px;
+  }
+
   /* ── PUSH MODE ── */
   .push-mode-bar {
     border-radius: 8px; padding: 14px 16px;
@@ -757,80 +783,136 @@ let selectedPain = null;
 let isRestDay = false;
 let profileData = JSON.parse(localStorage.getItem('gait_profile') || 'null');
 
+const INJURY_AREAS = [
+  'Front of knee (patella / kneecap)',
+  'Side of knee / IT band',
+  'Back of knee',
+  'Hip / glute',
+  'Groin',
+  'Hamstring',
+  'Calf',
+  'Achilles / heel',
+  'Shin / shin splints',
+  'Foot / plantar fascia',
+  'Lower back',
+  'Upper back / shoulders',
+  'None — no injury history'
+];
+
+const EQUIPMENT_OPTIONS = [
+  'Bodyweight only — no equipment',
+  'Dumbbells',
+  'Kettlebell(s)',
+  'Medicine / slam ball',
+  'Ab roller / wheel',
+  'Resistance bands / mini bands',
+  'Foam roller or massage gun',
+  'Stability / Swiss ball',
+  'Pull-up bar',
+  'Plyo box or step platform',
+  'Bench or elevated surface',
+  'Gym membership — full access',
+  'Other'
+];
+
+const RECOVERY_OPTIONS = [
+  'Stretching',
+  'Foam rolling',
+  'Massage gun',
+  'Ice & heat therapy',
+  'Physio sessions',
+  'Sleep focus',
+  'Nutrition focus',
+  'None currently'
+];
+
 // ══════════════════════════════════════════
 // QUESTIONNAIRE STEPS
 // ══════════════════════════════════════════
 const steps = [
   {
     label: '01 — YOU',
-    title: 'Tell us about you',
+    title: 'Let\'s get to know you',
+    subtitle: 'A few basics to personalise your blueprint',
     fields: [
-      { key: 'name', label: 'First name', type: 'text', placeholder: 'Your name' },
-      { key: 'age', label: 'Age', type: 'number', placeholder: '39' },
-      { key: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Non-binary', 'Prefer not to say'] },
-      { key: 'weight', label: 'Weight (kg)', type: 'number', placeholder: '75' },
-      { key: 'height', label: 'Height (cm)', type: 'number', placeholder: '180' },
-      { key: 'units', label: 'Preferred distance units', type: 'select', options: ['Kilometres (km)', 'Miles'] },
+      { key: 'name', label: 'What should we call you?', type: 'text', placeholder: 'Your name or nickname', required: true },
+      { key: 'age', label: 'Age', type: 'number', placeholder: '35', required: true },
+      { key: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Non-binary', 'Prefer not to say'], required: true },
+      { key: 'weight', label: 'Weight (kg) — optional, helps calibrate load', type: 'number', placeholder: '70', required: false },
+      { key: 'height', label: 'Height (cm) — optional', type: 'number', placeholder: '175', required: false },
+      { key: 'units', label: 'Preferred distance units', type: 'select', options: ['Kilometres (km)', 'Miles'], required: true },
+      { key: 'runTime', label: 'What time of day do you usually run?', type: 'select', options: ['Morning — before 9am', 'Lunchtime', 'Evening — after 5pm', 'Varies a lot', 'Not consistent yet'], required: true },
     ]
   },
   {
     label: '02 — HISTORY',
     title: 'Your running background',
+    subtitle: 'Tell us where you\'re coming from',
     fields: [
-      { key: 'currentPace', label: 'What is your current comfortable pace per km?', type: 'select', options: ['Under 5:00 /km', '5:00–5:30 /km', '5:30–6:00 /km', '6:00–6:30 /km', '6:30–7:00 /km', 'Over 7:00 /km', 'Not sure yet'] },
-      { key: 'proudRun', label: 'Tell us about a run you are proud of', type: 'textarea', placeholder: 'e.g. Ran 10km without stopping for the first time, finished a half marathon in 2:15, ran 5km every day for a month...' },
-      { key: 'longestRace', label: 'Longest race ever completed', type: 'select', options: ['Never raced', '5km', '10km', 'Half marathon', 'Marathon', 'Ultra marathon'] },
-      { key: 'yearsRunning', label: 'How long have you been running?', type: 'select', options: ['Complete beginner', 'Less than 1 year', '1–3 years', '3–7 years', '7+ years', 'Returning after a break'] },
-      { key: 'weeklyKm', label: 'Current weekly km', type: 'select', options: ['0 — just starting', '5–15 km', '15–25 km', '25–40 km', '40–60 km', '60km+'] },
-      { key: 'weeklyStructure', label: 'Typical weekly training structure', type: 'select', options: ['Just easy runs — no structure yet', '2–3 easy runs per week', 'Easy runs + one long run', 'Easy runs + long run + some speed work', 'Structured plan with intervals and tempo runs'] },
-      { key: 'crossTraining', label: 'Do you do any cross-training?', type: 'select', options: ['None', 'Cycling', 'Swimming', 'Gym cardio', 'Yoga or Pilates', 'Multiple — cycling, gym, swimming etc'] },
+      { key: 'yearsRunning', label: 'How long have you been running consistently (without a break longer than 4 weeks)?', type: 'select', options: ['Complete beginner — first time', 'Less than 6 months', '6–12 months', '1–3 years', '3–7 years', '7+ years', 'Returning after a long break'], required: true },
+      { key: 'weeklyKm', label: 'Current weekly running volume', type: 'select', options: ['0 — just starting', '1–15 km', '15–25 km', '25–40 km', '40–60 km', '60 km+'], required: true },
+      { key: 'daysRunning', label: 'How many days per week are you currently running?', type: 'select', options: ['1–2 days', '3 days', '4 days', '5 days', '6+ days'], required: true },
+      { key: 'weeklyStructure', label: 'Typical weekly training right now', type: 'select', options: ['Mostly easy runs — no structure', 'Easy runs + one long run', 'Easy + long + occasional speed work', 'Structured plan with intervals and tempo runs', 'Not sure yet'], required: true },
+      { key: 'currentPace', label: 'Do you know your typical easy running pace? (optional — improves your plan)', type: 'select', options: ['I\'m not sure yet', 'Faster than 5:00 /km (fast)', '5:00–5:30 /km', '5:30–6:00 /km (steady)', '6:00–6:30 /km (comfortable)', '6:30–7:00 /km (easy)', 'Slower than 7:00 /km (very easy)'], required: false },
+      { key: 'longestRace', label: 'Longest race ever completed', type: 'select', options: ['Never raced', '5km', '10km', 'Half marathon', 'Marathon', 'Ultra marathon'], required: true },
+      { key: 'raceTimes', label: 'Any recent race times? (optional — helps set realistic targets)', type: 'text', placeholder: 'e.g. 5km: 28:30, 10km: 58:00, Half: 2:10, Marathon: 4:47', required: false },
+      { key: 'raceTimesRecency', label: 'How recent are these times?', type: 'select', options: ['Within last 3 months', '3–12 months ago', 'Over a year ago', 'Not applicable'], required: false },
+      { key: 'proudRun', label: 'Tell us about a run or race you are proud of (even if it seems small)', type: 'textarea', placeholder: 'e.g. Ran 5km without stopping for the first time, finished a half marathon, ran every day for a month...', required: false },
     ]
   },
   {
     label: '03 — INJURIES',
     title: 'Your injury history',
+    subtitle: 'This is the most important section — be as specific as you can',
     fields: [
-      { key: 'injuries', label: 'Any current or past injuries? (be as specific as possible)', type: 'textarea', placeholder: 'e.g. Knee pain under kneecap on longer runs, calf strain 6 months ago, lower back tightness...' },
-      { key: 'surgeries', label: 'Any surgeries related to running or sport?', type: 'textarea', placeholder: 'e.g. Knee surgery 2019, Achilles repair 2021, or None' },
-      { key: 'chronicConditions', label: 'Any chronic conditions affecting your running?', type: 'select', options: ['None', 'Asthma or breathing issues', 'Arthritis', 'Heart condition', 'Diabetes', 'Other'] },
-      { key: 'currentPain', label: 'Any pain or discomfort right now?', type: 'select', options: ['None at all', 'Very mild — barely noticeable', 'Mild — present but manageable', 'Moderate — affecting my running', 'Significant — I need to be careful'] },
-      { key: 'previousInjuryStop', label: 'Has an injury ever stopped you running for more than 2 weeks?', type: 'select', options: ['No', 'Yes — once', 'Yes — multiple times'] },
-      { key: 'recoveryMethods', label: 'Recovery methods you currently use', type: 'select', options: ['None currently', 'Stretching only', 'Foam rolling', 'Physio or sports massage', 'Ice and heat therapy', 'Multiple — stretching, foam rolling, physio etc'] },
+      { key: 'injuryAreas', label: 'Which areas have ever given you trouble while running? (select all that apply)', type: 'multiselect', options: INJURY_AREAS, required: false },
+      { key: 'injuryDetails', label: 'Tell us more about your injuries — what happened, when, and how it affects you now', type: 'textarea', placeholder: 'e.g. Right knee pain under kneecap since 2020 marathon — 2/10 on longer runs. Left calf strain 6 months ago from football, occasional tightness returning...', required: false },
+      { key: 'seenProfessional', label: 'Have you seen a physio, sports doctor, or been formally diagnosed?', type: 'select', options: ['No — self-managed', 'Yes — diagnosed and discharged', 'Yes — currently seeing someone', 'Yes — told to stop running', 'Partially — seen someone briefly'], required: true },
+      { key: 'currentRehab', label: 'Are you currently doing any specific rehab or prehab exercises?', type: 'select', options: ['No', 'Yes — following a physio programme', 'Yes — self-directed exercises'], required: true },
+      { key: 'previousInjuryStop', label: 'Has an injury ever forced you to stop running for more than 2 weeks?', type: 'select', options: ['No', 'Yes — once', 'Yes — multiple times'], required: true },
+      { key: 'chronicConditions', label: 'Any medical conditions affecting your running?', type: 'select', options: ['None', 'Asthma or breathing issues', 'Arthritis or joint condition', 'Heart condition', 'Diabetes', 'Osteoporosis or bone density concerns', 'Other'], required: true },
+      { key: 'recoveryMethods', label: 'Recovery methods you currently use (select all that apply)', type: 'multiselect', options: RECOVERY_OPTIONS, required: false },
     ]
   },
   {
     label: '04 — YOUR BODY',
     title: 'How your body works',
+    subtitle: 'Equipment, movement and physical basics',
     fields: [
-      { key: 'terrain', label: 'What terrain do you typically run on?', type: 'select', options: ['Flat roads', 'Mixed — some hills some flat', 'Hilly', 'Trails', 'Treadmill mostly'] },
-      { key: 'daysPerWeek', label: 'How many days can you train per week?', type: 'select', options: ['2 days', '3 days', '4 days', '5 days', '6 days'] },
-      { key: 'strengthTraining', label: 'Do you currently do any strength training?', type: 'select', options: ['None', 'Occasionally', 'Once a week', 'Twice a week', '3+ times a week'] },
-      { key: 'equipment', label: 'What equipment do you have at home?', type: 'select', options: ['Bodyweight only — no equipment', 'Dumbbells only', 'Dumbbells + resistance bands', 'Dumbbells + medicine ball', 'Full home gym — dumbbells, bands, foam roller, ab roller', 'Gym membership — full access', 'Minimal — just a foam roller or resistance bands'] },
-      { key: 'equipmentDetail', label: 'Any details on equipment? (e.g. 2 × 5kg dumbbells, 5kg medicine ball)', type: 'text', placeholder: 'e.g. Two 5kg dumbbells, one 10kg kettlebell, resistance bands' },
-      { key: 'sleepQuality', label: 'How is your sleep generally?', type: 'select', options: ['Poor — often under 6hrs', 'Average — around 6–7hrs', 'Good — 7–8hrs most nights', 'Great — 8hrs+ regularly'] },
-      { key: 'flexibility', label: 'How would you describe your flexibility and mobility?', type: 'select', options: ['Very tight — limited range of motion', 'Tight — especially hamstrings and calves', 'Average — some areas tighter than others', 'Good — generally flexible', 'Very flexible'] },
+      { key: 'terrain', label: 'What terrain do you typically run on?', type: 'select', options: ['Mostly flat roads', 'Mixed — some hills some flat', 'Hilly', 'Trails', 'Treadmill mostly', 'Varies'], required: true },
+      { key: 'strengthTraining', label: 'Current strength training frequency', type: 'select', options: ['None', 'Occasionally — less than once a week', '1–2 times per week', '3+ times per week'], required: true },
+      { key: 'equipment', label: 'What equipment do you have access to at home? (select all that apply)', type: 'multiselect', options: EQUIPMENT_OPTIONS, required: true },
+      { key: 'equipmentDetail', label: 'Any details on weights or equipment? (optional but helps)', type: 'text', placeholder: 'e.g. Two 5kg dumbbells, one 8kg kettlebell, resistance bands, foam roller', required: false },
+      { key: 'shoeType', label: 'What type of running shoes do you mainly wear?', type: 'select', options: ['Road — cushioned', 'Road — lightweight / racing', 'Trail', 'Minimalist / barefoot style', 'Maximalist — very cushioned', 'Not sure'], required: true },
+      { key: 'shoeAge', label: 'How old are your main running shoes?', type: 'select', options: ['Under 3 months', '3–6 months', '6–12 months', 'Over 12 months', 'Not sure'], required: true },
+      { key: 'warmUp', label: 'Do you usually warm up before runs?', type: 'select', options: ['No — I just start running', 'Quick stretch only', 'Proper dynamic warm-up', 'Not consistent'], required: true },
+      { key: 'flexibility', label: 'How would you describe your flexibility and mobility?', type: 'select', options: ['Very tight — limited range of motion', 'Tight — especially hamstrings, hips, calves', 'Average — some areas tighter than others', 'Good — generally flexible', 'Very flexible — sometimes joints feel unstable'], required: true },
+      { key: 'sleepQuality', label: 'Sleep quality on average', type: 'select', options: ['Poor — often under 6hrs', 'Average — around 6–7hrs', 'Good — 7–8hrs most nights', 'Excellent — 8hrs+ consistently'], required: true },
     ]
   },
   {
     label: '05 — LIFESTYLE',
-    title: 'Your life outside running',
+    title: 'Life outside running',
+    subtitle: 'Recovery happens 23 hours a day, not just after runs',
     fields: [
-      { key: 'job', label: 'Type of work', type: 'select', options: ['Desk based / sedentary', 'Mixed — some sitting some moving', 'On my feet most of the day', 'Physical labour', 'Shift work'] },
-      { key: 'stressLevel', label: 'General stress levels', type: 'select', options: ['Low — pretty relaxed', 'Moderate — manageable', 'High — quite stressed often', 'Very high — affecting sleep and recovery'] },
-      { key: 'nutrition', label: 'How would you describe your diet?', type: 'select', options: ['Poor — room for improvement', 'Average — could be better', 'Good — pretty balanced', 'Excellent — very focused on nutrition'] },
+      { key: 'job', label: 'Type of work', type: 'select', options: ['Mostly desk-based / sedentary', 'Mixed — some sitting some moving', 'On my feet most of the day', 'Physical labour', 'Shift work'], required: true },
+      { key: 'dailyDemand', label: 'How physically demanding is your daily life outside running?', type: 'select', options: ['Very low — mostly sitting', 'Low — light walking and movement', 'Moderate — regular movement throughout the day', 'High — physically active job or lifestyle', 'Very high — manual work or heavy exercise outside running'], required: true },
+      { key: 'stressLevel', label: 'General stress levels', type: 'select', options: ['Low — pretty relaxed', 'Moderate — manageable', 'High — quite stressed often', 'Very high — affecting sleep and recovery'], required: true },
+      { key: 'nutrition', label: 'Do you feel you eat enough to properly fuel your running?', type: 'select', options: ['Yes — consistently well fuelled', 'Usually — occasional gaps', 'Often not enough — I know I under-fuel', 'Not sure'], required: true },
+      { key: 'alcohol', label: 'Alcohol consumption', type: 'select', options: ['None', 'Occasional — 1–2 drinks per week', 'Regular — 3–6 drinks per week', 'Heavy — 7+ drinks per week'], required: true },
     ]
   },
   {
     label: '06 — GOALS',
     title: 'What are you chasing?',
+    subtitle: 'Your goals shape everything in your blueprint',
     fields: [
-      { key: 'shortGoal', label: 'Short-term goal (next 8–12 weeks)', type: 'text', placeholder: 'e.g. Run pain-free for 15km' },
-      { key: 'raceGoal', label: 'Race goal for the next 6 months', type: 'select', options: ['No race — just want to run consistently', 'Complete a 5km', '5km PB', 'Complete a 10km', '10km PB', 'Complete a half marathon', 'Half marathon PB', 'Complete a marathon', 'Marathon PB', 'Ultra marathon'] },
-      { key: 'racePreference', label: 'Race preference', type: 'select', options: ['Road racing', 'Trail running', 'Ultra distance', 'Mix of road and trail', 'Not sure yet'] },
-      { key: 'bigVision', label: 'Your big vision (1–2 years)', type: 'text', placeholder: 'e.g. Complete a 50km ultra injury-free' },
-      { key: 'biggestFear', label: 'Biggest fear or obstacle', type: 'text', placeholder: 'e.g. Getting injured again before race day' },
-      { key: 'motivation', label: 'What motivates you most?', type: 'select', options: ['Performance — times and results', 'Health — staying fit and injury-free', 'Social — running with others', 'Mental wellness — stress relief and headspace', 'Challenge — pushing my limits'] },
-      { key: 'secondaryGoals', label: 'Any secondary goals?', type: 'select', options: ['None — just the race goal', 'Reduce injury risk', 'Improve sleep and recovery', 'Build overall strength', 'Lose weight', 'Multiple secondary goals'] },
+      { key: 'shortGoal', label: 'Main short-term goal (next 8–12 weeks)', type: 'text', placeholder: 'e.g. Run pain-free for 15km, complete a 5km, build a consistent routine', required: true },
+      { key: 'hasRace', label: 'Do you have a specific race or event planned?', type: 'select', options: ['No — no race planned yet', 'Yes — race booked'], required: true },
+      { key: 'raceDetails', label: 'Race distance and approximate date (if booked)', type: 'text', placeholder: 'e.g. Half marathon — October 2026', required: false },
+      { key: 'raceGoal', label: 'Main goal for the next 6–12 months', type: 'select', options: ['Build consistent base without injury', 'Complete a 5km', 'Get a 5km PB', 'Complete a 10km', 'Get a 10km PB', 'Complete a half marathon', 'Get a half marathon PB', 'Complete a marathon', 'Get a marathon PB', 'Complete an ultra marathon'], required: true },
+      { key: 'bigVision', label: 'What does success look like for you in 12 months?', type: 'textarea', placeholder: 'e.g. Running 3-4 times a week pain-free, completing my first marathon, running an ultra...', required: true },
+      { key: 'motivation', label: 'What motivates you most?', type: 'select', options: ['Staying injury-free and healthy', 'Improving fitness and performance', 'Achieving a specific time or distance', 'Mental wellbeing — stress relief and headspace', 'Social aspect — running with others', 'The challenge — pushing my limits'], required: true },
     ]
   }
 ];
@@ -841,7 +923,6 @@ const steps = [
 function renderQ() {
   const container = document.getElementById('q-container');
 
-  // If blueprint exists, show it
   if (blueprint) {
     renderBlueprint();
     return;
@@ -855,18 +936,32 @@ function renderQ() {
   html += `</div>`;
   html += `<div class="q-label">${step.label}</div>`;
   html += `<h1 class="q-title">${step.title}</h1>`;
+  if (step.subtitle) html += `<p class="q-subtitle">${step.subtitle}</p>`;
 
   step.fields.forEach(f => {
-    html += `<div class="field"><label>${f.label}</label>`;
+    const optionalTag = f.required === false ? ' <span style="color:var(--muted);font-size:9px;letter-spacing:1px;">OPTIONAL</span>' : '';
+    html += `<div class="field"><label>${f.label}${optionalTag}</label>`;
+
     if (f.type === 'select') {
       html += `<select id="q_${f.key}" onchange="answers['${f.key}']=this.value">
         <option value="">Select...</option>
         ${f.options.map(o => `<option value="${o}" ${answers[f.key] === o ? 'selected' : ''}>${o}</option>`).join('')}
       </select>`;
     } else if (f.type === 'textarea') {
-      html += `<textarea id="q_${f.key}" placeholder="${f.placeholder}" oninput="answers['${f.key}']=this.value">${answers[f.key] || ''}</textarea>`;
+      html += `<textarea id="q_${f.key}" placeholder="${f.placeholder || ''}" oninput="answers['${f.key}']=this.value">${answers[f.key] || ''}</textarea>`;
+    } else if (f.type === 'multiselect') {
+      const selected = answers[f.key] ? answers[f.key].split('|') : [];
+      html += `<div class="multiselect-grid" id="ms_${f.key}">`;
+      f.options.forEach(o => {
+        const isSelected = selected.includes(o);
+        html += `<div class="multiselect-option ${isSelected ? 'selected' : ''}" onclick="toggleMultiselect('${f.key}', '${o.replace(/'/g, "\\'")}', this)">
+          <div class="ms-check">${isSelected ? '✓' : ''}</div>
+          <span>${o}</span>
+        </div>`;
+      });
+      html += `</div>`;
     } else {
-      html += `<input type="${f.type}" id="q_${f.key}" placeholder="${f.placeholder}" value="${answers[f.key] || ''}" oninput="answers['${f.key}']=this.value">`;
+      html += `<input type="${f.type}" id="q_${f.key}" placeholder="${f.placeholder || ''}" value="${answers[f.key] || ''}" oninput="answers['${f.key}']=this.value">`;
     }
     html += `</div>`;
   });
@@ -874,10 +969,25 @@ function renderQ() {
   html += `<div class="btn-row">`;
   if (currentStep > 0) html += `<button class="btn-back" onclick="prevStep()">← Back</button>`;
   html += `<button class="btn-next" id="next-btn" onclick="nextStep()">
-    ${currentStep === steps.length - 1 ? 'Generate My Blueprint →' : 'Continue →'}
+    ${currentStep === steps.length - 1 ? 'Continue →' : 'Continue →'}
   </button></div>`;
 
   container.innerHTML = html;
+}
+
+function toggleMultiselect(key, value, el) {
+  let selected = answers[key] ? answers[key].split('|') : [];
+  const check = el.querySelector('.ms-check');
+  if (selected.includes(value)) {
+    selected = selected.filter(v => v !== value);
+    el.classList.remove('selected');
+    check.textContent = '';
+  } else {
+    selected.push(value);
+    el.classList.add('selected');
+    check.textContent = '✓';
+  }
+  answers[key] = selected.join('|');
 }
 
 function startFreshQ() {
@@ -942,16 +1052,26 @@ Write with authority, warmth and deep specificity. You know this runner well. No
 
 
 
+function prevStep() {
+  if (currentStep > 0) {
+    currentStep--;
+    renderQ();
+    window.scrollTo(0, 0);
+  }
+}
+
 function nextStep() {
   const step = steps[currentStep];
-  const allFilled = step.fields.every(f => answers[f.key]?.toString().trim());
+  const requiredFields = step.fields.filter(f => f.required !== false);
+  const allFilled = requiredFields.every(f => answers[f.key]?.toString().trim());
   if (!allFilled) {
-    alert('Please fill in all fields before continuing.');
+    alert('Please fill in all required fields before continuing.');
     return;
   }
   if (currentStep < steps.length - 1) {
     currentStep++;
     renderQ();
+    window.scrollTo(0, 0);
   } else {
     showEmailCapture();
   }
@@ -1041,12 +1161,25 @@ async function generateBlueprint() {
     <span class="loading-quote-attr">— ${lq.attr}</span>
   </div>`;
 
-  const runnerContext = `RUNNER: ${answers.name}, ${answers.age}yo, ${answers.gender}, ${answers.weight}kg, ${answers.height}cm
-RUNNING: ${answers.yearsRunning} | Pace: ${answers.currentPace} | Best race: ${answers.longestRace} | Weekly: ${answers.weeklyKm}
-TERRAIN: ${answers.terrain} | Days/week: ${answers.daysPerWeek} | Equipment: ${answers.equipment || 'bodyweight only'} (${answers.equipmentDetail || ''})
-INJURIES: ${answers.injuries} | Current pain: ${answers.currentPain} | Surgery: ${answers.surgeries}
-LIFESTYLE: ${answers.job} | Sleep: ${answers.sleepQuality} | Stress: ${answers.stressLevel}
-GOALS: Short: ${answers.shortGoal} | Race: ${answers.raceGoal} | Vision: ${answers.bigVision} | Fear: ${answers.biggestFear}`;
+  const runnerContext = `RUNNER: ${answers.name}, ${answers.age}yo, ${answers.gender}, ${answers.weight ? answers.weight + 'kg' : 'weight not provided'}, ${answers.height ? answers.height + 'cm' : 'height not provided'}
+RUNS: ${answers.runTime || 'time not specified'} | Units: ${answers.units}
+HISTORY: Running for ${answers.yearsRunning} | Weekly: ${answers.weeklyKm} | Days/week: ${answers.daysRunning} | Structure: ${answers.weeklyStructure}
+PACE: ${answers.currentPace || 'not specified'} | Race times: ${answers.raceTimes || 'none provided'} (${answers.raceTimesRecency || ''})
+LONGEST RACE: ${answers.longestRace} | Proud run: ${answers.proudRun || 'not shared'}
+INJURIES: Areas affected: ${answers.injuryAreas ? answers.injuryAreas.replace(/\|/g, ', ') : 'none selected'}
+Injury details: ${answers.injuryDetails || 'none provided'}
+Seen professional: ${answers.seenProfessional} | Current rehab: ${answers.currentRehab}
+Injury history: ${answers.previousInjuryStop} | Medical conditions: ${answers.chronicConditions}
+Recovery methods: ${answers.recoveryMethods ? answers.recoveryMethods.replace(/\|/g, ', ') : 'none'}
+BODY: Terrain: ${answers.terrain} | Strength training: ${answers.strengthTraining}
+Equipment: ${answers.equipment ? answers.equipment.replace(/\|/g, ', ') : 'not specified'} | Details: ${answers.equipmentDetail || 'none'}
+Shoes: ${answers.shoeType} — ${answers.shoeAge} old | Warm-up: ${answers.warmUp}
+Flexibility: ${answers.flexibility} | Sleep: ${answers.sleepQuality}
+LIFESTYLE: Work: ${answers.job} | Daily demand: ${answers.dailyDemand} | Stress: ${answers.stressLevel}
+Nutrition: ${answers.nutrition} | Alcohol: ${answers.alcohol}
+GOALS: Short term: ${answers.shortGoal} | Race planned: ${answers.hasRace} ${answers.raceDetails ? '— ' + answers.raceDetails : ''}
+6-12 month goal: ${answers.raceGoal} | 12 month vision: ${answers.bigVision}
+Motivation: ${answers.motivation}`;
 
   const prompt1 = `Generate part 1 of a GAIT Blueprint for this runner. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
 
