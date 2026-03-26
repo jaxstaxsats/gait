@@ -1477,21 +1477,33 @@ Sleep last night: ${sleep || 'Not specified'}
 Stress level: ${stress || 'Not specified'}
 Notes: ${notes}
 
-Respond with these exact sections using ### headings:
-
-### Today's Assessment
-2-3 sentences. Be specific — reference their injury history, today's numbers, and what the pattern means. Tell them something they might not have noticed themselves.
-
-### Tonight's Recovery
-2-4 specific exercises or stretches from the approved list above, chosen for their exact pain location today. Name each one, give the duration/reps, and explain in one sentence why it helps their specific issue. If no pain: give a general recovery protocol based on today's effort level.
-
-### Tomorrow's Plan
-Be specific — exactly what they should do tomorrow. If running: exact km range, exact pace range, terrain recommendation. If strength: which circuit. If rest: why rest is the right call today. Reference today's data to justify the recommendation.
-
-### Watch This Week
-One specific pattern or risk to monitor this week. Reference their recent log history if available. Give one concrete action to address it.
-
-Be direct, personal and specific. Every sentence should reference their actual data. No generic running advice.`;
+Respond with ONLY a JSON object — no text before or after, no markdown backticks:
+{
+  "assessment": {
+    "emoji": "one emoji that captures today",
+    "headline": "one punchy sentence summarising today",
+    "detail": "2-3 sentences specific to their data, injury history and patterns"
+  },
+  "recovery": [
+    {
+      "name": "exercise or stretch name",
+      "duration": "e.g. 60 sec each side",
+      "icon": "relevant emoji",
+      "instruction": "exactly how to do it in one sentence",
+      "why": "why this helps their specific issue today"
+    }
+  ],
+  "tomorrowPlan": {
+    "type": "Run / Strength / Rest / Active Recovery",
+    "icon": "relevant emoji",
+    "detail": "exact km range and pace if running, or what to do if not",
+    "reason": "one sentence why this is the right call based on today"
+  },
+  "watchThis": {
+    "pattern": "the specific thing to watch",
+    "action": "one concrete action to take"
+  }
+}`;
 
   try {
     const res = await fetch('/api/chat', {
@@ -1506,10 +1518,17 @@ Be direct, personal and specific. Every sentence should reference their actual d
     const data = await res.json();
     const text = data.content?.[0]?.text;
     if (text) {
+      let coachingData;
+      try {
+        const clean = text.replace(/```json|```/g, '').trim();
+        coachingData = JSON.parse(clean);
+      } catch(e) {
+        coachingData = null;
+      }
       todayLog.aiResponse = text;
       logs.push(todayLog);
       localStorage.setItem('gait_logs', JSON.stringify(logs));
-      bodyEl.innerHTML = formatAIResponse(text);
+      bodyEl.innerHTML = coachingData ? formatCoachingResponse(coachingData) : formatAIResponse(text);
       updateStats();
     }
   } catch (e) {
@@ -1519,6 +1538,52 @@ Be direct, personal and specific. Every sentence should reference their actual d
   btn.disabled = false;
   btn.textContent = 'Get today\'s coaching →';
   responseEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function formatCoachingResponse(c) {
+  return `
+    <!-- ASSESSMENT -->
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="font-size:28px;">${c.assessment?.emoji || '🏃'}</div>
+        <div style="font-family:var(--display);font-weight:700;font-size:16px;color:var(--accent);letter-spacing:-0.5px;line-height:1.2;">${c.assessment?.headline || ''}</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.8);line-height:1.8;">${c.assessment?.detail || ''}</div>
+    </div>
+
+    <!-- RECOVERY -->
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1);">Tonight's recovery</div>
+    ${(c.recovery || []).map(r => `
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="width:32px;height:32px;background:rgba(255,255,255,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${r.icon}</div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+            <span style="font-family:var(--display);font-weight:700;font-size:12px;color:white;">${r.name}</span>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--accent);letter-spacing:1px;">${r.duration}</span>
+          </div>
+          <div style="font-family:var(--mono);font-size:11px;color:rgba(245,242,235,0.7);line-height:1.5;margin-bottom:2px;">${r.instruction}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:rgba(200,242,58,0.6);font-style:italic;">${r.why}</div>
+        </div>
+      </div>`).join('')}
+
+    <!-- TOMORROW -->
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1);">Tomorrow's plan</div>
+    <div style="display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,0.05);border-radius:6px;padding:12px;">
+      <div style="font-size:24px;">${c.tomorrowPlan?.icon || '📅'}</div>
+      <div>
+        <div style="font-family:var(--display);font-weight:700;font-size:14px;color:var(--accent);margin-bottom:4px;">${c.tomorrowPlan?.type || ''}</div>
+        <div style="font-family:var(--mono);font-size:12px;color:white;margin-bottom:4px;">${c.tomorrowPlan?.detail || ''}</div>
+        <div style="font-family:var(--mono);font-size:11px;color:rgba(245,242,235,0.5);font-style:italic;">${c.tomorrowPlan?.reason || ''}</div>
+      </div>
+    </div>
+
+    <!-- WATCH THIS -->
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1);">Watch this week</div>
+    <div style="background:rgba(255,61,46,0.1);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:12px;">
+      <div style="font-family:var(--display);font-weight:700;font-size:13px;color:white;margin-bottom:4px;">${c.watchThis?.pattern || ''}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:rgba(245,242,235,0.7);">→ ${c.watchThis?.action || ''}</div>
+    </div>
+  `;
 }
 
 function formatAIResponse(text) {
