@@ -1092,13 +1092,22 @@ Make all content specific to this runner. Use their actual injury names, terrain
       try {
         const clean = text.replace(/```json|```/g, '').trim();
         blueprint = JSON.parse(clean);
-      } catch(e) {
-        blueprint = text;
+      } catch(parseErr) {
+        // If JSON parse fails, show the raw text so we can debug
+        container.innerHTML = `
+          <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">JSON parse error. Raw response:</p>
+          <pre style="font-size:10px;overflow:auto;background:var(--bg2);padding:12px;border-radius:4px;">${text.substring(0, 500)}</pre>
+          <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
+        return;
       }
       profileData = { ...answers };
       localStorage.setItem('gait_blueprint', JSON.stringify(blueprint));
       localStorage.setItem('gait_profile', JSON.stringify(profileData));
       renderBlueprint();
+    } else if (data.error) {
+      container.innerHTML = `
+        <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">API Error: ${data.error?.message || JSON.stringify(data.error)}</p>
+        <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
     }
   } catch (e) {
     container.innerHTML = `
