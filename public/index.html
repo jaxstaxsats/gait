@@ -794,9 +794,31 @@
   }, { threshold: 0.1 });
   reveals.forEach(r => observer.observe(r));
 
-  function handleJoin() {
+  async function handleJoin() {
     const email = document.getElementById('emailInput').value;
     if (!email || !email.includes('@')) return;
+
+    const btn = document.querySelector('.email-form button');
+    btn.textContent = 'Joining...';
+    btn.disabled = true;
+
+    try {
+      await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: '',
+          email,
+          newsletter: true,
+          goal: 'Waitlist signup',
+          injuries: '',
+          terrain: ''
+        })
+      });
+    } catch (e) {
+      // Fail silently
+    }
+
     document.querySelector('.email-form').style.display = 'none';
     document.getElementById('successMsg').style.display = 'block';
   }
