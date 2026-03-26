@@ -723,6 +723,8 @@ const steps = [
       { key: 'terrain', label: 'What terrain do you typically run on?', type: 'select', options: ['Flat roads', 'Mixed — some hills some flat', 'Hilly', 'Trails', 'Treadmill mostly'] },
       { key: 'daysPerWeek', label: 'How many days can you train per week?', type: 'select', options: ['2 days', '3 days', '4 days', '5 days', '6 days'] },
       { key: 'strengthTraining', label: 'Do you currently do any strength training?', type: 'select', options: ['None', 'Occasionally', 'Once a week', 'Twice a week', '3+ times a week'] },
+      { key: 'equipment', label: 'What equipment do you have at home?', type: 'select', options: ['Bodyweight only — no equipment', 'Dumbbells only', 'Dumbbells + resistance bands', 'Dumbbells + medicine ball', 'Full home gym — dumbbells, bands, foam roller, ab roller', 'Gym membership — full access', 'Minimal — just a foam roller or resistance bands'] },
+      { key: 'equipmentDetail', label: 'Any details on equipment? (e.g. 2 × 5kg dumbbells, 5kg medicine ball)', type: 'text', placeholder: 'e.g. Two 5kg dumbbells, one 10kg kettlebell, resistance bands' },
       { key: 'sleepQuality', label: 'How is your sleep generally?', type: 'select', options: ['Poor — often under 6hrs', 'Average — around 6–7hrs', 'Good — 7–8hrs most nights', 'Great — 8hrs+ regularly'] },
       { key: 'flexibility', label: 'How would you describe your flexibility and mobility?', type: 'select', options: ['Very tight — limited range of motion', 'Tight — especially hamstrings and calves', 'Average — some areas tighter than others', 'Good — generally flexible', 'Very flexible'] },
     ]
@@ -1006,6 +1008,7 @@ Years running: ${answers.yearsRunning} | Comfortable pace: ${answers.currentPace
 A run they are proud of: ${answers.proudRun}
 Current weekly km: ${answers.weeklyKm} | Weekly structure: ${answers.weeklyStructure} | Cross-training: ${answers.crossTraining}
 Terrain: ${answers.terrain} | Training days available: ${answers.daysPerWeek} | Strength training: ${answers.strengthTraining}
+Equipment: ${answers.equipment || 'Not specified'} | Equipment details: ${answers.equipmentDetail || 'None specified'}
 Flexibility: ${answers.flexibility} | Sleep: ${answers.sleepQuality}
 Work type: ${answers.job} | Stress: ${answers.stressLevel} | Nutrition: ${answers.nutrition}
 
@@ -1065,6 +1068,12 @@ Return ONLY this JSON — no text before or after, no markdown backticks:
     {"period": "Month 3", "target": "specific target", "focus": "focus area"},
     {"period": "6 Months", "target": "race goal target", "focus": "race focus"},
     {"period": "Big Vision", "target": "their big vision", "focus": "ultimate goal"}
+  ],
+  "morningRoutine": [
+    {"name": "Movement name", "duration": "1 min", "icon": "🌅", "instruction": "exactly how to do it in one sentence", "why": "why this matters for their specific injuries"}
+  ],
+  "eveningRoutine": [
+    {"name": "Stretch/recovery name", "duration": "1 min each side", "icon": "🌙", "instruction": "exactly how to do it in one sentence", "why": "why this matters for their specific injuries"}
   ],
   "dailyHabit": {
     "title": "habit name",
@@ -1198,6 +1207,42 @@ function renderBlueprint() {
       </ul>
       <div class="bp-ex-cue">💡 ${ex.cue}</div>
     </div>`).join('')}
+
+  <!-- MORNING ROUTINE -->
+  <div class="bp-section-label" style="margin-top:20px;">Morning routine</div>
+  <div style="background:var(--bg2);border-radius:8px;padding:16px;border:1px solid var(--border);">
+    <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Do this every morning before your run or within 30 minutes of waking. Takes 8–12 minutes.</p>
+    ${(b.morningRoutine || []).map((m, i) => `
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="width:36px;height:36px;background:var(--ink);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${m.icon}</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <div style="font-family:var(--display);font-weight:700;font-size:13px;color:var(--ink);">${m.name}</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:1px;">${m.duration}</div>
+          </div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--ink2);line-height:1.6;margin-bottom:3px;">${m.instruction}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);font-style:italic;">${m.why}</div>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <!-- EVENING ROUTINE -->
+  <div class="bp-section-label" style="margin-top:20px;">Evening routine</div>
+  <div style="background:var(--ink);border-radius:8px;padding:16px;">
+    <p style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:14px;line-height:1.6;">Do this every evening, especially after runs. Takes 10–15 minutes. Hold each stretch 60–90 seconds.</p>
+    ${(b.eveningRoutine || []).map((e, i) => `
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div style="width:36px;height:36px;background:rgba(255,255,255,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${e.icon}</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <div style="font-family:var(--display);font-weight:700;font-size:13px;color:white;">${e.name}</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:1px;">${e.duration}</div>
+          </div>
+          <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:3px;">${e.instruction}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4);font-style:italic;">${e.why}</div>
+        </div>
+      </div>`).join('')}
+  </div>
 
   <!-- MILEAGE RULES -->
   <div class="bp-section-label" style="margin-top:20px;">Mileage rules</div>
