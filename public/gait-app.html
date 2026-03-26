@@ -420,6 +420,79 @@
     font-style: italic;
   }
 
+  /* ── PUSH MODE ── */
+  .push-mode-bar {
+    border-radius: 8px; padding: 14px 16px;
+    margin-bottom: 16px; position: relative; overflow: hidden;
+  }
+  .push-mode-bar.locked {
+    background: var(--bg2); border: 1px solid var(--border);
+  }
+  .push-mode-bar.unlocked {
+    background: var(--ink); border: 1px solid var(--accent);
+  }
+  .push-mode-bar.active {
+    background: var(--ink);
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 20px rgba(200,242,58,0.15);
+  }
+  .push-mode-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .push-mode-label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .push-mode-bar.locked .push-mode-label { color: var(--muted); }
+  .push-mode-bar.unlocked .push-mode-label { color: var(--accent); }
+  .push-mode-bar.active .push-mode-label { color: var(--accent); }
+  .push-mode-count {
+    font-family: var(--display); font-weight: 900; font-size: 13px;
+  }
+  .push-mode-bar.locked .push-mode-count { color: var(--muted); }
+  .push-mode-bar.unlocked .push-mode-count { color: var(--accent); }
+  .push-mode-bar.active .push-mode-count { color: var(--accent); }
+  .push-progress-track {
+    height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px;
+    overflow: hidden; margin-bottom: 8px;
+  }
+  .push-mode-bar.locked .push-progress-track { background: rgba(0,0,0,0.06); }
+  .push-mode-bar.unlocked .push-progress-track,
+  .push-mode-bar.active .push-progress-track { background: rgba(255,255,255,0.1); }
+  .push-progress-fill {
+    height: 100%; border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+  .push-mode-bar.locked .push-progress-fill { background: var(--muted); }
+  .push-mode-bar.unlocked .push-progress-fill { background: var(--accent); }
+  .push-mode-bar.active .push-progress-fill { background: var(--accent); }
+  .push-mode-desc {
+    font-family: var(--mono); font-size: 11px; line-height: 1.5;
+  }
+  .push-mode-bar.locked .push-mode-desc { color: var(--muted); }
+  .push-mode-bar.unlocked .push-mode-desc { color: rgba(255,255,255,0.7); }
+  .push-mode-bar.active .push-mode-desc { color: rgba(255,255,255,0.7); }
+  .push-toggle {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 10px; cursor: pointer;
+  }
+  .push-toggle-switch {
+    width: 40px; height: 22px; background: rgba(255,255,255,0.15);
+    border-radius: 11px; position: relative; transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .push-toggle-switch.on { background: var(--accent); }
+  .push-toggle-switch::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 16px; height: 16px; background: white; border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .push-toggle-switch.on::after { transform: translateX(18px); }
+  .push-toggle-label {
+    font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.8);
+  }
+
   /* ── QUOTES ── */
   .quote-block {
     border-left: 3px solid var(--red);
@@ -493,6 +566,9 @@
     <div class="stat-box"><div class="stat-val" id="stat-km">0</div><div class="stat-key">Total km</div></div>
     <div class="stat-box"><div class="stat-val" id="stat-streak">0</div><div class="stat-key">Day streak</div></div>
   </div>
+
+  <!-- PUSH MODE BAR -->
+  <div id="push-mode-bar"></div>
 
   <button class="rest-day-btn" id="rest-day-btn" onclick="toggleRestDay()">🛌 Mark as rest day</button>
 
@@ -1347,12 +1423,98 @@ function getRandomQuote(arr) {
 }
 
 // ══════════════════════════════════════════
+// PUSH MODE
+// ══════════════════════════════════════════
+let pushModeActive = JSON.parse(localStorage.getItem('gait_push_active') || 'false');
+
+function getPainFreeDays() {
+  if (logs.length === 0) return 0;
+  let count = 0;
+  const sorted = [...logs].sort((a, b) => new Date(b.date) - new Date(a.date));
+  for (const log of sorted) {
+    const pain = parseInt(log.painScore) || 0;
+    if (pain <= 1) count++;
+    else break;
+  }
+  return count;
+}
+
+function isPushModeUnlocked() {
+  return getPainFreeDays() >= 28;
+}
+
+function renderPushModeBar() {
+  const bar = document.getElementById('push-mode-bar');
+  if (!bar) return;
+
+  const painFreeDays = getPainFreeDays();
+  const unlocked = painFreeDays >= 28;
+  const pct = Math.min(100, (painFreeDays / 28) * 100);
+
+  if (!unlocked) {
+    pushModeActive = false;
+    localStorage.setItem('gait_push_active', 'false');
+    bar.innerHTML = `
+      <div class="push-mode-bar locked">
+        <div class="push-mode-top">
+          <div class="push-mode-label">🔒 Push Mode</div>
+          <div class="push-mode-count">${painFreeDays}/28 days</div>
+        </div>
+        <div class="push-progress-track">
+          <div class="push-progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="push-mode-desc">Stay pain-free for ${28 - painFreeDays} more day${28 - painFreeDays === 1 ? '' : 's'} to unlock Push Mode — faster mileage build, tempo runs, and progressive overload.</div>
+      </div>`;
+  } else if (!pushModeActive) {
+    bar.innerHTML = `
+      <div class="push-mode-bar unlocked">
+        <div class="push-mode-top">
+          <div class="push-mode-label">✦ Push Mode unlocked</div>
+          <div class="push-mode-count">28 days pain-free</div>
+        </div>
+        <div class="push-progress-track">
+          <div class="push-progress-fill" style="width:100%"></div>
+        </div>
+        <div class="push-mode-desc">You've built the base. Now build the engine. Tap to activate faster progression, tempo runs, and harder training.</div>
+        <div class="push-toggle" onclick="togglePushMode()">
+          <div class="push-toggle-switch" id="push-switch"></div>
+          <div class="push-toggle-label">Activate Push Mode</div>
+        </div>
+      </div>`;
+  } else {
+    bar.innerHTML = `
+      <div class="push-mode-bar active">
+        <div class="push-mode-top">
+          <div class="push-mode-label">⚡ Push Mode active</div>
+          <div class="push-mode-count">Training harder</div>
+        </div>
+        <div class="push-progress-track">
+          <div class="push-progress-fill" style="width:100%"></div>
+        </div>
+        <div class="push-mode-desc">15% mileage increases · Tempo runs enabled · Progressive overload · Safety rules still apply.</div>
+        <div class="push-toggle" onclick="togglePushMode()">
+          <div class="push-toggle-switch on" id="push-switch"></div>
+          <div class="push-toggle-label">Push Mode on — tap to deactivate</div>
+        </div>
+      </div>`;
+  }
+}
+
+function togglePushMode() {
+  if (!isPushModeUnlocked()) return;
+  pushModeActive = !pushModeActive;
+  localStorage.setItem('gait_push_active', JSON.stringify(pushModeActive));
+  renderPushModeBar();
+}
+
+// ══════════════════════════════════════════
 // DAILY LOG
 // ══════════════════════════════════════════
 function initLog() {
   const now = new Date();
   document.getElementById('log-date').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   updateStats();
+  renderPushModeBar();
 
   // Daily quote
   const q = getDailyQuote();
@@ -1470,6 +1632,7 @@ Pain during/after: ${painLoc} | Pain score: ${painScore}/10
 Sleep last night: ${sleep || 'Not specified'}
 Stress level: ${stress || 'Not specified'}
 Notes: ${notes}
+${pushModeActive ? '\nMODE: PUSH — this runner has been pain-free for 28+ days and has unlocked Push Mode. Apply Push Mode progression rules.' : ''}
 
 Respond with ONLY a JSON object — no text before or after, no markdown backticks:
 {
@@ -1702,6 +1865,7 @@ function showView(name) {
   document.getElementById(`view-${name}`).classList.add('active');
   event.target.classList.add('active');
   if (name === 'history') renderHistory();
+  if (name === 'log') renderPushModeBar();
 }
 
 // ══════════════════════════════════════════
