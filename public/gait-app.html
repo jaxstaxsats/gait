@@ -1752,10 +1752,14 @@ function renderBlueprint() {
   <!-- TRAINING LOAD -->
   <div class="bp-section-label" style="margin-top:20px;">Training load</div>
   <div id="bp-acwr-gauge" style="background:var(--ink);border-radius:8px;padding:16px;margin-bottom:12px;"></div>
+  ${logs.length > 0 ? `
   <div style="background:var(--ink);border-radius:8px;padding:16px;margin-bottom:4px;">
     <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px;">Pain — last 14 days</div>
     <canvas id="chart-pain-mini" height="80"></canvas>
-  </div>
+  </div>` : `
+  <div style="background:var(--ink);border-radius:8px;padding:20px;text-align:center;">
+    <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.3);line-height:1.6;">Charts appear here after your first log entry.<br>Start logging to track your pain trend and training load.</div>
+  </div>`}
 
   <!-- ACTIONS -->
   <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
@@ -2822,7 +2826,10 @@ function renderACWR() {
 // RENDER ALL HISTORY CHARTS
 // ══════════════════════════════════════════
 function renderHistoryCharts() {
-  // Small delay to ensure canvases are in DOM
+  if (typeof Chart === 'undefined') {
+    setTimeout(renderHistoryCharts, 100);
+    return;
+  }
   setTimeout(() => {
     renderPainChart('chart-pain', 30);
     renderMileageChart();
@@ -2834,6 +2841,10 @@ function renderHistoryCharts() {
 // RENDER BLUEPRINT CHARTS
 // ══════════════════════════════════════════
 function renderBlueprintCharts() {
+  if (typeof Chart === 'undefined') {
+    setTimeout(renderBlueprintCharts, 100);
+    return;
+  }
   setTimeout(() => {
     renderPainChart('chart-pain-mini', 14);
     renderACWR();
