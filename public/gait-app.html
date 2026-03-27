@@ -604,10 +604,11 @@
   <div id="push-mode-bar"></div>
 
   <!-- DAY MODE TOGGLE -->
-  <div style="display:flex;gap:4px;margin-bottom:20px;background:var(--bg2);border-radius:6px;padding:4px;">
-    <button id="mode-run" onclick="setDayMode('run')" style="flex:1;padding:10px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:var(--ink);color:var(--accent);">🏃 Run day</button>
-    <button id="mode-rest" onclick="setDayMode('rest')" style="flex:1;padding:10px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🛌 Rest day</button>
-    <button id="mode-body" onclick="setDayMode('body')" style="flex:1;padding:10px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🧘 Body check</button>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-bottom:20px;background:var(--bg2);border-radius:6px;padding:4px;">
+    <button id="mode-run" onclick="setDayMode('run')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:var(--ink);color:var(--accent);">🏃 Run</button>
+    <button id="mode-cross" onclick="setDayMode('cross')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🚴 Cross</button>
+    <button id="mode-rest" onclick="setDayMode('rest')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🛌 Rest</button>
+    <button id="mode-body" onclick="setDayMode('body')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🧘 Check</button>
   </div>
 
   <!-- RUN DAY FIELDS -->
@@ -809,6 +810,62 @@
           <option>Race or event day</option>
           <option>Not sure yet</option>
         </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- CROSS TRAINING FIELDS -->
+  <div id="cross-fields" style="display:none;">
+    <div class="log-section">
+      <div class="log-section-title">Cross training</div>
+      <div class="field">
+        <label>Activity</label>
+        <select id="log-cross-activity" onchange="updateCrossFields()">
+          <option value="">Select...</option>
+          <option value="cycling">Cycling</option>
+          <option value="swimming">Swimming</option>
+          <option value="rowing">Rowing</option>
+          <option value="hiking">Hiking</option>
+          <option value="yoga">Yoga or Pilates</option>
+          <option value="gym-cardio">Gym cardio (treadmill, elliptical, bike)</option>
+          <option value="football">Football or team sport</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div id="cross-distance-field" class="field" style="display:none;">
+        <label id="cross-distance-label">Distance (km)</label>
+        <input type="number" id="log-cross-distance" placeholder="e.g. 25" step="0.1" min="0">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Duration (minutes)</label>
+          <input type="number" id="log-cross-duration" placeholder="e.g. 60" min="0">
+        </div>
+        <div class="field">
+          <label>Intensity</label>
+          <select id="log-cross-intensity">
+            <option value="">Select...</option>
+            <option>Easy — very comfortable</option>
+            <option>Moderate — working but controlled</option>
+            <option>Hard — pushing it</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Any discomfort? (0 = none)</label>
+        <div class="pain-selector" id="pain-selector-cross">
+          <button class="pain-btn" onclick="selectPain(0)">0</button>
+          <button class="pain-btn" onclick="selectPain(1)">1</button>
+          <button class="pain-btn" onclick="selectPain(2)">2</button>
+          <button class="pain-btn" onclick="selectPain(3)">3</button>
+          <button class="pain-btn" onclick="selectPain(4)">4</button>
+          <button class="pain-btn" onclick="selectPain(5)">5</button>
+          <button class="pain-btn" onclick="selectPain(6)">6</button>
+          <button class="pain-btn" onclick="selectPain(7)">7</button>
+          <button class="pain-btn" onclick="selectPain(8)">8</button>
+          <button class="pain-btn" onclick="selectPain(9)">9</button>
+          <button class="pain-btn" onclick="selectPain(10)">10</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2021,7 +2078,7 @@ function setDayMode(mode) {
   isRestDay = mode === 'rest';
 
   // Update toggle buttons
-  ['run', 'rest', 'body'].forEach(m => {
+  ['run', 'cross', 'rest', 'body'].forEach(m => {
     const btn = document.getElementById('mode-' + m);
     if (btn) {
       btn.style.background = m === mode ? 'var(--ink)' : 'transparent';
@@ -2033,14 +2090,17 @@ function setDayMode(mode) {
   const runFields = document.getElementById('run-fields');
   const restFields = document.getElementById('rest-fields');
   const bodyFields = document.getElementById('body-fields');
+  const crossFields = document.getElementById('cross-fields');
   const title = document.getElementById('log-title');
 
   if (runFields) runFields.style.display = mode === 'run' ? 'block' : 'none';
   if (restFields) restFields.style.display = mode === 'rest' ? 'block' : 'none';
   if (bodyFields) bodyFields.style.display = mode === 'body' ? 'block' : 'none';
+  if (crossFields) crossFields.style.display = mode === 'cross' ? 'block' : 'none';
 
   if (title) {
     if (mode === 'run') title.innerHTML = 'How did<br>today go?';
+    if (mode === 'cross') title.innerHTML = 'Cross<br>training.';
     if (mode === 'rest') title.innerHTML = 'Rest day.<br>How\'s the body?';
     if (mode === 'body') title.innerHTML = 'Morning<br>check-in.';
   }
@@ -2048,7 +2108,29 @@ function setDayMode(mode) {
   const btn = document.getElementById('submit-btn');
   if (btn) {
     if (mode === 'body') btn.textContent = 'Get my daily plan →';
+    else if (mode === 'cross') btn.textContent = 'Log cross training →';
     else btn.textContent = 'Get today\'s coaching →';
+  }
+}
+
+function updateCrossFields() {
+  const activity = document.getElementById('log-cross-activity')?.value;
+  const distField = document.getElementById('cross-distance-field');
+  const distLabel = document.getElementById('cross-distance-label');
+  if (!distField) return;
+
+  const needsDist = ['cycling', 'swimming', 'rowing', 'hiking'].includes(activity);
+  distField.style.display = needsDist ? 'block' : 'none';
+
+  if (activity === 'swimming') {
+    distLabel.textContent = 'Distance (metres)';
+    document.getElementById('log-cross-distance').placeholder = 'e.g. 1500';
+  } else if (activity === 'hiking') {
+    distLabel.textContent = 'Distance (km)';
+    document.getElementById('log-cross-distance').placeholder = 'e.g. 12';
+  } else {
+    distLabel.textContent = 'Distance (km)';
+    document.getElementById('log-cross-distance').placeholder = 'e.g. 25';
   }
 }
 
@@ -2142,6 +2224,11 @@ async function submitLog() {
     const effort = document.getElementById('log-effort').value;
     if (!km || !effort) { alert('Please fill in your run distance and effort level.'); return; }
   }
+  if (dayMode === 'cross') {
+    const activity = document.getElementById('log-cross-activity').value;
+    const duration = document.getElementById('log-cross-duration').value;
+    if (!activity || !duration) { alert('Please fill in the activity and duration.'); return; }
+  }
   if (!notes) { alert('Please add some notes about how you felt.'); return; }
 
   btn.disabled = true;
@@ -2164,26 +2251,39 @@ async function submitLog() {
   const bodyEnergy = document.getElementById('log-body-energy')?.value || '';
   const bodyLocation = document.getElementById('log-body-location')?.value || '';
   const bodyDayType = document.getElementById('log-body-daytype')?.value || '';
+  const crossActivity = document.getElementById('log-cross-activity')?.value || '';
+  const crossDistance = document.getElementById('log-cross-distance')?.value || '';
+  const crossDuration = document.getElementById('log-cross-duration')?.value || '';
+  const crossIntensity = document.getElementById('log-cross-intensity')?.value || '';
 
   const todayLog = {
     date: new Date().toISOString(),
     mode: dayMode,
-    km: dayMode === 'run' ? km : '0',
+    km: dayMode === 'run' ? km : dayMode === 'cross' ? crossDistance : '0',
     time, pace, effort, terrain, prePain, painLoc, painScore,
     notes, sleep, stress,
-    isRestDay: dayMode !== 'run'
+    crossActivity, crossDistance, crossDuration, crossIntensity,
+    isRestDay: dayMode !== 'run' && dayMode !== 'cross'
   };
 
   const bibleContext = blueprint ? JSON.stringify(blueprint) : JAX_BIBLE;
-  const recentLogs = logs.slice(-7).map(l =>
-    `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.mode === 'body' ? 'BODY CHECK' : l.isRestDay ? 'REST DAY' : `${l.km}km @ ${l.pace}/km, effort ${l.effort}`} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`
-  ).join('\n');
+  const recentLogs = logs.slice(-7).map(l => {
+    if (l.mode === 'cross') return `${new Date(l.date).toLocaleDateString('en-GB')}: CROSS TRAINING — ${l.crossActivity} ${l.crossDistance ? l.crossDistance + 'km' : ''} ${l.crossDuration ? l.crossDuration + 'min' : ''} ${l.crossIntensity || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+    if (l.mode === 'body') return `${new Date(l.date).toLocaleDateString('en-GB')}: BODY CHECK | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+    if (l.isRestDay) return `${new Date(l.date).toLocaleDateString('en-GB')}: REST DAY | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+    return `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.km}km @ ${l.pace}/km, effort ${l.effort} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+  }).join('\n');
 
   let todayContext = '';
   if (dayMode === 'run') {
     todayContext = `RUN DAY
 Distance: ${km}km | Time: ${time} | Pace: ${pace}/km | Effort: ${effort} | Terrain: ${terrain}
 Pre-run pain: ${prePain} | Pain during/after: ${painLoc} | Pain score: ${painScore}/10`;
+  } else if (dayMode === 'cross') {
+    const distLabel = crossActivity === 'swimming' ? 'metres' : 'km';
+    todayContext = `CROSS TRAINING DAY
+Activity: ${crossActivity} | ${crossDistance ? `Distance: ${crossDistance} ${distLabel} | ` : ''}Duration: ${crossDuration} min | Intensity: ${crossIntensity}
+Discomfort score: ${painScore}/10`;
   } else if (dayMode === 'rest') {
     todayContext = `REST DAY
 Soreness today: ${restSoreness} | Pain score: ${painScore}/10 | Mobility done: ${restMobility}`;
@@ -2206,6 +2306,7 @@ Stress: ${stress || 'Not specified'}
 Notes: ${notes}
 ${pushModeActive ? '\nMODE: PUSH — runner has been pain-free 28+ days. Apply Push Mode rules.' : ''}
 
+${dayMode === 'cross' ? `This is a cross training session. Consider how ${crossActivity} affects the runner's overall training load and recovery needs relative to their running plan and injury history. Advise on recovery specific to cross training and how it should influence tomorrow's run plan.` : ''}
 ${dayMode === 'body' ? `This is a morning body check — the runner has NOT run yet today. Their plan for today is: ${bodyDayType}.
 For the "recovery" array: give 3-4 PRE-SESSION preparation movements they should do BEFORE their session today — warmup, activation drills, or mobility work specific to what they are doing (${bodyDayType}) and their injury history. NOT an evening routine.
 For "tomorrowPlan": use type "Today's Plan" and give exactly what they should do in today's session, with specific details adjusted based on how they feel right now.` : ''}
@@ -2280,7 +2381,7 @@ Respond with ONLY a JSON object — no backticks, no text outside JSON:
 }
 
 function formatCoachingResponse(c, mode) {
-  const recoveryLabel = mode === 'body' ? 'Before your session' : mode === 'run' ? 'Post-run recovery' : 'Tonight\'s recovery';
+  const recoveryLabel = mode === 'body' ? 'Before your session' : mode === 'run' ? 'Post-run recovery' : mode === 'cross' ? 'Recovery' : 'Tonight\'s recovery';
   const planLabel = mode === 'body' ? 'Today\'s plan' : 'Tomorrow\'s plan';
   return `
     <!-- ASSESSMENT -->
