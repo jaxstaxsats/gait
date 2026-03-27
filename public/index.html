@@ -690,209 +690,243 @@
 </div>
 
 <!-- BLUEPRINT PREVIEW -->
-<section style="background:var(--ink);padding:80px 24px;" id="preview">
-<div style="max-width:860px;margin:0 auto;">
+<section style="background:#f0ede4;padding:80px 24px;" id="preview">
+<div style="max-width:900px;margin:0 auto;">
 
-  <p style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:16px;">What you get</p>
-  <h2 style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(28px,5vw,54px);letter-spacing:-2px;line-height:0.95;color:white;margin-bottom:16px;">See your GAIT<br>Blueprint.</h2>
-  <p style="font-family:'DM Mono',monospace;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:48px;max-width:480px;line-height:1.8;">Exactly what gets generated for you in under 60 seconds — personalised to your injuries, equipment, terrain and goals.</p>
+  <p style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:#9a9688;text-transform:uppercase;margin-bottom:16px;text-align:center;">What you actually get</p>
+  <h2 style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(26px,4vw,48px);letter-spacing:-2px;line-height:1;color:#0f0e0b;margin-bottom:12px;text-align:center;">This is what your personal<br>GAIT Blueprint looks like.</h2>
+  <p style="font-family:'DM Mono',monospace;font-size:12px;color:#9a9688;margin-bottom:56px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8;text-align:center;">Generated in under 60 seconds. Personalised to your injuries, equipment, terrain and goals. Nothing generic.</p>
 
-  <div style="display:flex;gap:4px;background:rgba(255,255,255,0.06);border-radius:8px;padding:4px;margin-bottom:32px;overflow-x:auto;">
-    <button onclick="showPreview('weekly')" id="tab-weekly" style="flex:1;min-width:70px;padding:10px 8px;border:none;border-radius:6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;background:#c8f23a;color:#0f0e0b;font-weight:700;">Weekly</button>
-    <button onclick="showPreview('circuit')" id="tab-circuit" style="flex:1;min-width:70px;padding:10px 8px;border:none;border-radius:6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;background:transparent;color:rgba(255,255,255,0.4);">Strength</button>
-    <button onclick="showPreview('morning')" id="tab-morning" style="flex:1;min-width:70px;padding:10px 8px;border:none;border-radius:6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;background:transparent;color:rgba(255,255,255,0.4);">Morning</button>
-    <button onclick="showPreview('milestones')" id="tab-milestones" style="flex:1;min-width:70px;padding:10px 8px;border:none;border-radius:6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;background:transparent;color:rgba(255,255,255,0.4);">Milestones</button>
+  <!-- PAGE 1 — COVER / HERO -->
+  <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,0.08);margin-bottom:16px;">
+    <div style="background:#0f0e0b;padding:32px 28px 24px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:20px;">✦ GAIT Blueprint — Generated 27 March 2026</div>
+      <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(28px,5vw,48px);letter-spacing:-2px;line-height:0.95;color:white;margin-bottom:12px;">Jason's<br>G<span style="color:#c8f23a;">AI</span>T Plan</div>
+      <div style="font-family:'DM Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;line-height:1.6;">Comeback marathoner rebuilding strength after 6-year PFPS layoff</div>
+      <div style="display:inline-block;background:rgba(200,242,58,0.15);border:1px solid rgba(200,242,58,0.3);border-radius:20px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:11px;color:#c8f23a;">🎯 Protect patellofemoral joint while building toward half marathon</div>
+    </div>
+    <div style="background:#1a1917;padding:20px 28px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <div style="text-align:center;">
+        <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:22px;color:#c8f23a;">22km</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:1px;margin-top:4px;">Current weekly</div>
+      </div>
+      <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.08);border-right:1px solid rgba(255,255,255,0.08);">
+        <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:22px;color:#c8f23a;">PFPS</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:1px;margin-top:4px;">Primary injury</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:22px;color:#c8f23a;">HM</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:1px;margin-top:4px;">Race goal</div>
+      </div>
+    </div>
+    <div style="padding:20px 28px;background:white;">
+      <div style="background:#fff5f4;border-left:3px solid #ff3d2e;padding:12px 16px;border-radius:0 6px 6px 0;">
+        <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;margin-bottom:4px;">⚠️ Patellofemoral Pain Syndrome — Medium risk</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#666;line-height:1.6;">6-year history of kneecap pain. Desk work has weakened hip stabilisers. Every session must address VMO and glute medius before loading the knee.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+          <span style="background:#fff0ee;border:1px solid #ffd0cc;border-radius:4px;padding:3px 10px;font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;">No deep knee flexion above 2/10</span>
+          <span style="background:#fff0ee;border:1px solid #ffd0cc;border-radius:4px;padding:3px 10px;font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;">Glute activate before every run</span>
+          <span style="background:#fff0ee;border:1px solid #ffd0cc;border-radius:4px;padding:3px 10px;font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;">Stop at 4/10 pain</span>
+        </div>
+      </div>
+    </div>
   </div>
+  <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;text-align:center;margin-bottom:40px;">Your cover page — personal stats, primary injury alert, and the rules that protect you every session</p>
 
-  <div id="preview-weekly">
-    <div style="background:#1a1917;border-radius:10px;padding:20px;border:1px solid rgba(255,255,255,0.08);margin-bottom:16px;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
-        <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;color:white;letter-spacing:-0.5px;">Jax's GAIT Plan</div>
-        <div style="background:rgba(255,61,46,0.15);border:1px solid rgba(255,61,46,0.3);border-radius:4px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#ff3d2e;text-transform:uppercase;white-space:nowrap;">PFPS medium</div>
+  <!-- PAGE 8 — WEEKLY PLAN -->
+  <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,0.08);margin-bottom:16px;">
+    <div style="padding:24px 24px 16px;border-bottom:1px solid #f0ede4;">
+      <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:#0f0e0b;letter-spacing:-0.5px;">Weekly Training Template</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-top:4px;">Current phase: 20–25 km/week · Adjust as mileage grows</div>
+    </div>
+    <div style="padding:16px 24px;">
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:0;font-family:'DM Mono',monospace;font-size:11px;">
+        <div style="font-size:9px;letter-spacing:2px;color:#9a9688;padding:8px 12px 8px 0;border-bottom:1px solid #f0ede4;text-transform:uppercase;">Day</div>
+        <div style="font-size:9px;letter-spacing:2px;color:#9a9688;padding:8px 12px;border-bottom:1px solid #f0ede4;text-transform:uppercase;">Session</div>
+        <div style="font-size:9px;letter-spacing:2px;color:#9a9688;padding:8px 0 8px 12px;border-bottom:1px solid #f0ede4;text-transform:uppercase;">Detail</div>
+
+        <div style="padding:10px 12px 10px 0;border-bottom:1px solid #f8f6f0;color:#0f0e0b;font-weight:700;">MON</div>
+        <div style="padding:10px 12px;border-bottom:1px solid #f8f6f0;"><span style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:3px;font-size:10px;">Easy Run</span></div>
+        <div style="padding:10px 0 10px 12px;border-bottom:1px solid #f8f6f0;color:#666;">6–8 km @ 6:00–6:30/km · Conversational</div>
+
+        <div style="padding:10px 12px 10px 0;border-bottom:1px solid #f8f6f0;color:#0f0e0b;font-weight:700;">TUE</div>
+        <div style="padding:10px 12px;border-bottom:1px solid #f8f6f0;"><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:3px;font-size:10px;">Strength</span></div>
+        <div style="padding:10px 0 10px 12px;border-bottom:1px solid #f8f6f0;color:#666;">Bulletproof Knee Circuit + Daily Mobility</div>
+
+        <div style="padding:10px 12px 10px 0;border-bottom:1px solid #f8f6f0;color:#0f0e0b;font-weight:700;">WED</div>
+        <div style="padding:10px 12px;border-bottom:1px solid #f8f6f0;"><span style="background:#fff8e1;color:#f57f17;padding:2px 8px;border-radius:3px;font-size:10px;">Moderate Run</span></div>
+        <div style="padding:10px 0 10px 12px;border-bottom:1px solid #f8f6f0;color:#666;">8–10 km @ 5:40–6:00/km · Include some hills</div>
+
+        <div style="padding:10px 12px 10px 0;border-bottom:1px solid #f8f6f0;color:#0f0e0b;font-weight:700;">THU</div>
+        <div style="padding:10px 12px;border-bottom:1px solid #f8f6f0;"><span style="background:#f5f5f5;color:#666;padding:2px 8px;border-radius:3px;font-size:10px;">Rest</span></div>
+        <div style="padding:10px 0 10px 12px;border-bottom:1px solid #f8f6f0;color:#666;">Daily Mobility only · Optional 30 min walk</div>
+
+        <div style="padding:10px 12px 10px 0;border-bottom:1px solid #f8f6f0;color:#0f0e0b;font-weight:700;">FRI</div>
+        <div style="padding:10px 12px;border-bottom:1px solid #f8f6f0;"><span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:3px;font-size:10px;">Strength</span></div>
+        <div style="padding:10px 0 10px 12px;border-bottom:1px solid #f8f6f0;color:#666;">Bulletproof Knee Circuit + Daily Mobility</div>
+
+        <div style="padding:10px 12px 10px 0;border-bottom:1px solid #f8f6f0;color:#0f0e0b;font-weight:700;">SAT</div>
+        <div style="padding:10px 12px;border-bottom:1px solid #f8f6f0;"><span style="background:#fce4ec;color:#c62828;padding:2px 8px;border-radius:3px;font-size:10px;">Long Run</span></div>
+        <div style="padding:10px 0 10px 12px;border-bottom:1px solid #f8f6f0;color:#666;">10–13 km @ 5:50–6:30/km · Max 10% increase</div>
+
+        <div style="padding:10px 12px 10px 0;color:#0f0e0b;font-weight:700;">SUN</div>
+        <div style="padding:10px 12px;"><span style="background:#f5f5f5;color:#666;padding:2px 8px;border-radius:3px;font-size:10px;">Full Rest</span></div>
+        <div style="padding:10px 0 10px 12px;color:#666;">15 min Yoga Nidra / NSDR · Light stretching</div>
       </div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">Comeback marathoner rebuilding after 6-year knee layoff</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:#c8f23a;">Target: Protect patellofemoral joint while building toward half marathon</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;">
-      <div style="background:#0d1f0d;border:1px solid rgba(80,160,80,0.25);border-radius:8px;padding:10px 5px;text-align:center;"><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:5px;">MON</div><div style="font-size:20px;margin-bottom:5px;">&#127939;</div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:8px;color:white;margin-bottom:3px;line-height:1.3;">Easy Run</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.4);">6-8km</div></div>
-      <div style="background:#0d0d1f;border:1px solid rgba(80,80,160,0.25);border-radius:8px;padding:10px 5px;text-align:center;"><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:5px;">TUE</div><div style="font-size:20px;margin-bottom:5px;">&#128170;</div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:8px;color:white;margin-bottom:3px;line-height:1.3;">Strength</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.4);">Knee circuit</div></div>
-      <div style="background:#1f1f0d;border:1px solid rgba(160,160,80,0.25);border-radius:8px;padding:10px 5px;text-align:center;"><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:5px;">WED</div><div style="font-size:20px;margin-bottom:5px;">&#127939;</div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:8px;color:white;margin-bottom:3px;line-height:1.3;">Moderate</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.4);">8km hills</div></div>
-      <div style="background:#111110;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 5px;text-align:center;"><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:5px;">THU</div><div style="font-size:20px;margin-bottom:5px;">&#129340;</div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:8px;color:white;margin-bottom:3px;line-height:1.3;">Rest</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.4);">Mobility</div></div>
-      <div style="background:#0d0d1f;border:1px solid rgba(80,80,160,0.25);border-radius:8px;padding:10px 5px;text-align:center;"><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:5px;">FRI</div><div style="font-size:20px;margin-bottom:5px;">&#128170;</div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:8px;color:white;margin-bottom:3px;line-height:1.3;">Strength</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.4);">Full body</div></div>
-      <div style="background:#1f0d0d;border:1px solid rgba(160,80,80,0.25);border-radius:8px;padding:10px 5px;text-align:center;"><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:5px;">SAT</div><div style="font-size:20px;margin-bottom:5px;">&#127939;</div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:8px;color:white;margin-bottom:3px;line-height:1.3;">Long Run</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.4);">12km easy</div></div>
-      <div style="background:#111110;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 5px;text-align:center;"><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:5px;">SUN</div><div style="font-size:20px;margin-bottom:5px;">&#128564;</div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:8px;color:white;margin-bottom:3px;line-height:1.3;">Full Rest</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.4);">NSDR</div></div>
-    </div>
-    <p style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);text-align:center;">Built around your injuries, terrain and available training days</p>
   </div>
+  <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;text-align:center;margin-bottom:40px;">Your complete weekly training plan — every session structured around your injury history and available days</p>
 
-  <div id="preview-circuit" style="display:none;">
-    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-bottom:12px;">Upper body</div>
-    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:16px;margin-bottom:8px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <div style="width:36px;height:36px;background:rgba(255,255,255,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">&#128170;</div>
-        <div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:white;">Dumbbell Push Press</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#c8f23a;letter-spacing:1px;margin-top:2px;">3 x 12</div></div>
-      </div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;margin-bottom:6px;">"Builds shoulder stability needed for running posture at km 30+"</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">Hold dumbbells at shoulders — press overhead — lower with control</div>
+  <!-- PAGE 4 — STRENGTH CIRCUIT -->
+  <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,0.08);margin-bottom:16px;">
+    <div style="padding:24px 24px 16px;border-bottom:1px solid #f0ede4;">
+      <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:#0f0e0b;letter-spacing:-0.5px;">The Bulletproof Knee Circuit</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-top:4px;">20–30 minutes · 2–3x per week · Equipment: 5kg dumbbells, medicine ball, yoga mat, ab roller</div>
     </div>
-    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:16px;margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <div style="width:36px;height:36px;background:rgba(255,255,255,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">&#127947;</div>
-        <div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:white;">Bent-Over Row</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#c8f23a;letter-spacing:1px;margin-top:2px;">3 x 10</div></div>
-      </div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;margin-bottom:6px;">"Counteracts forward head posture from desk work"</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">Hinge at hips — pull elbows to ribs — squeeze shoulder blades</div>
-    </div>
-    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-bottom:12px;">Legs</div>
-    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:16px;margin-bottom:8px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <div style="width:36px;height:36px;background:rgba(255,255,255,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">&#129461;</div>
-        <div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:white;">Goblet Wall Sit</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#c8f23a;letter-spacing:1px;margin-top:2px;">Hold 60 sec</div></div>
-      </div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;margin-bottom:6px;">"Safest VMO builder — protects the kneecap without deep flexion"</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">Back against wall, thighs parallel — hold steady — breathe</div>
-    </div>
-    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:16px;margin-bottom:12px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <div style="width:36px;height:36px;background:rgba(255,255,255,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">&#129461;</div>
-        <div><div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:white;">Single-Leg Glute Bridge</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:#c8f23a;letter-spacing:1px;margin-top:2px;">3 x 12 each</div></div>
-      </div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;margin-bottom:6px;">"Targets weak glutes that cause knee collapse mid-run"</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.65);line-height:1.6;">Lie on back, lift one leg — drive heel into floor — squeeze glutes</div>
-    </div>
-    <p style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);text-align:center;">Circuit built around your exact equipment and injury history</p>
-  </div>
+    <div style="padding:16px 24px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#ff3d2e;text-transform:uppercase;margin-bottom:12px;">Phase 1 — Hip &amp; Glute Stability</div>
 
-  <div id="preview-morning" style="display:none;">
-    <div style="background:#1a1917;border-radius:10px;padding:20px;border:1px solid rgba(255,255,255,0.08);">
-      <div style="background:rgba(255,61,46,0.08);border-left:3px solid #ff3d2e;padding:8px 12px;border-radius:0 4px 4px 0;font-family:'DM Mono',monospace;font-size:11px;color:#ff3d2e;margin-bottom:16px;line-height:1.6;">Skip World's Greatest Stretch — groin above 2/10. Modified Butterfly replaces it.</div>
-      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#ff3d2e;text-transform:uppercase;margin-bottom:12px;">Spine and back</div>
-      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <div style="width:34px;height:34px;background:rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#127749;</div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px;flex-wrap:wrap;">
-            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:white;">Cat-Cow Mobility</div>
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#c8f23a;white-space:nowrap;">1 min</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <div style="border:1px solid #f0ede4;border-radius:8px;padding:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;line-height:1.3;">Glute Bridges<br><span style="color:#9a9688;font-size:10px;">with Medicine Ball</span></div>
+            <span style="background:#0f0e0b;color:#c8f23a;padding:3px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;white-space:nowrap;">3 × 15</span>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:3px;">On hands and knees, arch up slowly then drop stomach. Move with your breath.</div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);font-style:italic;">Mobilises lumbar spine before any run or strength session</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#666;line-height:1.6;">Lie on mat, squeeze ball between knees. Lift hips and hold 1 second at top.</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;margin-top:6px;font-style:italic;">Engages VMO + adductors — kneecap tracking</div>
         </div>
-      </div>
-      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <div style="width:34px;height:34px;background:rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#9889;</div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px;flex-wrap:wrap;">
-            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:white;">Glute Bridges</div>
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#c8f23a;white-space:nowrap;">2 x 12 reps</div>
+        <div style="border:1px solid #f0ede4;border-radius:8px;padding:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;line-height:1.3;">Side-Lying<br>Leg Raises</div>
+            <span style="background:#0f0e0b;color:#c8f23a;padding:3px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;white-space:nowrap;">3 × 15</span>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:3px;">Lie on back, feet flat. Drive through heels, squeeze glutes hard at top.</div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);font-style:italic;">Activates glutes so lower back does not overcompensate</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#666;line-height:1.6;">Lie on side. Raise top leg to 45°, hold 1 second, lower slowly.</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;margin-top:6px;font-style:italic;">Targets Glute Medius — prevents knee collapse</div>
         </div>
-      </div>
-      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#ff3d2e;text-transform:uppercase;margin:14px 0 12px;">Hip and joint mobility</div>
-      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <div style="width:34px;height:34px;background:rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#128260;</div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px;flex-wrap:wrap;">
-            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:white;">90/90 Hip Switches</div>
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#c8f23a;white-space:nowrap;">10 each side</div>
+        <div style="border:1px solid #f0ede4;border-radius:8px;padding:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;line-height:1.3;">Single-Leg Romanian Deadlift</div>
+            <span style="background:#0f0e0b;color:#c8f23a;padding:3px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;white-space:nowrap;">3 × 10</span>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:3px;">Sit with both knees at 90 degrees. Rotate hips to switch sides, no hands.</div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);font-style:italic;">Critical for hilly terrain — poor hip rotation creates knee compensation</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#666;line-height:1.6;">Stand on one leg, hinge at hips. Bodyweight or hold 1 dumbbell.</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;margin-top:6px;font-style:italic;">Hip stabilisers + hamstrings — fixes instability</div>
         </div>
-      </div>
-      <div style="display:flex;gap:12px;padding:12px 0;">
-        <div style="width:34px;height:34px;background:rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#128260;</div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px;flex-wrap:wrap;">
-            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:white;">Wall Ankle Mobilisation</div>
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#c8f23a;white-space:nowrap;">10 each foot</div>
+        <div style="border:1px solid #f0ede4;border-radius:8px;padding:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;line-height:1.3;">Goblet Wall Sit</div>
+            <span style="background:#0f0e0b;color:#c8f23a;padding:3px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;white-space:nowrap;">60 sec</span>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:3px;">Toes 2cm from wall, heel down. Drive knee to touch wall slowly.</div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);font-style:italic;">Prevents calves overworking on uphills — linked to calf strain history</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#666;line-height:1.6;">Back to wall, thighs parallel, hold med ball. Breathe steadily.</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;margin-top:6px;font-style:italic;">Isometric VMO — safest tendon strengthener</div>
         </div>
       </div>
     </div>
-    <p style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);text-align:center;margin-top:14px;">Every movement chosen for your specific injury history</p>
   </div>
+  <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;text-align:center;margin-bottom:40px;">Personalised strength circuit built for your exact equipment and injury history — every exercise has a reason</p>
 
-  <div id="preview-milestones" style="display:none;">
-    <div style="position:relative;padding-left:28px;">
-      <div style="position:absolute;left:7px;top:16px;bottom:16px;width:2px;background:rgba(255,255,255,0.08);border-radius:1px;"></div>
-      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
-        <div style="width:16px;height:16px;border-radius:50%;background:#c8f23a;flex-shrink:0;margin-top:16px;position:relative;z-index:1;"></div>
-        <div style="flex:1;background:rgba(200,242,58,0.05);border:1px solid rgba(200,242,58,0.2);border-radius:8px;padding:14px;">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#c8f23a;text-transform:uppercase;margin-bottom:4px;">Month 1</div>
-          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;color:white;margin-bottom:4px;">Pain-free 12km long run</div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);">Build aerobic base — no speed work yet</div>
+  <!-- PAGE 6 — MORNING ROUTINE -->
+  <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,0.08);margin-bottom:16px;">
+    <div style="padding:24px 24px 16px;border-bottom:1px solid #f0ede4;">
+      <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:#0f0e0b;letter-spacing:-0.5px;">Morning Routine</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-top:4px;">Do this every single day. This is not optional — it is training. 15–45 minutes.</div>
+    </div>
+    <div style="padding:16px 24px;">
+      <div style="background:#fff5f4;border-left:3px solid #ff3d2e;padding:8px 12px;border-radius:0 4px 4px 0;font-family:'DM Mono',monospace;font-size:11px;color:#ff3d2e;margin-bottom:16px;line-height:1.5;">⚠️ Knee-to-Chest stretch replaced with Figure-4 due to 2/10 groin sensitivity. Return when groin is 0/10.</div>
+
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#ff3d2e;text-transform:uppercase;margin-bottom:10px;">Spine &amp; Back — 8–10 min</div>
+
+      <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f8f6f0;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#f0ede4;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🌅</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:3px;">
+            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;">Cat-Cow Mobility</div>
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#ff3d2e;letter-spacing:1px;">1 min / 10 reps</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:#666;line-height:1.6;">On hands and knees. Arch back slowly (cat), drop stomach (cow). Move with your breath.</div>
         </div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
-        <div style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;margin-top:16px;position:relative;z-index:1;"></div>
-        <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:4px;">Month 2</div>
-          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;color:white;margin-bottom:4px;">Consistent 30km weeks</div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);">Introduce one quality session per week</div>
+
+      <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f8f6f0;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#f0ede4;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚡</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:3px;">
+            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;">Glute Bridges</div>
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#ff3d2e;letter-spacing:1px;">2 × 12 reps</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:#666;line-height:1.6;">Lie on back, feet flat. Drive heels into floor, squeeze glutes hard at top for 1 second.</div>
         </div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
-        <div style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;margin-top:16px;position:relative;z-index:1;"></div>
-        <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:4px;">Month 3</div>
-          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;color:white;margin-bottom:4px;">First half marathon</div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);">Race preparation and pacing strategy</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;">
-        <div style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;margin-top:16px;position:relative;z-index:1;"></div>
-        <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:4px;">6 Months</div>
-          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;color:white;margin-bottom:4px;">Half marathon PB — sub 2:05</div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);">Progressive load with full injury protection</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:14px;">
-        <div style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);flex-shrink:0;margin-top:16px;position:relative;z-index:1;"></div>
-        <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:4px;">Big Vision</div>
-          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;color:white;margin-bottom:4px;">First ultra marathon 50km</div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);">2027 — time on feet, trail strength, mental resilience</div>
+
+      <div style="display:flex;gap:12px;padding:10px 0;align-items:flex-start;">
+        <div style="width:32px;height:32px;background:#f0ede4;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔄</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:3px;">
+            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;">Figure-4 Stretch</div>
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:#ff3d2e;letter-spacing:1px;">30 sec each side</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:#666;line-height:1.6;">Lie on back. Cross right ankle over left knee. Gently press right knee away. Safe for groin.</div>
         </div>
       </div>
     </div>
-    <p style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);text-align:center;margin-top:20px;">From where you are now to where you want to be</p>
   </div>
+  <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;text-align:center;margin-bottom:40px;">Daily morning routine — every movement chosen for your specific injuries, with modifications flagged automatically</p>
 
-  <div style="text-align:center;margin-top:48px;">
-    <a href="/gait-app" style="display:inline-block;background:#c8f23a;color:#0f0e0b;font-family:'Unbounded',sans-serif;font-weight:900;font-size:14px;letter-spacing:1px;padding:18px 40px;border-radius:4px;text-decoration:none;text-transform:uppercase;">Get your blueprint free</a>
-    <p style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);margin-top:12px;">Takes 5 minutes. No card required.</p>
+  <!-- PAGE 10 — MILESTONES -->
+  <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,0.08);margin-bottom:16px;">
+    <div style="padding:24px 24px 16px;border-bottom:1px solid #f0ede4;">
+      <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:#0f0e0b;letter-spacing:-0.5px;">Your Milestone Roadmap</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-top:4px;">From where you are now to where you want to be</div>
+    </div>
+    <div style="padding:20px 24px;position:relative;">
+      <div style="position:absolute;left:36px;top:28px;bottom:28px;width:2px;background:#f0ede4;border-radius:1px;"></div>
+
+      <div style="display:flex;gap:16px;margin-bottom:16px;align-items:flex-start;">
+        <div style="width:16px;height:16px;border-radius:50%;background:#c8f23a;border:3px solid #c8f23a;flex-shrink:0;margin-top:14px;position:relative;z-index:1;"></div>
+        <div style="flex:1;background:#f8fff0;border:1px solid rgba(200,242,58,0.3);border-radius:8px;padding:14px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#5a8a00;text-transform:uppercase;margin-bottom:4px;">Month 1</div>
+          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:#0f0e0b;margin-bottom:4px;">Consistent 20–25 km/week, pain-free 12km long run</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;">Movement quality and glute activation — no speed work</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;margin-bottom:16px;align-items:flex-start;">
+        <div style="width:16px;height:16px;border-radius:50%;background:white;border:2px solid #ddd;flex-shrink:0;margin-top:14px;position:relative;z-index:1;"></div>
+        <div style="flex:1;background:white;border:1px solid #f0ede4;border-radius:8px;padding:14px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#9a9688;text-transform:uppercase;margin-bottom:4px;">Month 2–3</div>
+          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:#0f0e0b;margin-bottom:4px;">Build to 35km/week, first half marathon race or time trial</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;">Aerobic base building, hill technique, one quality session per week</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;margin-bottom:16px;align-items:flex-start;">
+        <div style="width:16px;height:16px;border-radius:50%;background:white;border:2px solid #ddd;flex-shrink:0;margin-top:14px;position:relative;z-index:1;"></div>
+        <div style="flex:1;background:white;border:1px solid #f0ede4;border-radius:8px;padding:14px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#9a9688;text-transform:uppercase;margin-bottom:4px;">6 Months</div>
+          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:#0f0e0b;margin-bottom:4px;">Half marathon PB — sub 2:05</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;">45–55 km/week, second half marathon, full race plan</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:16px;height:16px;border-radius:50%;background:white;border:2px solid #ddd;flex-shrink:0;margin-top:14px;position:relative;z-index:1;"></div>
+        <div style="flex:1;background:#0f0e0b;border-radius:8px;padding:14px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#c8f23a;text-transform:uppercase;margin-bottom:4px;">Big Vision — 2027</div>
+          <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:white;margin-bottom:4px;">First ultra marathon — 50km</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.4);">Time on feet, trail strength, mental resilience training</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;text-align:center;margin-bottom:48px;">Your complete roadmap — from today's mileage to your biggest running goal, mapped out step by step</p>
+
+  <!-- CTA -->
+  <div style="text-align:center;">
+    <a href="/gait-app" style="display:inline-block;background:#0f0e0b;color:#c8f23a;font-family:'Unbounded',sans-serif;font-weight:900;font-size:14px;letter-spacing:1px;padding:18px 40px;border-radius:4px;text-decoration:none;text-transform:uppercase;">Get your blueprint free →</a>
+    <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-top:12px;">Takes 5 minutes. No card required. No generic plans.</p>
   </div>
 
 </div>
 </section>
-
-<script>
-function showPreview(tab) {
-  var tabs = ['weekly','circuit','morning','milestones'];
-  for (var i = 0; i < tabs.length; i++) {
-    var t = tabs[i];
-    var panel = document.getElementById('preview-' + t);
-    var btn = document.getElementById('tab-' + t);
-    if (!panel || !btn) continue;
-    if (t === tab) {
-      panel.style.display = 'block';
-      btn.style.background = '#c8f23a';
-      btn.style.color = '#0f0e0b';
-      btn.style.fontWeight = '700';
-    } else {
-      panel.style.display = 'none';
-      btn.style.background = 'transparent';
-      btn.style.color = 'rgba(255,255,255,0.4)';
-      btn.style.fontWeight = '400';
-    }
-  }
-}
-</script>
 
 
 <!-- QUOTE --><!-- QUOTE -->
@@ -987,21 +1021,6 @@ function showPreview(tab) {
     <a href="/gait-app" style="background:var(--ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;padding:16px 32px;border-radius:2px;text-decoration:none;text-transform:uppercase;">Start Pro — €4.99/month</a>
   </div>
 
-  <!-- Social proof -->
-  <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:860px;margin:0 auto;">
-    <div style="background:var(--bg2);border-radius:4px;padding:20px;border-left:3px solid var(--red);">
-      <p style="font-family:var(--mono);font-size:12px;color:var(--ink2);line-height:1.8;margin-bottom:8px;">"My knee started feeling tight after week 3 — GAIT adjusted my plan automatically instead of me guessing."</p>
-      <p style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;">— PFPS runner, comeback training</p>
-    </div>
-    <div style="background:var(--bg2);border-radius:4px;padding:20px;border-left:3px solid var(--red);">
-      <p style="font-family:var(--mono);font-size:12px;color:var(--ink2);line-height:1.8;margin-bottom:8px;">"The daily logging takes 20 seconds and the blueprint actually gets smarter every week."</p>
-      <p style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;">— Marathon trainer, 18 week plan</p>
-    </div>
-    <div style="background:var(--bg2);border-radius:4px;padding:20px;border-left:3px solid var(--red);">
-      <p style="font-family:var(--mono);font-size:12px;color:var(--ink2);line-height:1.8;margin-bottom:8px;">"For less than a coffee per month, I finally have a plan that respects my old injuries."</p>
-      <p style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;">— IT band runner, half marathon goal</p>
-    </div>
-  </div>
 
 </section>
 
