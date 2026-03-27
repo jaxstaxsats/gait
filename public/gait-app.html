@@ -840,6 +840,9 @@
     </div>
   </div>
 
+  <!-- PRO COACHING STATUS -->
+  <div id="pro-coaching-status" style="margin-bottom:12px;"></div>
+
   <button class="btn-submit" id="submit-btn" onclick="submitLog()">Get today's coaching →</button>
 
   <div class="ai-response" id="ai-response">
@@ -894,6 +897,61 @@ let logs = JSON.parse(localStorage.getItem('gait_logs') || '[]');
 let selectedPain = null;
 let isRestDay = false;
 let profileData = JSON.parse(localStorage.getItem('gait_profile') || 'null');
+
+// ══════════════════════════════════════════
+// PRO USER & COACHING COUNTER
+// ══════════════════════════════════════════
+// For now everyone is Pro during testing — flip to false to simulate free tier
+const IS_PRO = true;
+const MAX_QUICK_COACHINGS = 2;
+
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function getQuickCoachingsUsed() {
+  const stored = JSON.parse(localStorage.getItem('gait_coaching_count') || '{}');
+  const today = getTodayKey();
+  return stored[today] || 0;
+}
+
+function incrementCoachingCount() {
+  const stored = JSON.parse(localStorage.getItem('gait_coaching_count') || '{}');
+  const today = getTodayKey();
+  stored[today] = (stored[today] || 0) + 1;
+  // Clean up old days
+  Object.keys(stored).forEach(k => { if (k !== today) delete stored[k]; });
+  localStorage.setItem('gait_coaching_count', JSON.stringify(stored));
+}
+
+function getCoachingsRemaining() {
+  return Math.max(0, MAX_QUICK_COACHINGS - getQuickCoachingsUsed());
+}
+
+function renderProCoachingStatus() {
+  const el = document.getElementById('pro-coaching-status');
+  if (!el) return;
+
+  if (!IS_PRO) {
+    el.innerHTML = `
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Free plan</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--ink2);line-height:1.5;">Daily coaching is a Pro feature. Upgrade to get coaching after every run.</div>
+        </div>
+        <a href="/#pricing" style="background:var(--ink);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:8px 14px;border-radius:4px;text-decoration:none;white-space:nowrap;text-transform:uppercase;">Upgrade →</a>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div style="background:var(--ink);border-radius:6px;padding:14px 16px;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;">⚡ GAIT Pro</div>
+      <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;">
+        Unlimited quick coaching today &nbsp;·&nbsp; Full Blueprint refreshes every evening
+      </div>
+    </div>`;
+}
 
 const INJURY_AREAS = [
   'Front of knee (patella / kneecap)',
@@ -1823,6 +1881,76 @@ function togglePushMode() {
 }
 
 // ══════════════════════════════════════════
+// PRO STATUS & COACHING LIMITS
+// ══════════════════════════════════════════
+// isPro defaults to true for testing — swap to false or check Stripe when payments are built
+let isPro = JSON.parse(localStorage.getItem('gait_is_pro') || 'true');
+
+function getTodayKey() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function getCoachingCount() {
+  const data = JSON.parse(localStorage.getItem('gait_coaching_count') || '{}');
+  const today = getTodayKey();
+  if (data.date !== today) return 0;
+  return data.count || 0;
+}
+
+function incrementCoachingCount() {
+  const today = getTodayKey();
+  const count = getCoachingCount() + 1;
+  localStorage.setItem('gait_coaching_count', JSON.stringify({ date: today, count }));
+}
+
+function coachingsRemaining() {
+  return Math.max(0, 2 - getCoachingCount());
+}
+
+function renderProStatus() {
+  const el = document.getElementById('pro-coaching-status');
+  if (!el) return;
+
+  if (!isPro) {
+    el.innerHTML = `
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-family:var(--display);font-weight:700;font-size:13px;color:var(--ink);margin-bottom:3px;">🔒 Daily coaching is a Pro feature</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.5;">Upgrade to GAIT Pro for daily coaching responses, blueprint refreshes and Push Mode.</div>
+        </div>
+        <a href="#pricing" style="background:var(--ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:11px;padding:10px 14px;border-radius:4px;text-decoration:none;white-space:nowrap;letter-spacing:1px;">€4.99/mo →</a>
+      </div>`;
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').style.opacity = '0.4';
+    return;
+  }
+
+  const remaining = coachingsRemaining();
+  const used = getCoachingCount();
+
+  if (remaining === 0) {
+    el.innerHTML = `
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;">
+        <div style="font-family:var(--display);font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Quick coachings used for today</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.6;">You've used both quick coachings today. Your full GAIT Blueprint refreshes this evening — come back after your day is done to get tomorrow's complete plan.</div>
+      </div>`;
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').style.opacity = '0.4';
+    return;
+  }
+
+  // Has coachings remaining
+  const dots = [1,2].map(i => `<div style="width:8px;height:8px;border-radius:50%;background:${i <= remaining ? 'var(--accent)' : 'var(--border)'};"></div>`).join('');
+  el.innerHTML = `
+    <div style="background:var(--ink);border-radius:6px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.6);line-height:1.5;">
+        Quick coaching ${used + 1} of 2 today &nbsp;·&nbsp; Full blueprint refresh this evening
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">${dots}</div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
 // DAY MODE
 // ══════════════════════════════════════════
 let dayMode = 'run'; // 'run' | 'rest' | 'body'
@@ -1871,6 +1999,7 @@ function initLog() {
   document.getElementById('log-date').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   updateStats();
   renderPushModeBar();
+  renderProCoachingStatus();
   setDayMode('run');
 
   // Daily quote
@@ -1923,6 +2052,25 @@ async function submitLog() {
   const btn = document.getElementById('submit-btn');
   const responseEl = document.getElementById('ai-response');
   const bodyEl = document.getElementById('ai-response-body');
+
+  // Pro gate
+  if (!IS_PRO) {
+    responseEl.classList.add('visible');
+    bodyEl.innerHTML = `
+      <div style="text-align:center;padding:28px 16px;">
+        <div style="font-size:32px;margin-bottom:12px;">⚡</div>
+        <div style="font-family:var(--display);font-weight:700;font-size:20px;color:white;margin-bottom:8px;">Daily coaching is a Pro feature</div>
+        <div style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:24px;line-height:1.7;max-width:320px;margin-left:auto;margin-right:auto;">
+          Get unlimited coaching after every run, tonight's recovery protocol, and a full Blueprint refresh every evening.
+        </div>
+        <a href="/#pricing" style="display:inline-block;background:var(--accent);color:var(--ink);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;padding:14px 28px;border-radius:4px;text-decoration:none;text-transform:uppercase;">Upgrade to Pro — €4.99/month</a>
+        <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.3);margin-top:12px;">Cancel anytime · No contracts</div>
+      </div>`;
+    responseEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  // Coaching counter gate removed — Pro users get unlimited quick coaching
 
   const notes = document.getElementById('log-notes').value;
   const sleep = document.getElementById('log-sleep').value;
@@ -2053,6 +2201,12 @@ Respond with ONLY a JSON object — no backticks, no text outside JSON:
       logs.push(todayLog);
       localStorage.setItem('gait_logs', JSON.stringify(logs));
       bodyEl.innerHTML = coachingData ? formatCoachingResponse(coachingData) : formatAIResponse(text);
+
+      // Add evening refresh nudge
+      bodyEl.innerHTML += `<div style="margin-top:20px;padding:14px 16px;background:rgba(200,242,58,0.06);border:1px solid rgba(200,242,58,0.15);border-radius:6px;font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.6);line-height:1.6;">
+        ✦ Your full GAIT Blueprint refreshes every evening with tomorrow's complete plan — strength circuit, morning routine and all.
+      </div>`;
+      renderProCoachingStatus();
       updateStats();
     }
   } catch (e) {
