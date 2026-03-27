@@ -589,7 +589,7 @@
 <div class="view" id="view-log">
   <div class="log-header">
     <div class="log-date" id="log-date"></div>
-    <h1 class="log-title">How did<br>today go?</h1>
+    <h1 class="log-title" id="log-title">How did<br>today go?</h1>
   </div>
   <div class="quote-block" id="daily-quote"></div>
 
@@ -602,8 +602,14 @@
   <!-- PUSH MODE BAR -->
   <div id="push-mode-bar"></div>
 
-  <button class="rest-day-btn" id="rest-day-btn" onclick="toggleRestDay()">🛌 Mark as rest day</button>
+  <!-- DAY MODE TOGGLE -->
+  <div style="display:flex;gap:4px;margin-bottom:20px;background:var(--bg2);border-radius:6px;padding:4px;">
+    <button id="mode-run" onclick="setDayMode('run')" style="flex:1;padding:10px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:var(--ink);color:var(--accent);">🏃 Run day</button>
+    <button id="mode-rest" onclick="setDayMode('rest')" style="flex:1;padding:10px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🛌 Rest day</button>
+    <button id="mode-body" onclick="setDayMode('body')" style="flex:1;padding:10px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🧘 Body check</button>
+  </div>
 
+  <!-- RUN DAY FIELDS -->
   <div id="run-fields">
     <div class="log-section">
       <div class="log-section-title">Your run</div>
@@ -701,11 +707,117 @@
     </div>
   </div>
 
+  <!-- REST DAY FIELDS -->
+  <div id="rest-fields" style="display:none;">
+    <div class="log-section">
+      <div class="log-section-title">Rest day check</div>
+      <div class="field">
+        <label>Any soreness or tightness today?</label>
+        <select id="log-rest-soreness">
+          <option value="">Select...</option>
+          <option>None — feeling fresh</option>
+          <option>Mild general fatigue</option>
+          <option>Specific area sore — see notes</option>
+          <option>Pretty stiff and tired</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Any pain right now? (0 = none)</label>
+        <div class="pain-selector" id="pain-selector-rest">
+          <button class="pain-btn" onclick="selectPain(0)">0</button>
+          <button class="pain-btn" onclick="selectPain(1)">1</button>
+          <button class="pain-btn" onclick="selectPain(2)">2</button>
+          <button class="pain-btn" onclick="selectPain(3)">3</button>
+          <button class="pain-btn" onclick="selectPain(4)">4</button>
+          <button class="pain-btn" onclick="selectPain(5)">5</button>
+          <button class="pain-btn" onclick="selectPain(6)">6</button>
+          <button class="pain-btn" onclick="selectPain(7)">7</button>
+          <button class="pain-btn" onclick="selectPain(8)">8</button>
+          <button class="pain-btn" onclick="selectPain(9)">9</button>
+          <button class="pain-btn" onclick="selectPain(10)">10</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Did you do any mobility or stretching today?</label>
+        <select id="log-rest-mobility">
+          <option value="">Select...</option>
+          <option>Yes — full morning routine</option>
+          <option>Yes — quick stretch only</option>
+          <option>Not yet</option>
+          <option>No — full rest</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY CHECK FIELDS -->
+  <div id="body-fields" style="display:none;">
+    <div class="log-section">
+      <div class="log-section-title">How are you feeling?</div>
+      <div class="field">
+        <label>Overall energy and mood right now</label>
+        <select id="log-body-energy">
+          <option value="">Select...</option>
+          <option>Great — energised and positive</option>
+          <option>Good — feeling okay</option>
+          <option>Low — tired or flat</option>
+          <option>Poor — fatigued or unwell</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Any pain or tightness anywhere? (0 = none)</label>
+        <div class="pain-selector" id="pain-selector-body">
+          <button class="pain-btn" onclick="selectPain(0)">0</button>
+          <button class="pain-btn" onclick="selectPain(1)">1</button>
+          <button class="pain-btn" onclick="selectPain(2)">2</button>
+          <button class="pain-btn" onclick="selectPain(3)">3</button>
+          <button class="pain-btn" onclick="selectPain(4)">4</button>
+          <button class="pain-btn" onclick="selectPain(5)">5</button>
+          <button class="pain-btn" onclick="selectPain(6)">6</button>
+          <button class="pain-btn" onclick="selectPain(7)">7</button>
+          <button class="pain-btn" onclick="selectPain(8)">8</button>
+          <button class="pain-btn" onclick="selectPain(9)">9</button>
+          <button class="pain-btn" onclick="selectPain(10)">10</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Where? (if any)</label>
+        <select id="log-body-location">
+          <option value="">Select...</option>
+          <option>None</option>
+          <option>Knee — front</option>
+          <option>Knee — back or side</option>
+          <option>Hip / glute</option>
+          <option>Hamstring</option>
+          <option>Calf</option>
+          <option>Achilles</option>
+          <option>Shin</option>
+          <option>Foot</option>
+          <option>Lower back</option>
+          <option>Multiple areas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>What's today? (helps GAIT plan your day)</label>
+        <select id="log-body-daytype">
+          <option value="">Select...</option>
+          <option>Planning to run later</option>
+          <option>Strength training day</option>
+          <option>Rest day — no exercise planned</option>
+          <option>Active recovery — light walk or mobility</option>
+          <option>Race or event day</option>
+          <option>Not sure yet</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED FIELDS — always visible -->
   <div class="log-section">
-    <div class="log-section-title">Notes</div>
+    <div class="log-section-title">Notes & recovery</div>
     <div class="field">
-      <label>How did you feel? Anything worth noting?</label>
-      <textarea id="log-notes" placeholder="e.g. Felt strong for first 4km then legs heavy. Slight tightness back of left knee before I started..."></textarea>
+      <label>How are you feeling? Anything worth noting?</label>
+      <textarea id="log-notes" placeholder="e.g. Left knee felt tight this morning. Legs heavy from yesterday. Feeling good and motivated..."></textarea>
     </div>
     <div class="field">
       <label>Sleep last night</label>
@@ -1234,16 +1346,21 @@ Return ONLY this JSON:
     "note": "injury note or empty string",
     "spineSection": [
       {"name": "name", "duration": "1 min", "icon": "🌅", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "30 sec each side", "icon": "🌅", "instruction": "how to do it", "why": "why"}
+      {"name": "name", "duration": "30 sec each side", "icon": "🌅", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "45 sec", "icon": "🌅", "instruction": "how to do it", "why": "why"}
     ],
     "hipSection": [
       {"name": "name", "duration": "10 reps each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
       {"name": "name", "duration": "60 sec", "icon": "🔄", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "20 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"}
+      {"name": "name", "duration": "20 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "30 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"}
     ],
     "activationSection": [
       {"name": "name", "duration": "2 × 12 reps", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "10 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"}
+      {"name": "name", "duration": "10 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "15 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "12 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "10 reps each foot", "icon": "⚡", "instruction": "how to do it", "why": "why"}
     ]
   },
   "eveningRoutine": {
@@ -1321,6 +1438,61 @@ Return ONLY this JSON:
   }
 }
 
+
+let currentRoutineTime = 15;
+
+function setRoutineTime(mins, btn) {
+  currentRoutineTime = mins;
+  // Update buttons
+  btn.parentElement.querySelectorAll('button').forEach(b => {
+    b.style.background = 'transparent';
+    b.style.color = 'var(--muted)';
+  });
+  btn.style.background = 'var(--ink)';
+  btn.style.color = 'var(--accent)';
+  renderMorningRoutineContent();
+}
+
+function renderMorningRoutineContent() {
+  const b = typeof blueprint === 'string' ? JSON.parse(blueprint) : blueprint;
+  if (!b?.morningRoutine) return;
+  const container = document.getElementById('morning-routine-content');
+  if (!container) return;
+
+  // Determine how many movements to show based on time
+  const spineItems = b.morningRoutine.spineSection || [];
+  const hipItems = b.morningRoutine.hipSection || [];
+  const activationItems = b.morningRoutine.activationSection || [];
+
+  let spineCount, hipCount, activationCount;
+  if (currentRoutineTime === 15) {
+    spineCount = 1; hipCount = 2; activationCount = 2;
+  } else if (currentRoutineTime === 30) {
+    spineCount = 2; hipCount = 3; activationCount = 3;
+  } else {
+    spineCount = spineItems.length; hipCount = hipItems.length; activationCount = activationItems.length;
+  }
+
+  let html = '';
+  if (b.morningRoutine.note) {
+    html += `<div style="background:rgba(255,61,46,0.08);border-left:3px solid var(--red);padding:8px 12px;border-radius:0 4px 4px 0;font-family:var(--mono);font-size:11px;color:var(--red);margin-bottom:14px;">⚠️ ${b.morningRoutine.note}</div>`;
+  }
+
+  if (spineItems.slice(0, spineCount).length) {
+    html += `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px;">Spine & back</div>`;
+    html += spineItems.slice(0, spineCount).map(m => renderRoutineItem(m, false)).join('');
+  }
+  if (hipItems.slice(0, hipCount).length) {
+    html += `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin:12px 0 8px;">Hip & joint mobility</div>`;
+    html += hipItems.slice(0, hipCount).map(m => renderRoutineItem(m, false)).join('');
+  }
+  if (activationItems.slice(0, activationCount).length) {
+    html += `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin:12px 0 8px;">Activation</div>`;
+    html += activationItems.slice(0, activationCount).map(m => renderRoutineItem(m, false)).join('');
+  }
+
+  container.innerHTML = html;
+}
 
 function renderExerciseCard(ex) {
   return `<div class="bp-exercise">
@@ -1438,17 +1610,16 @@ function renderBlueprint() {
   ${(b.strengthCircuit?.core || []).map(ex => renderExerciseCard(ex)).join('')}
 
   <!-- MORNING ROUTINE -->
-  <div class="bp-section-label" style="margin-top:20px;">Morning routine <span style="font-weight:400;color:var(--muted);font-size:9px;">— 15 to 45 min</span></div>
-  <div style="background:var(--bg2);border-radius:8px;padding:16px;border:1px solid var(--border);">
-    ${b.morningRoutine?.note ? `<div style="background:rgba(255,61,46,0.08);border-left:3px solid var(--red);padding:8px 12px;border-radius:0 4px 4px 0;font-family:var(--mono);font-size:11px;color:var(--red);margin-bottom:14px;">⚠️ ${b.morningRoutine.note}</div>` : ''}
-    ${b.morningRoutine?.spineSection?.length ? `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px;">Spine & back</div>` : ''}
-    ${(b.morningRoutine?.spineSection || []).map(m => renderRoutineItem(m, false)).join('')}
-    ${b.morningRoutine?.hipSection?.length ? `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin:12px 0 8px;">Hip & joint mobility</div>` : ''}
-    ${(b.morningRoutine?.hipSection || []).map(m => renderRoutineItem(m, false)).join('')}
-    ${b.morningRoutine?.activationSection?.length ? `<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin:12px 0 8px;">Activation</div>` : ''}
-    ${(b.morningRoutine?.activationSection || []).map(m => renderRoutineItem(m, false)).join('')}
-    ${Array.isArray(b.morningRoutine) ? b.morningRoutine.map(m => renderRoutineItem(m, false)).join('') : ''}
+  <div class="bp-section-label" style="margin-top:20px;">Morning routine</div>
+
+  <!-- Time picker -->
+  <div style="display:flex;gap:4px;margin-bottom:12px;background:var(--bg2);border-radius:6px;padding:4px;">
+    <button onclick="setRoutineTime(15, this)" style="flex:1;padding:8px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;background:var(--ink);color:var(--accent);">15 min</button>
+    <button onclick="setRoutineTime(30, this)" style="flex:1;padding:8px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;background:transparent;color:var(--muted);">30 min</button>
+    <button onclick="setRoutineTime(45, this)" style="flex:1;padding:8px;border:none;border-radius:4px;font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;background:transparent;color:var(--muted);">45 min</button>
   </div>
+
+  <div style="background:var(--bg2);border-radius:8px;padding:16px;border:1px solid var(--border);" id="morning-routine-content"></div>
 
   <!-- EVENING ROUTINE -->
   <div class="bp-section-label" style="margin-top:20px;">Evening routine <span style="font-weight:400;color:var(--muted);font-size:9px;">— 15 to 30 min, hold 60-90 sec each</span></div>
@@ -1506,6 +1677,7 @@ function renderBlueprint() {
   </div>`;
 
   container.innerHTML = html;
+  renderMorningRoutineContent();
 }
 
 function resetBlueprint() {
@@ -1651,6 +1823,47 @@ function togglePushMode() {
 }
 
 // ══════════════════════════════════════════
+// DAY MODE
+// ══════════════════════════════════════════
+let dayMode = 'run'; // 'run' | 'rest' | 'body'
+
+function setDayMode(mode) {
+  dayMode = mode;
+  isRestDay = mode === 'rest';
+
+  // Update toggle buttons
+  ['run', 'rest', 'body'].forEach(m => {
+    const btn = document.getElementById('mode-' + m);
+    if (btn) {
+      btn.style.background = m === mode ? 'var(--ink)' : 'transparent';
+      btn.style.color = m === mode ? 'var(--accent)' : 'var(--muted)';
+    }
+  });
+
+  // Show/hide field sections
+  const runFields = document.getElementById('run-fields');
+  const restFields = document.getElementById('rest-fields');
+  const bodyFields = document.getElementById('body-fields');
+  const title = document.getElementById('log-title');
+
+  if (runFields) runFields.style.display = mode === 'run' ? 'block' : 'none';
+  if (restFields) restFields.style.display = mode === 'rest' ? 'block' : 'none';
+  if (bodyFields) bodyFields.style.display = mode === 'body' ? 'block' : 'none';
+
+  if (title) {
+    if (mode === 'run') title.innerHTML = 'How did<br>today go?';
+    if (mode === 'rest') title.innerHTML = 'Rest day.<br>How\'s the body?';
+    if (mode === 'body') title.innerHTML = 'Morning<br>check-in.';
+  }
+
+  const btn = document.getElementById('submit-btn');
+  if (btn) {
+    if (mode === 'body') btn.textContent = 'Get my daily plan →';
+    else btn.textContent = 'Get today\'s coaching →';
+  }
+}
+
+// ══════════════════════════════════════════
 // DAILY LOG
 // ══════════════════════════════════════════
 function initLog() {
@@ -1658,6 +1871,7 @@ function initLog() {
   document.getElementById('log-date').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   updateStats();
   renderPushModeBar();
+  setDayMode('run');
 
   // Daily quote
   const q = getDailyQuote();
@@ -1709,12 +1923,11 @@ async function submitLog() {
   const sleep = document.getElementById('log-sleep').value;
   const stress = document.getElementById('log-stress').value;
 
-  if (!isRestDay) {
+  if (dayMode === 'run') {
     const km = document.getElementById('log-km').value;
     const effort = document.getElementById('log-effort').value;
     if (!km || !effort) { alert('Please fill in your run distance and effort level.'); return; }
   }
-
   if (!notes) { alert('Please add some notes about how you felt.'); return; }
 
   btn.disabled = true;
@@ -1722,86 +1935,90 @@ async function submitLog() {
   responseEl.classList.add('visible');
   bodyEl.innerHTML = '<div class="spinner" style="margin:20px auto;"></div>';
 
-  const km = document.getElementById('log-km').value || '0';
-  const time = document.getElementById('log-time').value || '—';
-  const pace = document.getElementById('log-pace').value || '—';
-  const effort = document.getElementById('log-effort').value || '—';
-  const terrain = document.getElementById('log-terrain').value || '—';
-  const prePain = document.getElementById('log-pre-pain').value || 'Not specified';
-  const painLoc = document.getElementById('log-pain-location').value || 'None';
-  const painScore = selectedPain !== null ? selectedPain : 'Not specified';
+  const km = document.getElementById('log-km')?.value || '0';
+  const time = document.getElementById('log-time')?.value || '—';
+  const pace = document.getElementById('log-pace')?.value || '—';
+  const effort = document.getElementById('log-effort')?.value || '—';
+  const terrain = document.getElementById('log-terrain')?.value || '—';
+  const prePain = document.getElementById('log-pre-pain')?.value || 'Not specified';
+  const painLoc = document.getElementById('log-pain-location')?.value || 'None';
+  const painScore = selectedPain !== null ? selectedPain : 0;
 
-  const todayLog = { date: new Date().toISOString(), km, time, pace, effort, terrain, prePain, painLoc, painScore, notes, sleep, stress, isRestDay };
+  // Mode-specific fields
+  const restSoreness = document.getElementById('log-rest-soreness')?.value || '';
+  const restMobility = document.getElementById('log-rest-mobility')?.value || '';
+  const bodyEnergy = document.getElementById('log-body-energy')?.value || '';
+  const bodyLocation = document.getElementById('log-body-location')?.value || '';
+  const bodyDayType = document.getElementById('log-body-daytype')?.value || '';
 
-  // Use Jax's bible if no profile generated yet, otherwise use stored profile
-  const bibleContext = blueprint || JAX_BIBLE;
+  const todayLog = {
+    date: new Date().toISOString(),
+    mode: dayMode,
+    km: dayMode === 'run' ? km : '0',
+    time, pace, effort, terrain, prePain, painLoc, painScore,
+    notes, sleep, stress,
+    isRestDay: dayMode !== 'run'
+  };
+
+  const bibleContext = blueprint ? JSON.stringify(blueprint) : JAX_BIBLE;
   const recentLogs = logs.slice(-7).map(l =>
-    `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.isRestDay ? 'REST DAY' : `${l.km}km @ ${l.pace}/km, effort ${l.effort}`} | Pain: ${l.painScore}/10 at ${l.painLoc} | Notes: ${l.notes}`
+    `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.mode === 'body' ? 'BODY CHECK' : l.isRestDay ? 'REST DAY' : `${l.km}km @ ${l.pace}/km, effort ${l.effort}`} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`
   ).join('\n');
 
-  const prompt = `You are GAIT, an expert injury-aware AI running coach. Your job is to respond to today's training log with specific, personalised coaching — not generic advice.
+  let todayContext = '';
+  if (dayMode === 'run') {
+    todayContext = `RUN DAY
+Distance: ${km}km | Time: ${time} | Pace: ${pace}/km | Effort: ${effort} | Terrain: ${terrain}
+Pre-run pain: ${prePain} | Pain during/after: ${painLoc} | Pain score: ${painScore}/10`;
+  } else if (dayMode === 'rest') {
+    todayContext = `REST DAY
+Soreness today: ${restSoreness} | Pain score: ${painScore}/10 | Mobility done: ${restMobility}`;
+  } else {
+    todayContext = `MORNING BODY CHECK — no run yet
+Energy/mood: ${bodyEnergy} | Pain score: ${painScore}/10 | Pain location: ${bodyLocation}
+Today's plan: ${bodyDayType}`;
+  }
 
-GAIT COACHING RULES:
-- Always reference the runner's specific injury history when giving advice
-- Pain at 1-2/10 = modify and monitor. Pain at 3-4/10 = reduce load significantly. Pain at 5+/10 = stop and rest.
-- Never prescribe speed work or long runs when any injury signal is above 2/10
-- Recovery protocol must be specific to the exact pain location logged — not generic stretching
-- Always cross-reference today's data against the recent log history for patterns
-- If the runner has logged the same pain location 3+ times this week, escalate the response
-- Sleep under 6hrs and high stress = reduce tomorrow's planned load by 20-30%
-
-RECOVERY PRINCIPLES — use your full knowledge to prescribe the right recovery:
-- Match recovery to the exact pain location and injury type logged today
-- For acute pain (new or sharp): ice, rest, no stretching of the affected area
-- For chronic tightness (familiar, dull): targeted stretching and mobility work
-- For muscle fatigue (no pain, just tired): gentle mobility, foam rolling, elevation
-- For tendon issues: isometric exercises reduce pain fastest — prescribe these first
-- Always address the ROOT CAUSE not just the symptom location
-- Recovery after easy runs: 10-15 min mobility only
-- Recovery after hard runs: full stretching protocol plus targeted injury work
-- Recovery after long runs: elevation, nutrition focus, sleep priority, light mobility only next morning
-
-RUNNER'S BLUEPRINT & FULL HISTORY:
+  const prompt = `RUNNER'S BLUEPRINT & HISTORY:
 ${bibleContext}
 
 RECENT LOG HISTORY (last 7 entries):
-${recentLogs || 'No previous logs yet — this is their first entry'}
+${recentLogs || 'No previous logs yet'}
 
-TODAY'S LOG:
-Date: ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
-${isRestDay ? 'REST DAY — no running today' : `Distance: ${km}km | Time: ${time} | Pace: ${pace}/km | Effort: ${effort} | Terrain: ${terrain}`}
-Pre-run pain/tightness: ${prePain}
-Pain during/after: ${painLoc} | Pain score: ${painScore}/10
+TODAY — ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}:
+${todayContext}
 Sleep last night: ${sleep || 'Not specified'}
-Stress level: ${stress || 'Not specified'}
+Stress: ${stress || 'Not specified'}
 Notes: ${notes}
-${pushModeActive ? '\nMODE: PUSH — this runner has been pain-free for 28+ days and has unlocked Push Mode. Apply Push Mode progression rules.' : ''}
+${pushModeActive ? '\nMODE: PUSH — runner has been pain-free 28+ days. Apply Push Mode rules.' : ''}
 
-Respond with ONLY a JSON object — no text before or after, no markdown backticks:
+${dayMode === 'body' ? 'This is a morning body check — the runner has not run yet today. Give them a personalised mini plan for today based on how they feel, their blueprint, and their recent logs.' : ''}
+
+Respond with ONLY a JSON object — no backticks, no text outside JSON:
 {
   "assessment": {
-    "emoji": "one emoji that captures today",
-    "headline": "one punchy sentence summarising today",
-    "detail": "2-3 sentences specific to their data, injury history and patterns"
+    "emoji": "one emoji",
+    "headline": "one punchy sentence",
+    "detail": "2-3 sentences specific to their data and injury history"
   },
   "recovery": [
     {
       "name": "exercise or stretch name",
-      "duration": "e.g. 60 sec each side",
-      "icon": "relevant emoji",
-      "instruction": "exactly how to do it in one sentence",
-      "why": "why this helps their specific issue today"
+      "duration": "time or reps",
+      "icon": "emoji",
+      "instruction": "exactly how in one sentence",
+      "why": "why this helps their specific situation today"
     }
   ],
   "tomorrowPlan": {
-    "type": "Run / Strength / Rest / Active Recovery",
-    "icon": "relevant emoji",
-    "detail": "exact km range and pace if running, or what to do if not",
-    "reason": "one sentence why this is the right call based on today"
+    "type": "Run / Strength / Rest / Active Recovery / Today's Plan",
+    "icon": "emoji",
+    "detail": "specific detail — km and pace if run, exercises if strength, movements if recovery",
+    "reason": "one sentence why based on today's data"
   },
   "watchThis": {
-    "pattern": "the specific thing to watch",
-    "action": "one concrete action to take"
+    "pattern": "specific thing to watch",
+    "action": "one concrete action"
   }
 }`;
 
