@@ -2202,9 +2202,9 @@ Respond with ONLY a JSON object — no backticks, no text outside JSON:
       localStorage.setItem('gait_logs', JSON.stringify(logs));
       bodyEl.innerHTML = coachingData ? formatCoachingResponse(coachingData) : formatAIResponse(text);
 
-      // Add evening refresh nudge
+      // Evening refresh nudge
       bodyEl.innerHTML += `<div style="margin-top:20px;padding:14px 16px;background:rgba(200,242,58,0.06);border:1px solid rgba(200,242,58,0.15);border-radius:6px;font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.6);line-height:1.6;">
-        ✦ Your full GAIT Blueprint refreshes every evening with tomorrow's complete plan — strength circuit, morning routine and all.
+        ✦ Unlimited quick coaching today. Your full GAIT Blueprint refreshes every evening with tomorrow's complete plan.
       </div>`;
       renderProCoachingStatus();
       updateStats();
