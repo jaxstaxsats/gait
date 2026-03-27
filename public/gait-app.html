@@ -527,6 +527,7 @@
 
   /* ── QUOTES ── */
   .quote-block {
+    transition: opacity 0.4s ease;
     border-left: 3px solid var(--red);
     padding: 12px 16px;
     margin-bottom: 24px;
@@ -1750,50 +1751,71 @@ function resetBlueprint() {
 // QUOTES
 // ══════════════════════════════════════════
 const RUNNING_QUOTES = [
-  { text: "It never gets easier, you just get faster.", attr: "Greg LeMond" },
-  { text: "Run when you can, walk if you have to, crawl if you must. Just never give up.", attr: "Dean Karnazes" },
+  { text: "Run when you can, walk if you have to, crawl if you must; just never give up.", attr: "Dean Karnazes" },
   { text: "The miracle isn't that I finished. The miracle is that I had the courage to start.", attr: "John Bingham" },
-  { text: "Your body will argue that there is no justifiable reason to continue. Your only recourse is to call on your spirit.", attr: "Tim Noakes" },
-  { text: "Every champion was once a contender that refused to give up.", attr: "Unknown" },
+  { text: "Only the disciplined ones are free in life.", attr: "Eliud Kipchoge" },
+  { text: "To give anything less than your best is to sacrifice the gift.", attr: "Steve Prefontaine" },
   { text: "Pain is inevitable. Suffering is optional.", attr: "Haruki Murakami" },
+  { text: "It always seems impossible until it's done.", attr: "Nelson Mandela" },
+  { text: "Don't dream of winning, train for it.", attr: "Mo Farah" },
+  { text: "The will to win means nothing without the will to prepare.", attr: "Juma Ikangaa" },
+  { text: "A runner must run with dreams in his heart.", attr: "Emil Zátopek" },
+  { text: "Run often. Run long. But never outrun your joy of running.", attr: "Julie Isphording" },
+  { text: "Somewhere in the world someone is training harder than you.", attr: "Unknown" },
+  { text: "When you feel like quitting, remember why you started.", attr: "Unknown" },
+  { text: "The body achieves what the mind believes.", attr: "Unknown" },
+  { text: "No matter how slow you go, you are still lapping everybody on the couch.", attr: "Unknown" },
+  { text: "If you want to become the best runner you can be, start now. Don't wait.", attr: "Bill Rodgers" },
+  { text: "You don't stop running because you get old, you get old because you stop running.", attr: "Christopher McDougall" },
+  { text: "The obsession with running is really an obsession with the potential for more.", attr: "George Sheehan" },
+  { text: "Fast running isn't forced. It flows.", attr: "Bill Bowerman" },
+  { text: "If you don't have confidence, you'll always find a way not to win.", attr: "Carl Lewis" },
+  { text: "Your only limit is you.", attr: "Unknown" },
+  { text: "It never gets easier, you just get faster.", attr: "Greg LeMond" },
+  { text: "Your body will argue that there is no justifiable reason to continue. Your only recourse is to call on your spirit.", attr: "Tim Noakes" },
   { text: "The long run is what puts the tiger in the cat.", attr: "Bill Squires" },
-  { text: "Ask yourself: can I give more? The answer is always yes.", attr: "Unknown" },
   { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", attr: "Aristotle" },
   { text: "Somewhere in the world someone is training when you are not. When you race him, he will win.", attr: "Tom Fleming" },
-  { text: "The obsession with running is really an obsession with the potential for more and more life.", attr: "George Sheehan" },
-  { text: "You have to wonder at times what you're doing out there. Over the years I've given myself a thousand reasons to keep running, but it always comes back to where it started — it comes down to self-satisfaction and a sense of achievement.", attr: "Steve Prefontaine" },
-  { text: "No matter how slow you go, you're still lapping everyone on the couch.", attr: "Unknown" },
-  { text: "To give anything less than your best is to sacrifice the gift.", attr: "Steve Prefontaine" },
-  { text: "The will to win means nothing without the will to prepare.", attr: "Juma Ikangaa" },
-  { text: "Believe in yourself, take on your challenges, dig deep within yourself to conquer fears.", attr: "Chantal Sutherland" },
-  { text: "Running is alone time that lets my brain unspool the tangles that build up over days.", attr: "Rob Haneisen" },
-  { text: "I always loved running. It was something you could do by yourself, and under your own power.", attr: "Jesse Owens" },
-  { text: "The human body is capable of amazing physical deeds. If we could just free ourselves from our perceived limitations and tap into our internal fire.", attr: "Dean Karnazes" },
-  { text: "Every morning in Africa, a gazelle wakes up. It knows it must outrun the fastest lion or it will be killed. Every morning in Africa, a lion wakes up. It knows it must run faster than the slowest gazelle or it will starve. It doesn't matter whether you're the lion or a gazelle — when the sun comes up, you'd better be running.", attr: "Unknown" },
-  { text: "Running is a road to self-awareness and reliance.", attr: "Doris Brown Heritage" },
-  { text: "The voice inside your head that says you can't do this is a liar.", attr: "Unknown" },
-  { text: "Fall seven times, stand up eight.", attr: "Japanese Proverb" },
   { text: "One run can change your day. Many runs can change your life.", attr: "Unknown" },
   { text: "You are one run away from a good mood.", attr: "Unknown" },
+  { text: "The voice inside your head that says you can't do this is a liar.", attr: "Unknown" },
+  { text: "Fall seven times, stand up eight.", attr: "Japanese Proverb" },
+  { text: "Running is a road to self-awareness and reliance.", attr: "Doris Brown Heritage" },
 ];
 
 const LOADING_QUOTES = [
   { text: "Champions are made in the moments they want to stop.", attr: "Unknown" },
   { text: "The best view comes after the hardest climb.", attr: "Unknown" },
-  { text: "Your future self is watching you right now through your memories.", attr: "Aubrey de Grey" },
   { text: "Don't dream of winning. Train for it.", attr: "Mo Farah" },
   { text: "Tough times never last, but tough people do.", attr: "Robert H. Schuller" },
   { text: "The only bad run is the one that didn't happen.", attr: "Unknown" },
+  { text: "Only the disciplined ones are free in life.", attr: "Eliud Kipchoge" },
 ];
 
+let quoteIndex = Math.floor(Math.random() * RUNNING_QUOTES.length);
+
 function getDailyQuote() {
-  const day = new Date().getDay();
-  return RUNNING_QUOTES[day % RUNNING_QUOTES.length];
+  return RUNNING_QUOTES[quoteIndex % RUNNING_QUOTES.length];
 }
 
 function getRandomQuote(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+
+function rotateQuote() {
+  quoteIndex = (quoteIndex + 1) % RUNNING_QUOTES.length;
+  const el = document.getElementById('daily-quote');
+  if (!el) return;
+  el.style.opacity = '0';
+  setTimeout(() => {
+    const q = RUNNING_QUOTES[quoteIndex];
+    el.innerHTML = `<div class="quote-text">"${q.text}"</div><div class="quote-attr">— ${q.attr}</div>`;
+    el.style.opacity = '1';
+  }, 400);
+}
+
+// Start rotation — every 60 seconds
+setInterval(rotateQuote, 60000);
 
 // ══════════════════════════════════════════
 // PUSH MODE
