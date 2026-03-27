@@ -860,6 +860,32 @@
     <div class="log-date">Your training log</div>
     <h1 class="log-title">Run<br>history.</h1>
   </div>
+
+  <!-- CHARTS -->
+  <div id="history-charts">
+    <!-- Pain trend -->
+    <div style="margin-bottom:20px;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;">Pain trend — 30 days</div>
+      <div style="background:var(--ink);border-radius:8px;padding:16px;">
+        <canvas id="chart-pain" height="120"></canvas>
+      </div>
+    </div>
+    <!-- Weekly mileage -->
+    <div style="margin-bottom:20px;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;">Weekly km — 8 weeks</div>
+      <div style="background:var(--ink);border-radius:8px;padding:16px;">
+        <canvas id="chart-mileage" height="120"></canvas>
+      </div>
+    </div>
+    <!-- Consistency -->
+    <div style="margin-bottom:20px;">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;">Consistency this month</div>
+      <div style="background:var(--ink);border-radius:8px;padding:16px;">
+        <canvas id="chart-consistency" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+
   <div id="history-container"></div>
 </div>
 
@@ -1723,6 +1749,14 @@ function renderBlueprint() {
     <div class="bp-habit-why">Why: ${b.dailyHabit?.why || ''}</div>
   </div>
 
+  <!-- TRAINING LOAD -->
+  <div class="bp-section-label" style="margin-top:20px;">Training load</div>
+  <div id="bp-acwr-gauge" style="background:var(--ink);border-radius:8px;padding:16px;margin-bottom:12px;"></div>
+  <div style="background:var(--ink);border-radius:8px;padding:16px;margin-bottom:4px;">
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px;">Pain — last 14 days</div>
+    <canvas id="chart-pain-mini" height="80"></canvas>
+  </div>
+
   <!-- ACTIONS -->
   <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
     <button onclick="resetBlueprint()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:2px;padding:14px 20px;border-radius:4px;cursor:pointer;text-transform:uppercase;min-width:140px;">
@@ -1737,6 +1771,7 @@ function renderBlueprint() {
 
   container.innerHTML = html;
   renderMorningRoutineContent();
+  renderBlueprintCharts();
 }
 
 function resetBlueprint() {
@@ -2418,7 +2453,7 @@ function showView(name) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(`view-${name}`).classList.add('active');
   event.target.classList.add('active');
-  if (name === 'history') renderHistory();
+  if (name === 'history') { renderHistory(); renderHistoryCharts(); }
   if (name === 'log') renderPushModeBar();
 }
 
@@ -2427,6 +2462,384 @@ function showView(name) {
 // ══════════════════════════════════════════
 renderQ();
 initLog();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+
+// ══════════════════════════════════════════
+// CHART HELPERS
+// ══════════════════════════════════════════
+
+// Shared chart defaults
+Chart.defaults.color = 'rgba(255,255,255,0.4)';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 10;
+
+const CHART_GRID = { color: 'rgba(255,255,255,0.06)', drawBorder: false };
+const CHART_ACCENT = '#c8f23a';
+const CHART_RED = '#ff3d2e';
+const CHART_AMBER = '#f5a623';
+
+// Pain score → colour
+function painColor(score) {
+  if (score <= 2) return '#4ade80';
+  if (score <= 4) return CHART_AMBER;
+  return CHART_RED;
+}
+
+// Get last N days as labels
+function lastNDays(n) {
+  return Array.from({length: n}, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (n - 1 - i));
+    return d.toISOString().slice(0, 10);
+  });
+}
+
+// Get ISO week string YYYY-WNN
+function isoWeek(dateStr) {
+  const d = new Date(dateStr);
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+  return `${d.getFullYear()}-W${String(week).padStart(2, '0')}`;
+}
+
+// Short week label e.g. "Mar 24"
+function weekLabel(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+
+// ══════════════════════════════════════════
+// PAIN TREND CHART (full - 30 days)
+// ══════════════════════════════════════════
+function renderPainChart(canvasId, days) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  const dayKeys = lastNDays(days);
+  const logMap = {};
+  logs.forEach(l => {
+    const key = l.date ? l.date.slice(0, 10) : null;
+    if (key) logMap[key] = parseInt(l.painScore) || 0;
+  });
+
+  const scores = dayKeys.map(k => logMap[k] !== undefined ? logMap[k] : null);
+  const labels = dayKeys.map(k => {
+    const d = new Date(k);
+    return d.getDate() + '/' + (d.getMonth() + 1);
+  });
+
+  // Point colours based on score
+  const pointColors = scores.map(s => s === null ? 'transparent' : painColor(s));
+
+  // Destroy existing if any
+  if (canvas._chartInstance) canvas._chartInstance.destroy();
+
+  canvas._chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: scores,
+        borderColor: CHART_ACCENT,
+        borderWidth: 2,
+        pointBackgroundColor: pointColors,
+        pointBorderColor: pointColors,
+        pointRadius: scores.map(s => s === null ? 0 : 4),
+        tension: 0.3,
+        spanGaps: true,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        annotation: { annotations: {} },
+        tooltip: {
+          callbacks: {
+            label: ctx => `Pain: ${ctx.parsed.y}/10`
+          }
+        }
+      },
+      scales: {
+        x: { grid: CHART_GRID, ticks: { maxTicksLimit: 8, maxRotation: 0 } },
+        y: {
+          grid: CHART_GRID,
+          min: 0, max: 10,
+          ticks: { stepSize: 2 },
+          afterDataLimits(scale) {}
+        }
+      }
+    },
+    plugins: [{
+      id: 'warningLine',
+      afterDraw(chart) {
+        const { ctx, chartArea, scales } = chart;
+        const y = scales.y.getPixelForValue(3);
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = CHART_AMBER;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, y);
+        ctx.lineTo(chartArea.right, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '9px DM Mono, monospace';
+        ctx.fillStyle = CHART_AMBER;
+        ctx.fillText('Warning zone', chartArea.right - 82, y - 4);
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+// ══════════════════════════════════════════
+// WEEKLY MILEAGE CHART
+// ══════════════════════════════════════════
+function renderMileageChart() {
+  const canvas = document.getElementById('chart-mileage');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  // Build weekly totals — last 8 weeks
+  const weekMap = {};
+  const weekOrder = [];
+  const today = new Date();
+
+  for (let w = 7; w >= 0; w--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - w * 7);
+    const key = isoWeek(d.toISOString().slice(0, 10));
+    const startOfWeek = new Date(d);
+    startOfWeek.setDate(d.getDate() - d.getDay() + 1);
+    if (!weekMap[key]) {
+      weekMap[key] = { km: 0, label: weekLabel(startOfWeek.toISOString().slice(0, 10)) };
+      weekOrder.push(key);
+    }
+  }
+
+  logs.forEach(l => {
+    if (l.isRestDay || l.mode === 'rest' || l.mode === 'body') return;
+    const key = l.date ? isoWeek(l.date.slice(0, 10)) : null;
+    if (key && weekMap[key] !== undefined) {
+      weekMap[key].km += parseFloat(l.km) || 0;
+    }
+  });
+
+  const currentWeekKey = isoWeek(today.toISOString().slice(0, 10));
+  const labels = weekOrder.map(k => weekMap[k].label);
+  const data = weekOrder.map(k => Math.round(weekMap[k].km * 10) / 10);
+  const colors = weekOrder.map(k => k === currentWeekKey ? CHART_ACCENT : 'rgba(200,242,58,0.35)');
+
+  // Safe increase line — 10% per week from first non-zero
+  let safeKm = null;
+  const safeLine = data.map(km => {
+    if (safeKm === null && km > 0) { safeKm = km; return km; }
+    if (safeKm !== null) { safeKm = safeKm * 1.1; return Math.round(safeKm * 10) / 10; }
+    return null;
+  });
+
+  if (canvas._chartInstance) canvas._chartInstance.destroy();
+
+  canvas._chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor: colors,
+          borderRadius: 4,
+          barPercentage: 0.7
+        },
+        {
+          type: 'line',
+          data: safeLine,
+          borderColor: 'rgba(255,255,255,0.2)',
+          borderDash: [4, 4],
+          borderWidth: 1,
+          pointRadius: 0,
+          fill: false,
+          tension: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.datasetIndex === 0 ? `${ctx.parsed.y} km` : `Safe max: ${ctx.parsed.y} km`
+          }
+        }
+      },
+      scales: {
+        x: { grid: CHART_GRID },
+        y: { grid: CHART_GRID, min: 0, ticks: { callback: v => v + 'km' } }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+// CONSISTENCY CHART
+// ══════════════════════════════════════════
+function renderConsistencyChart() {
+  const canvas = document.getElementById('chart-consistency');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  // Runs per week this month + last month
+  const weekMap = {};
+  const weekOrder = [];
+  const today = new Date();
+
+  for (let w = 7; w >= 0; w--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - w * 7);
+    const key = isoWeek(d.toISOString().slice(0, 10));
+    const startOfWeek = new Date(d);
+    startOfWeek.setDate(d.getDate() - d.getDay() + 1);
+    if (!weekMap[key]) {
+      weekMap[key] = { runs: 0, label: weekLabel(startOfWeek.toISOString().slice(0, 10)) };
+      weekOrder.push(key);
+    }
+  }
+
+  logs.forEach(l => {
+    if (l.isRestDay || l.mode === 'rest' || l.mode === 'body') return;
+    const key = l.date ? isoWeek(l.date.slice(0, 10)) : null;
+    if (key && weekMap[key] !== undefined) weekMap[key].runs++;
+  });
+
+  const currentWeekKey = isoWeek(today.toISOString().slice(0, 10));
+  const labels = weekOrder.map(k => weekMap[k].label);
+  const data = weekOrder.map(k => weekMap[k].runs);
+  const colors = weekOrder.map(k => k === currentWeekKey ? CHART_ACCENT : 'rgba(200,242,58,0.35)');
+
+  if (canvas._chartInstance) canvas._chartInstance.destroy();
+
+  canvas._chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: colors,
+        borderRadius: 4,
+        barPercentage: 0.7
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} runs` } }
+      },
+      scales: {
+        x: { grid: CHART_GRID },
+        y: { grid: CHART_GRID, min: 0, max: 7, ticks: { stepSize: 1, callback: v => v + 'd' } }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+// ACWR GAUGE (blueprint tab)
+// ══════════════════════════════════════════
+function renderACWR() {
+  const el = document.getElementById('bp-acwr-gauge');
+  if (!el) return;
+
+  // Acute = last 7 days km, Chronic = avg of last 28 days (4 week avg)
+  const today = new Date();
+  let acute = 0, chronic28 = 0, week = [0,0,0,0];
+
+  logs.forEach(l => {
+    if (l.isRestDay || l.mode === 'rest' || l.mode === 'body') return;
+    const km = parseFloat(l.km) || 0;
+    const daysAgo = Math.floor((today - new Date(l.date)) / 86400000);
+    if (daysAgo < 7) acute += km;
+    if (daysAgo < 28) {
+      chronic28 += km;
+      const weekIdx = Math.floor(daysAgo / 7);
+      if (weekIdx < 4) week[weekIdx] += km;
+    }
+  });
+
+  const avgWeekly = chronic28 / 4;
+  const ratio = avgWeekly > 0 ? Math.round((acute / avgWeekly) * 100) / 100 : null;
+
+  let color, status, advice;
+  if (ratio === null || avgWeekly === 0) {
+    color = 'rgba(255,255,255,0.3)'; status = 'Not enough data'; advice = 'Log more runs to see your load ratio';
+  } else if (ratio < 0.8) {
+    color = 'rgba(255,255,255,0.4)'; status = 'Under-trained'; advice = 'Safe to gradually increase load this week';
+  } else if (ratio <= 1.3) {
+    color = '#4ade80'; status = 'Optimal zone'; advice = 'Your training load is well balanced';
+  } else if (ratio <= 1.5) {
+    color = CHART_AMBER; status = 'Caution'; advice = 'Load is elevated — monitor closely this week';
+  } else {
+    color = CHART_RED; status = 'High injury risk'; advice = 'Reduce load immediately — take 1-2 easy days';
+  }
+
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">Acute:Chronic ratio</div>
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:32px;color:${color};">${ratio !== null ? ratio.toFixed(2) : '—'}</div>
+          <div style="font-family:var(--mono);font-size:12px;color:${color};">${status}</div>
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.4);margin-top:6px;line-height:1.5;">${advice}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:4px;">This week</div>
+        <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:18px;color:white;">${Math.round(acute * 10) / 10} km</div>
+        <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.3);margin-top:4px;">4wk avg: ${Math.round(avgWeekly * 10) / 10} km/wk</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:4px;margin-top:12px;">
+      <div style="flex:1;height:4px;background:#4ade80;border-radius:2px;opacity:${ratio !== null && ratio >= 0.8 && ratio <= 1.3 ? 1 : 0.25};"></div>
+      <div style="flex:1;height:4px;background:${CHART_AMBER};border-radius:2px;opacity:${ratio !== null && ratio > 1.3 && ratio <= 1.5 ? 1 : 0.25};"></div>
+      <div style="flex:1;height:4px;background:${CHART_RED};border-radius:2px;opacity:${ratio !== null && ratio > 1.5 ? 1 : 0.25};"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;color:rgba(255,255,255,0.25);margin-top:4px;">
+      <span>0.8 — Optimal</span><span>1.3 — Caution</span><span>1.5 — Risk</span>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// RENDER ALL HISTORY CHARTS
+// ══════════════════════════════════════════
+function renderHistoryCharts() {
+  // Small delay to ensure canvases are in DOM
+  setTimeout(() => {
+    renderPainChart('chart-pain', 30);
+    renderMileageChart();
+    renderConsistencyChart();
+  }, 50);
+}
+
+// ══════════════════════════════════════════
+// RENDER BLUEPRINT CHARTS
+// ══════════════════════════════════════════
+function renderBlueprintCharts() {
+  setTimeout(() => {
+    renderPainChart('chart-pain-mini', 14);
+    renderACWR();
+  }, 50);
+}
+
 </script>
 </body>
 </html>
