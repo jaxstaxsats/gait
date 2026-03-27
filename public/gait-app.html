@@ -2303,6 +2303,15 @@ function formatAIResponse(text) {
 // ══════════════════════════════════════════
 // HISTORY
 // ══════════════════════════════════════════
+function renderStoredResponse(raw) {
+  try {
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    if (parsed.assessment) return formatCoachingResponse(parsed);
+  } catch(e) {}
+  return formatAIResponse(raw);
+}
+
 function renderHistory() {
   const container = document.getElementById('history-container');
 
@@ -2348,7 +2357,7 @@ function renderHistory() {
     <div class="expanded-log" id="expanded-${logs.length - 1 - i}">
       ${log.aiResponse ? `<div class="ai-response visible" style="margin-bottom:16px;">
         <div class="ai-response-label">GAIT coaching response</div>
-        <div class="ai-response-body">${formatAIResponse(log.aiResponse)}</div>
+        <div class="ai-response-body">${renderStoredResponse(log.aiResponse)}</div>
       </div>` : ''}
     </div>`;
   });
