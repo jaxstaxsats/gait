@@ -2336,8 +2336,22 @@ Respond with ONLY a JSON object — no backticks, no text outside JSON:
   "watchThis": {
     "pattern": "specific thing to watch",
     "action": "one concrete action"
+  },
+  "acuteProtocol": {
+    "ice": "ice protocol instruction or null if no acute injury",
+    "compression": "compression guidance or null",
+    "avoidances": ["thing to avoid 1", "thing to avoid 2"],
+    "dayByDay": [
+      {"day": "Day 1 — Today", "plan": "exactly what to do"},
+      {"day": "Days 2–3", "plan": "what changes"},
+      {"day": "Days 4–5", "plan": "when to ease back in"}
+    ],
+    "redFlags": ["flag 1", "flag 2"],
+    "recoverySupport": "sleep, protein, hydration notes or null"
   }
-}`;
+}
+
+Only populate acuteProtocol if today's log describes a new or acute injury (fresh strain, pull, new pain above 2/10, or symptoms that feel like the start of an injury). Otherwise set acuteProtocol to null or empty object.`;
 
   try {
     const res = await fetch('/api/chat', {
@@ -2345,7 +2359,7 @@ Respond with ONLY a JSON object — no backticks, no text outside JSON:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        max_tokens: 1600,
         messages: [{ role: 'user', content: prompt }]
       })
     });
@@ -2381,8 +2395,9 @@ Respond with ONLY a JSON object — no backticks, no text outside JSON:
 }
 
 function formatCoachingResponse(c, mode) {
-  const recoveryLabel = mode === 'body' ? 'Before your session' : mode === 'run' ? 'Post-run recovery' : mode === 'cross' ? 'Recovery' : 'Tonight\'s recovery';
-  const planLabel = mode === 'body' ? 'Today\'s plan' : 'Tomorrow\'s plan';
+  const hasAcuteInjury = c.acuteProtocol && Object.keys(c.acuteProtocol).length > 0;
+  const recoveryLabel = hasAcuteInjury ? 'Injury care — do this today' : mode === 'body' ? 'Before your session' : mode === 'run' ? 'Post-run recovery' : mode === 'cross' ? 'Recovery' : 'Tonight\'s recovery';
+  const planLabel = mode === 'body' && !hasAcuteInjury ? 'Today\'s plan' : hasAcuteInjury ? 'Activity plan' : 'Tomorrow\'s plan';
   return `
     <!-- ASSESSMENT -->
     <div style="margin-bottom:16px;">
@@ -2425,6 +2440,43 @@ function formatCoachingResponse(c, mode) {
       <div style="font-family:var(--display);font-weight:700;font-size:13px;color:white;margin-bottom:4px;">${c.watchThis?.pattern || ''}</div>
       <div style="font-family:var(--mono);font-size:11px;color:rgba(245,242,235,0.7);">→ ${c.watchThis?.action || ''}</div>
     </div>
+
+    ${hasAcuteInjury ? `
+    <!-- ACUTE INJURY PROTOCOL -->
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1);">Full recovery protocol</div>
+    <div style="background:rgba(255,61,46,0.06);border:1px solid rgba(255,61,46,0.15);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+
+      ${c.acuteProtocol.ice ? `<div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:4px;">🧊 Ice protocol</div>
+        <div style="font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.85);line-height:1.7;">${c.acuteProtocol.ice}</div>
+      </div>` : ''}
+
+      ${c.acuteProtocol.compression ? `<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:4px;">🩹 Compression</div>
+        <div style="font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.85);line-height:1.7;">${c.acuteProtocol.compression}</div>
+      </div>` : ''}
+
+      ${c.acuteProtocol.avoidances && c.acuteProtocol.avoidances.length ? `<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px;">🚫 Strictly avoid today</div>
+        ${c.acuteProtocol.avoidances.map(a => `<div style="display:flex;gap:8px;margin-bottom:6px;font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.85);line-height:1.6;"><span style="color:var(--red);flex-shrink:0;">✕</span>${a}</div>`).join('')}
+      </div>` : ''}
+
+      ${c.acuteProtocol.dayByDay && c.acuteProtocol.dayByDay.length ? `<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px;">📅 Day-by-day plan</div>
+        ${c.acuteProtocol.dayByDay.map(d => `<div style="margin-bottom:8px;"><div style="font-family:var(--display);font-weight:700;font-size:11px;color:var(--accent);margin-bottom:2px;">${d.day}</div><div style="font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.8);line-height:1.6;">${d.plan}</div></div>`).join('')}
+      </div>` : ''}
+
+      ${c.acuteProtocol.redFlags && c.acuteProtocol.redFlags.length ? `<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;background:rgba(255,61,46,0.08);border-radius:4px;padding:10px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px;">🚨 See a physio immediately if</div>
+        ${c.acuteProtocol.redFlags.map(f => `<div style="display:flex;gap:8px;margin-bottom:5px;font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.85);line-height:1.6;"><span style="color:var(--red);flex-shrink:0;">!</span>${f}</div>`).join('')}
+      </div>` : ''}
+
+      ${c.acuteProtocol.recoverySupport ? `<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:4px;">💤 Recovery support</div>
+        <div style="font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.85);line-height:1.7;">${c.acuteProtocol.recoverySupport}</div>
+      </div>` : ''}
+
+    </div>` : ''}
   `;
 }
 
