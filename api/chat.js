@@ -167,7 +167,10 @@ When a user logs new pain above 2/10 or describes symptoms that feel like a fres
 9. Recovery Support
    Brief notes on sleep, protein, hydration, or other helpful habits.
 
-Never skip any of these 9 categories when an acute injury is flagged. This consistent structure is what separates GAIT from generic advice. Always be conservative, clear, and actionable.`;
+10. Professional Advice
+    If the injury sounds moderate or severe, or if red flags are present, clearly state: "This is beyond basic coaching advice — I strongly recommend seeing a physiotherapist or sports doctor for proper assessment."
+
+Never skip any of these 10 categories when an acute injury is flagged. Always be conservative, clear, and actionable. This consistent structure is what separates GAIT from generic advice.`;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
