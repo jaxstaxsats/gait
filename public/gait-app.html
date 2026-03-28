@@ -2347,7 +2347,8 @@ Respond with ONLY a JSON object — no backticks, no text outside JSON:
       {"day": "Days 4–5", "plan": "when to ease back in"}
     ],
     "redFlags": ["flag 1", "flag 2"],
-    "recoverySupport": "sleep, protein, hydration notes or null"
+    "recoverySupport": "sleep, protein, hydration notes or null",
+    "professionalAdvice": "strong recommendation to see physio/doctor if moderate or severe — or null if minor"
   }
 }
 
@@ -2474,6 +2475,11 @@ function formatCoachingResponse(c, mode) {
       ${c.acuteProtocol.recoverySupport ? `<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">
         <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:4px;">💤 Recovery support</div>
         <div style="font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.85);line-height:1.7;">${c.acuteProtocol.recoverySupport}</div>
+      </div>` : ''}
+
+      ${c.acuteProtocol.professionalAdvice ? `<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;background:rgba(255,61,46,0.1);border-radius:4px;padding:12px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:6px;">🏥 Professional advice</div>
+        <div style="font-family:var(--mono);font-size:12px;color:rgba(245,242,235,0.9);line-height:1.7;font-weight:600;">${c.acuteProtocol.professionalAdvice}</div>
       </div>` : ''}
 
     </div>` : ''}
