@@ -604,9 +604,10 @@
   <div id="push-mode-bar"></div>
 
   <!-- DAY MODE TOGGLE -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-bottom:20px;background:var(--bg2);border-radius:6px;padding:4px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px;margin-bottom:20px;background:var(--bg2);border-radius:6px;padding:4px;">
     <button id="mode-run" onclick="setDayMode('run')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:var(--ink);color:var(--accent);">🏃 Run</button>
     <button id="mode-cross" onclick="setDayMode('cross')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🚴 Cross</button>
+    <button id="mode-walk" onclick="setDayMode('walk')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🚶 Walk</button>
     <button id="mode-rest" onclick="setDayMode('rest')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🛌 Rest</button>
     <button id="mode-body" onclick="setDayMode('body')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🧘 Check</button>
   </div>
@@ -867,6 +868,108 @@
           <button class="pain-btn" onclick="selectPain(10)">10</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- WALK / HIKE FIELDS -->
+  <div id="walk-fields" style="display:none;">
+    <div class="log-section">
+      <div class="log-section-title">Walk / Hike</div>
+
+      <div class="field">
+        <label>Activity type</label>
+        <select id="log-walk-type" onchange="updateWalkFields()">
+          <option value="">Select...</option>
+          <option value="recovery-walk">Recovery walk — flat, gentle pace</option>
+          <option value="walk">Walk — general</option>
+          <option value="hike">Hike — trails or hills</option>
+          <option value="nordic">Nordic walking</option>
+        </select>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Distance (km) <span style="font-size:10px;color:var(--muted);">optional</span></label>
+          <input type="number" id="log-walk-distance" placeholder="e.g. 4.5" step="0.1" min="0">
+        </div>
+        <div class="field">
+          <label>Duration (minutes)</label>
+          <input type="number" id="log-walk-duration" placeholder="e.g. 45" min="0">
+        </div>
+      </div>
+
+      <div id="walk-elevation-field" class="field" style="display:none;">
+        <label>Elevation gain (metres) <span style="font-size:10px;color:var(--muted);">optional</span></label>
+        <input type="number" id="log-walk-elevation" placeholder="e.g. 320" min="0">
+      </div>
+
+      <div class="field">
+        <label>Terrain</label>
+        <select id="log-walk-terrain">
+          <option value="">Select...</option>
+          <option>Flat</option>
+          <option>Mixed</option>
+          <option>Hilly</option>
+          <option>Trail</option>
+          <option>Beach</option>
+          <option>Treadmill</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Pace feel</label>
+        <select id="log-walk-pace">
+          <option value="">Select...</option>
+          <option>Very easy — gentle stroll</option>
+          <option>Easy — comfortable</option>
+          <option>Moderate — purposeful</option>
+          <option>Brisk</option>
+        </select>
+      </div>
+
+      <div id="walk-poles-field" class="field" style="display:none;">
+        <label>Poles used?</label>
+        <select id="log-walk-poles">
+          <option value="">Select...</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Any pain or discomfort? (0 = none)</label>
+        <div class="pain-selector" id="pain-selector-walk">
+          <button class="pain-btn" onclick="selectPain(0)">0</button>
+          <button class="pain-btn" onclick="selectPain(1)">1</button>
+          <button class="pain-btn" onclick="selectPain(2)">2</button>
+          <button class="pain-btn" onclick="selectPain(3)">3</button>
+          <button class="pain-btn" onclick="selectPain(4)">4</button>
+          <button class="pain-btn" onclick="selectPain(5)">5</button>
+          <button class="pain-btn" onclick="selectPain(6)">6</button>
+          <button class="pain-btn" onclick="selectPain(7)">7</button>
+          <button class="pain-btn" onclick="selectPain(8)">8</button>
+          <button class="pain-btn" onclick="selectPain(9)">9</button>
+          <button class="pain-btn" onclick="selectPain(10)">10</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Pain location <span style="font-size:10px;color:var(--muted);">optional</span></label>
+        <select id="log-walk-pain-location">
+          <option value="">None</option>
+          <option>Knee — front</option>
+          <option>Knee — back or side</option>
+          <option>Hip / glute</option>
+          <option>Hamstring</option>
+          <option>Calf</option>
+          <option>Achilles</option>
+          <option>Shin</option>
+          <option>Foot</option>
+          <option>Lower back</option>
+          <option>Multiple areas</option>
+        </select>
+      </div>
+
     </div>
   </div>
 
@@ -2077,8 +2180,7 @@ function setDayMode(mode) {
   dayMode = mode;
   isRestDay = mode === 'rest';
 
-  // Update toggle buttons
-  ['run', 'cross', 'rest', 'body'].forEach(m => {
+  ['run', 'cross', 'walk', 'rest', 'body'].forEach(m => {
     const btn = document.getElementById('mode-' + m);
     if (btn) {
       btn.style.background = m === mode ? 'var(--ink)' : 'transparent';
@@ -2086,21 +2188,23 @@ function setDayMode(mode) {
     }
   });
 
-  // Show/hide field sections
   const runFields = document.getElementById('run-fields');
   const restFields = document.getElementById('rest-fields');
   const bodyFields = document.getElementById('body-fields');
   const crossFields = document.getElementById('cross-fields');
+  const walkFields = document.getElementById('walk-fields');
   const title = document.getElementById('log-title');
 
   if (runFields) runFields.style.display = mode === 'run' ? 'block' : 'none';
   if (restFields) restFields.style.display = mode === 'rest' ? 'block' : 'none';
   if (bodyFields) bodyFields.style.display = mode === 'body' ? 'block' : 'none';
   if (crossFields) crossFields.style.display = mode === 'cross' ? 'block' : 'none';
+  if (walkFields) walkFields.style.display = mode === 'walk' ? 'block' : 'none';
 
   if (title) {
     if (mode === 'run') title.innerHTML = 'How did<br>today go?';
     if (mode === 'cross') title.innerHTML = 'Cross<br>training.';
+    if (mode === 'walk') title.innerHTML = 'Walk /<br>Hike.';
     if (mode === 'rest') title.innerHTML = 'Rest day.<br>How\'s the body?';
     if (mode === 'body') title.innerHTML = 'Morning<br>check-in.';
   }
@@ -2109,6 +2213,7 @@ function setDayMode(mode) {
   if (btn) {
     if (mode === 'body') btn.textContent = 'Get my daily plan →';
     else if (mode === 'cross') btn.textContent = 'Log cross training →';
+    else if (mode === 'walk') btn.textContent = 'Log walk / hike →';
     else btn.textContent = 'Get today\'s coaching →';
   }
 }
@@ -2134,9 +2239,15 @@ function updateCrossFields() {
   }
 }
 
-// ══════════════════════════════════════════
-// DAILY LOG
-// ══════════════════════════════════════════
+function updateWalkFields() {
+  const type = document.getElementById('log-walk-type')?.value;
+  const elevField = document.getElementById('walk-elevation-field');
+  const polesField = document.getElementById('walk-poles-field');
+  if (elevField) elevField.style.display = type === 'hike' || type === 'nordic' ? 'block' : 'none';
+  if (polesField) polesField.style.display = type === 'hike' || type === 'nordic' ? 'block' : 'none';
+}
+
+
 function initLog() {
   const now = new Date();
   document.getElementById('log-date').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -2224,6 +2335,11 @@ async function submitLog() {
     const effort = document.getElementById('log-effort').value;
     if (!km || !effort) { alert('Please fill in your run distance and effort level.'); return; }
   }
+  if (dayMode === 'walk') {
+    const wt = document.getElementById('log-walk-type').value;
+    const wd = document.getElementById('log-walk-duration').value;
+    if (!wt || !wd) { alert('Please fill in the activity type and duration.'); return; }
+  }
   if (dayMode === 'cross') {
     const activity = document.getElementById('log-cross-activity').value;
     const duration = document.getElementById('log-cross-duration').value;
@@ -2255,20 +2371,30 @@ async function submitLog() {
   const crossDistance = document.getElementById('log-cross-distance')?.value || '';
   const crossDuration = document.getElementById('log-cross-duration')?.value || '';
   const crossIntensity = document.getElementById('log-cross-intensity')?.value || '';
+  const walkType = document.getElementById('log-walk-type')?.value || '';
+  const walkDistance = document.getElementById('log-walk-distance')?.value || '';
+  const walkDuration = document.getElementById('log-walk-duration')?.value || '';
+  const walkElevation = document.getElementById('log-walk-elevation')?.value || '';
+  const walkTerrain = document.getElementById('log-walk-terrain')?.value || '';
+  const walkPace = document.getElementById('log-walk-pace')?.value || '';
+  const walkPoles = document.getElementById('log-walk-poles')?.value || '';
+  const walkPainLoc = document.getElementById('log-walk-pain-location')?.value || '';
 
   const todayLog = {
     date: new Date().toISOString(),
     mode: dayMode,
-    km: dayMode === 'run' ? km : dayMode === 'cross' ? crossDistance : '0',
+    km: dayMode === 'run' ? km : dayMode === 'cross' ? crossDistance : dayMode === 'walk' ? walkDistance : '0',
     time, pace, effort, terrain, prePain, painLoc, painScore,
     notes, sleep, stress,
     crossActivity, crossDistance, crossDuration, crossIntensity,
-    isRestDay: dayMode !== 'run' && dayMode !== 'cross'
+    walkType, walkDistance, walkDuration, walkElevation, walkTerrain, walkPace, walkPoles, walkPainLoc,
+    isRestDay: dayMode !== 'run' && dayMode !== 'cross' && dayMode !== 'walk'
   };
 
   const bibleContext = blueprint ? JSON.stringify(blueprint) : JAX_BIBLE;
   const recentLogs = logs.slice(-7).map(l => {
     if (l.mode === 'cross') return `${new Date(l.date).toLocaleDateString('en-GB')}: CROSS TRAINING — ${l.crossActivity} ${l.crossDistance ? l.crossDistance + 'km' : ''} ${l.crossDuration ? l.crossDuration + 'min' : ''} ${l.crossIntensity || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+    if (l.mode === 'walk') return `${new Date(l.date).toLocaleDateString('en-GB')}: WALK/HIKE — ${l.walkType} ${l.walkDistance ? l.walkDistance + 'km' : ''} ${l.walkDuration ? l.walkDuration + 'min' : ''} ${l.walkElevation ? l.walkElevation + 'm elev' : ''} ${l.walkTerrain || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     if (l.mode === 'body') return `${new Date(l.date).toLocaleDateString('en-GB')}: BODY CHECK | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     if (l.isRestDay) return `${new Date(l.date).toLocaleDateString('en-GB')}: REST DAY | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     return `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.km}km @ ${l.pace}/km, effort ${l.effort} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
@@ -2284,6 +2410,10 @@ Pre-run pain: ${prePain} | Pain during/after: ${painLoc} | Pain score: ${painSco
     todayContext = `CROSS TRAINING DAY
 Activity: ${crossActivity} | ${crossDistance ? `Distance: ${crossDistance} ${distLabel} | ` : ''}Duration: ${crossDuration} min | Intensity: ${crossIntensity}
 Discomfort score: ${painScore}/10`;
+  } else if (dayMode === 'walk') {
+    todayContext = `WALK / HIKE DAY
+Activity: ${walkType} | ${walkDistance ? `Distance: ${walkDistance} km | ` : ''}Duration: ${walkDuration} min | Terrain: ${walkTerrain} | Pace feel: ${walkPace}
+${walkElevation ? `Elevation gain: ${walkElevation}m | ` : ''}${walkPoles ? `Poles: ${walkPoles} | ` : ''}Pain score: ${painScore}/10${walkPainLoc ? ` | Pain location: ${walkPainLoc}` : ''}`;
   } else if (dayMode === 'rest') {
     todayContext = `REST DAY
 Soreness today: ${restSoreness} | Pain score: ${painScore}/10 | Mobility done: ${restMobility}`;
@@ -2306,6 +2436,7 @@ Stress: ${stress || 'Not specified'}
 Notes: ${notes}
 ${pushModeActive ? '\nMODE: PUSH — runner has been pain-free 28+ days. Apply Push Mode rules.' : ''}
 
+${dayMode === 'walk' ? `This is a walk or hike session. Consider how the terrain, elevation and pace affect load relative to the runner's injury history. Advise on recovery appropriate to the effort and how it influences tomorrow's plan.` : ''}
 ${dayMode === 'cross' ? `This is a cross training session. Consider how ${crossActivity} affects the runner's overall training load and recovery needs relative to their running plan and injury history. Advise on recovery specific to cross training and how it should influence tomorrow's run plan.` : ''}
 ${dayMode === 'body' ? `This is a morning body check — the runner has NOT run yet today. Their plan for today is: ${bodyDayType}.
 For the "recovery" array: give 3-4 PRE-SESSION preparation movements they should do BEFORE their session today — warmup, activation drills, or mobility work specific to what they are doing (${bodyDayType}) and their injury history. NOT an evening routine.
@@ -2397,7 +2528,7 @@ Only populate acuteProtocol if today's log describes a new or acute injury (fres
 
 function formatCoachingResponse(c, mode) {
   const hasAcuteInjury = c.acuteProtocol && Object.keys(c.acuteProtocol).length > 0;
-  const recoveryLabel = hasAcuteInjury ? 'Injury care — do this today' : mode === 'body' ? 'Before your session' : mode === 'run' ? 'Post-run recovery' : mode === 'cross' ? 'Recovery' : 'Tonight\'s recovery';
+  const recoveryLabel = hasAcuteInjury ? 'Injury care — do this today' : mode === 'body' ? 'Before your session' : mode === 'run' ? 'Post-run recovery' : mode === 'cross' ? 'Recovery' : mode === 'walk' ? 'After your walk' : 'Tonight\'s recovery';
   const planLabel = mode === 'body' && !hasAcuteInjury ? 'Today\'s plan' : hasAcuteInjury ? 'Activity plan' : 'Tomorrow\'s plan';
   return `
     <!-- ASSESSMENT -->
