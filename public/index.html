@@ -692,6 +692,25 @@
   </div>
 </div>
 
+<style>
+*{box-sizing:border-box;}
+.bp-doc{width:100%;overflow:hidden;}
+.bp-cover{padding:52px 52px 44px;}
+.bp-alert{padding:28px 52px;}
+.bp-section{padding:44px 52px;}
+.bp-footer{padding:24px 52px;}
+.bp-cover-grid{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:flex-end;}
+.bp-strength-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:640px){
+  #preview{padding:60px 16px !important;}
+  .bp-cover{padding:28px 20px 24px !important;}
+  .bp-alert{padding:20px !important;}
+  .bp-section{padding:32px 20px !important;}
+  .bp-footer{padding:18px 20px !important;}
+  .bp-cover-grid{grid-template-columns:1fr !important;}
+  .bp-strength-grid{grid-template-columns:1fr !important;}
+}
+</style>
 <!-- BLUEPRINT PREVIEW -->
 <section id="preview" style="background:#edeae0;padding:100px 24px;">
 <div style="max-width:880px;margin:0 auto;">
@@ -701,12 +720,12 @@
   <p style="font-family:'DM Mono',monospace;font-size:12px;color:#9a9688;max-width:460px;margin:0 auto 72px;line-height:2;text-align:center;">Every section built around your injuries, your equipment, your goals. The example below is Jason's real blueprint.</p>
 
   <!-- DOCUMENT WRAPPER -->
-  <div style="background:white;border-radius:20px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.10),0 4px 16px rgba(0,0,0,0.06);">
+  <div class="bp-doc" style="background:white;border-radius:20px;box-shadow:0 32px 80px rgba(0,0,0,0.10),0 4px 16px rgba(0,0,0,0.06);">
 
     <!-- COVER -->
-    <div style="background:#0f0e0b;padding:52px 52px 44px;">
+    <div class="bp-cover" style="background:#0f0e0b;">
       <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#ff3d2e;text-transform:uppercase;margin-bottom:32px;">✦ GAIT Blueprint &nbsp;·&nbsp; Generated 27 March 2026 &nbsp;·&nbsp; Personalised for Jason</div>
-      <div style="display:grid;grid-template-columns:1fr auto;align-items:flex-end;gap:32px;margin-bottom:32px;">
+      <div class="bp-cover-grid" style="margin-bottom:32px;">
         <div>
           <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:12px;">Your coach's note</div>
           <p style="font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,0.55);line-height:1.8;max-width:420px;margin:0;">Jason, you're six years into a journey that most people would have quit. The fact you're back means you're ready. This plan respects what your knee has been through — and builds toward everything you're aiming for.</p>
@@ -732,7 +751,7 @@
     </div>
 
     <!-- INJURY ALERT -->
-    <div style="background:#fffaf9;padding:28px 52px;border-top:3px solid #ff3d2e;">
+    <div class="bp-alert" style="background:#fffaf9;border-top:3px solid #ff3d2e;">
       <div style="display:flex;align-items:flex-start;gap:14px;">
         <div style="font-size:20px;flex-shrink:0;margin-top:1px;">⚠️</div>
         <div style="flex:1;">
@@ -748,7 +767,7 @@
     </div>
 
     <!-- WEEKLY PLAN -->
-    <div style="padding:44px 52px;border-top:1px solid #f0ece4;">
+    <div class="bp-section" style="border-top:1px solid #f0ece4;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;flex-wrap:wrap;gap:8px;">
         <div>
           <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#c8793a;text-transform:uppercase;margin-bottom:4px;">Weekly training plan</div>
@@ -806,10 +825,10 @@
     </div>
 
     <!-- STRENGTH CIRCUIT -->
-    <div style="padding:44px 52px;border-top:1px solid #f0ece4;background:#faf8f4;">
+    <div class="bp-section" style="border-top:1px solid #f0ece4;background:#faf8f4;">
       <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#c8793a;text-transform:uppercase;margin-bottom:4px;">Strength circuit</div>
       <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-bottom:24px;">Built for your exact equipment. Every exercise earns its place.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="bp-strength-grid">
         <div style="background:white;border:1px solid #ede9e0;border-radius:10px;padding:20px;">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px;">
             <p style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:#0f0e0b;line-height:1.3;margin:0;">Goblet Wall Sit</p>
@@ -846,7 +865,7 @@
     </div>
 
     <!-- MORNING ROUTINE -->
-    <div style="padding:44px 52px;border-top:1px solid #f0ece4;">
+    <div class="bp-section" style="border-top:1px solid #f0ece4;">
       <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#c8793a;text-transform:uppercase;margin-bottom:4px;">Morning routine</div>
       <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-bottom:20px;">Every day, before anything else. 15 to 45 minutes. This is training — not optional.</p>
       <div style="background:#fffaf9;border-left:3px solid #ff3d2e;padding:10px 16px;margin-bottom:20px;border-radius:0 4px 4px 0;">
@@ -890,7 +909,7 @@
     </div>
 
     <!-- MILESTONES -->
-    <div style="padding:44px 52px;border-top:1px solid #f0ece4;background:#faf8f4;">
+    <div class="bp-section" style="border-top:1px solid #f0ece4;background:#faf8f4;">
       <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#c8793a;text-transform:uppercase;margin-bottom:4px;">Your milestone roadmap</div>
       <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-bottom:28px;">Where you're going, mapped out clearly. One step at a time.</p>
       <div style="position:relative;padding-left:28px;">
@@ -938,7 +957,7 @@
     </div>
 
     <!-- FOOTER -->
-    <div style="background:#0f0e0b;padding:24px 52px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    <div class="bp-footer" style="background:#0f0e0b;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
       <div style="font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;letter-spacing:1px;">Consistent. Injury-free. Unstoppable. &nbsp;·&nbsp; gait.run</div>
       <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2);">GAIT Blueprint &nbsp;·&nbsp; Jason &nbsp;·&nbsp; Season 2026</div>
     </div>
