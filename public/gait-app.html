@@ -604,12 +604,194 @@
   <div id="push-mode-bar"></div>
 
   <!-- DAY MODE TOGGLE -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px;margin-bottom:20px;background:var(--bg2);border-radius:6px;padding:4px;">
-    <button id="mode-run" onclick="setDayMode('run')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:var(--ink);color:var(--accent);">🏃 Run</button>
-    <button id="mode-cross" onclick="setDayMode('cross')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🚴 Cross</button>
-    <button id="mode-walk" onclick="setDayMode('walk')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🚶 Walk</button>
-    <button id="mode-rest" onclick="setDayMode('rest')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🛌 Rest</button>
-    <button id="mode-body" onclick="setDayMode('body')" style="padding:10px 4px;border:none;border-radius:4px;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">🧘 Check</button>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:20px;background:var(--bg2);border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+    <button id="mode-morning" onclick="setDayMode('morning')" style="padding:12px 4px;border:none;border-right:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;">
+      <span style="font-size:15px;">🌅</span><span>Morning</span>
+    </button>
+    <button id="mode-run" onclick="setDayMode('run')" style="padding:12px 4px;border:none;border-right:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:var(--ink);color:var(--accent);display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;">
+      <span style="font-size:15px;">🏃</span><span>Run</span>
+    </button>
+    <button id="mode-cross" onclick="setDayMode('cross')" style="padding:12px 4px;border:none;border-right:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;">
+      <span style="font-size:15px;">🚴</span><span>Cross</span>
+    </button>
+    <button id="mode-walk" onclick="setDayMode('walk')" style="padding:12px 4px;border:none;border-right:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;">
+      <span style="font-size:15px;">🚶</span><span>Walk</span>
+    </button>
+    <button id="mode-rest" onclick="setDayMode('rest')" style="padding:12px 4px;border:none;border-right:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;">
+      <span style="font-size:15px;">🛌</span><span>Rest</span>
+    </button>
+    <button id="mode-body" onclick="setDayMode('body')" style="padding:12px 4px;border:none;border-right:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;">
+      <span style="font-size:15px;">🧘</span><span>Check</span>
+    </button>
+    <button id="mode-evening" onclick="setDayMode('evening')" style="padding:12px 4px;border:none;border:none;font-family:var(--mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:5px;line-height:1.2;">
+      <span style="font-size:15px;">🌙</span><span>Evening</span>
+    </button>
+  </div>
+
+  <!-- MORNING CHECK-IN FIELDS -->
+  <div id="morning-fields" style="display:none;">
+    <div class="log-section">
+      <div class="log-section-title">Morning check-in</div>
+      <div class="field">
+        <label>How did you sleep?</label>
+        <select id="log-morning-sleep">
+          <option value="">Select...</option>
+          <option>Excellent — 8+ hours, feel great</option>
+          <option>Good — 7-8 hours, feel rested</option>
+          <option>OK — 6-7 hours, manageable</option>
+          <option>Poor — under 6 hours or broken</option>
+          <option>Very poor — barely slept</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Energy level right now</label>
+        <select id="log-morning-energy">
+          <option value="">Select...</option>
+          <option>High — feel strong and ready</option>
+          <option>Medium — normal morning</option>
+          <option>Low — sluggish or tired</option>
+          <option>Very low — exhausted</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Any pain or stiffness? (0 = none)</label>
+        <div class="pain-selector" id="pain-selector-morning">
+          <button class="pain-btn" onclick="selectPain(0)">0</button>
+          <button class="pain-btn" onclick="selectPain(1)">1</button>
+          <button class="pain-btn" onclick="selectPain(2)">2</button>
+          <button class="pain-btn" onclick="selectPain(3)">3</button>
+          <button class="pain-btn" onclick="selectPain(4)">4</button>
+          <button class="pain-btn" onclick="selectPain(5)">5</button>
+          <button class="pain-btn" onclick="selectPain(6)">6</button>
+          <button class="pain-btn" onclick="selectPain(7)">7</button>
+          <button class="pain-btn" onclick="selectPain(8)">8</button>
+          <button class="pain-btn" onclick="selectPain(9)">9</button>
+          <button class="pain-btn" onclick="selectPain(10)">10</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Where? (if any)</label>
+        <select id="log-morning-pain-location">
+          <option value="">Select...</option>
+          <option>None</option>
+          <option>Knee — front</option>
+          <option>Knee — back or side</option>
+          <option>Hip / glute</option>
+          <option>Hamstring</option>
+          <option>Calf</option>
+          <option>Achilles</option>
+          <option>Shin</option>
+          <option>Foot / heel</option>
+          <option>Lower back</option>
+          <option>Multiple areas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>What's the plan for today?</label>
+        <select id="log-morning-plan">
+          <option value="">Select...</option>
+          <option>Easy run</option>
+          <option>Moderate or tempo run</option>
+          <option>Long run</option>
+          <option>Strength training</option>
+          <option>Cross training</option>
+          <option>Rest day</option>
+          <option>Active recovery — walk or mobility</option>
+          <option>Not sure yet</option>
+        </select>
+      </div>
+    </div>
+    <div class="log-section">
+      <div class="log-section-title">Morning routine duration</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;">How long do you have for your morning activation today?</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="setMorningDuration(15, this)" id="morning-dur-15" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:4px;font-family:var(--mono);font-size:11px;letter-spacing:1px;cursor:pointer;background:var(--ink);color:var(--accent);">15 min</button>
+        <button onclick="setMorningDuration(30, this)" id="morning-dur-30" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:4px;font-family:var(--mono);font-size:11px;letter-spacing:1px;cursor:pointer;background:transparent;color:var(--muted);">30 min</button>
+        <button onclick="setMorningDuration(45, this)" id="morning-dur-45" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:4px;font-family:var(--mono);font-size:11px;letter-spacing:1px;cursor:pointer;background:transparent;color:var(--muted);">45 min</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENING CHECK-IN FIELDS -->
+  <div id="evening-fields" style="display:none;">
+    <div class="log-section">
+      <div class="log-section-title">Evening check-in</div>
+      <div class="field">
+        <label>Did you do today's planned session?</label>
+        <select id="log-evening-session">
+          <option value="">Select...</option>
+          <option>Yes — completed as planned</option>
+          <option>Yes — but modified it</option>
+          <option>Partial — had to cut it short</option>
+          <option>No — skipped it</option>
+          <option>Rest day — no session planned</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How did the body feel today overall?</label>
+        <select id="log-evening-body">
+          <option value="">Select...</option>
+          <option>Great — strong and comfortable</option>
+          <option>Good — worked hard but felt fine</option>
+          <option>OK — some tightness or fatigue</option>
+          <option>Tired — heavier than expected</option>
+          <option>Struggled — body felt off</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Any soreness or pain right now? (0 = none)</label>
+        <div class="pain-selector" id="pain-selector-evening">
+          <button class="pain-btn" onclick="selectPain(0)">0</button>
+          <button class="pain-btn" onclick="selectPain(1)">1</button>
+          <button class="pain-btn" onclick="selectPain(2)">2</button>
+          <button class="pain-btn" onclick="selectPain(3)">3</button>
+          <button class="pain-btn" onclick="selectPain(4)">4</button>
+          <button class="pain-btn" onclick="selectPain(5)">5</button>
+          <button class="pain-btn" onclick="selectPain(6)">6</button>
+          <button class="pain-btn" onclick="selectPain(7)">7</button>
+          <button class="pain-btn" onclick="selectPain(8)">8</button>
+          <button class="pain-btn" onclick="selectPain(9)">9</button>
+          <button class="pain-btn" onclick="selectPain(10)">10</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Where? (if any)</label>
+        <select id="log-evening-pain-location">
+          <option value="">Select...</option>
+          <option>None</option>
+          <option>Knee — front</option>
+          <option>Knee — back or side</option>
+          <option>Hip / glute</option>
+          <option>Hamstring</option>
+          <option>Calf</option>
+          <option>Achilles</option>
+          <option>Shin</option>
+          <option>Foot / heel</option>
+          <option>Lower back</option>
+          <option>Multiple areas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Target sleep time tonight</label>
+        <select id="log-evening-sleep-target">
+          <option value="">Select...</option>
+          <option>Before 9pm</option>
+          <option>9pm–10pm</option>
+          <option>10pm–11pm</option>
+          <option>11pm–midnight</option>
+          <option>After midnight</option>
+        </select>
+      </div>
+    </div>
+    <div class="log-section">
+      <div class="log-section-title">Evening routine duration</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;">How long do you have for your evening recovery tonight?</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="setEveningDuration(15, this)" id="evening-dur-15" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:4px;font-family:var(--mono);font-size:11px;letter-spacing:1px;cursor:pointer;background:var(--ink);color:var(--accent);">15 min</button>
+        <button onclick="setEveningDuration(30, this)" id="evening-dur-30" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:4px;font-family:var(--mono);font-size:11px;letter-spacing:1px;cursor:pointer;background:transparent;color:var(--muted);">30 min</button>
+        <button onclick="setEveningDuration(45, this)" id="evening-dur-45" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:4px;font-family:var(--mono);font-size:11px;letter-spacing:1px;cursor:pointer;background:transparent;color:var(--muted);">45 min</button>
+      </div>
+    </div>
   </div>
 
   <!-- RUN DAY FIELDS -->
@@ -2174,7 +2356,7 @@ function setDayMode(mode) {
   dayMode = mode;
   isRestDay = mode === 'rest';
 
-  ['run', 'cross', 'walk', 'rest', 'body'].forEach(m => {
+  ['morning', 'run', 'cross', 'walk', 'rest', 'body', 'evening'].forEach(m => {
     const btn = document.getElementById('mode-' + m);
     if (btn) {
       btn.style.background = m === mode ? 'var(--ink)' : 'transparent';
@@ -2182,30 +2364,35 @@ function setDayMode(mode) {
     }
   });
 
-  const runFields = document.getElementById('run-fields');
-  const restFields = document.getElementById('rest-fields');
-  const bodyFields = document.getElementById('body-fields');
-  const crossFields = document.getElementById('cross-fields');
-  const walkFields = document.getElementById('walk-fields');
+  const fields = {
+    morning: document.getElementById('morning-fields'),
+    run: document.getElementById('run-fields'),
+    rest: document.getElementById('rest-fields'),
+    body: document.getElementById('body-fields'),
+    cross: document.getElementById('cross-fields'),
+    walk: document.getElementById('walk-fields'),
+    evening: document.getElementById('evening-fields')
+  };
+  Object.entries(fields).forEach(([m, el]) => {
+    if (el) el.style.display = m === mode ? 'block' : 'none';
+  });
+
   const title = document.getElementById('log-title');
-
-  if (runFields) runFields.style.display = mode === 'run' ? 'block' : 'none';
-  if (restFields) restFields.style.display = mode === 'rest' ? 'block' : 'none';
-  if (bodyFields) bodyFields.style.display = mode === 'body' ? 'block' : 'none';
-  if (crossFields) crossFields.style.display = mode === 'cross' ? 'block' : 'none';
-  if (walkFields) walkFields.style.display = mode === 'walk' ? 'block' : 'none';
-
   if (title) {
+    if (mode === 'morning') title.innerHTML = 'Good morning.<br>How are you feeling?';
     if (mode === 'run') title.innerHTML = 'How did<br>today go?';
     if (mode === 'cross') title.innerHTML = 'Cross<br>training.';
     if (mode === 'walk') title.innerHTML = 'Walk /<br>Hike.';
     if (mode === 'rest') title.innerHTML = 'Rest day.<br>How\'s the body?';
-    if (mode === 'body') title.innerHTML = 'Morning<br>check-in.';
+    if (mode === 'body') title.innerHTML = 'Body<br>check-in.';
+    if (mode === 'evening') title.innerHTML = 'Good evening.<br>How did the day go?';
   }
 
   const btn = document.getElementById('submit-btn');
   if (btn) {
-    if (mode === 'body') btn.textContent = 'Get my daily plan →';
+    if (mode === 'morning') btn.textContent = 'Get my morning routine →';
+    else if (mode === 'evening') btn.textContent = 'Get my evening recovery →';
+    else if (mode === 'body') btn.textContent = 'Get my daily plan →';
     else if (mode === 'cross') btn.textContent = 'Log cross training →';
     else if (mode === 'walk') btn.textContent = 'Log walk / hike →';
     else btn.textContent = 'Get today\'s coaching →';
@@ -2241,6 +2428,25 @@ function updateWalkFields() {
   if (polesField) polesField.style.display = type === 'hike' || type === 'nordic' ? 'block' : 'none';
 }
 
+let morningDuration = 15;
+let eveningDuration = 15;
+
+function setMorningDuration(mins, btn) {
+  morningDuration = mins;
+  [15, 30, 45].forEach(m => {
+    const b = document.getElementById('morning-dur-' + m);
+    if (b) { b.style.background = m === mins ? 'var(--ink)' : 'transparent'; b.style.color = m === mins ? 'var(--accent)' : 'var(--muted)'; }
+  });
+}
+
+function setEveningDuration(mins, btn) {
+  eveningDuration = mins;
+  [15, 30, 45].forEach(m => {
+    const b = document.getElementById('evening-dur-' + m);
+    if (b) { b.style.background = m === mins ? 'var(--ink)' : 'transparent'; b.style.color = m === mins ? 'var(--accent)' : 'var(--muted)'; }
+  });
+}
+
 
 function initLog() {
   const now = new Date();
@@ -2248,7 +2454,12 @@ function initLog() {
   updateStats();
   renderPushModeBar();
   renderProCoachingStatus();
-  setDayMode('run');
+  // Auto-select mode based on local time
+  const hour = new Date().getHours();
+  let autoMode = 'run';
+  if (hour >= 5 && hour < 10) autoMode = 'morning';
+  else if (hour >= 18 || hour < 5) autoMode = 'evening';
+  setDayMode(autoMode);
 
   // Daily quote
   const q = getDailyQuote();
@@ -2373,6 +2584,14 @@ async function submitLog() {
   const walkPace = document.getElementById('log-walk-pace')?.value || '';
   const walkPoles = document.getElementById('log-walk-poles')?.value || '';
   const walkPainLoc = document.getElementById('log-walk-pain-location')?.value || '';
+  const morningSleep = document.getElementById('log-morning-sleep')?.value || '';
+  const morningEnergy = document.getElementById('log-morning-energy')?.value || '';
+  const morningPainLoc = document.getElementById('log-morning-pain-location')?.value || '';
+  const morningPlan = document.getElementById('log-morning-plan')?.value || '';
+  const eveningSession = document.getElementById('log-evening-session')?.value || '';
+  const eveningBody = document.getElementById('log-evening-body')?.value || '';
+  const eveningPainLoc = document.getElementById('log-evening-pain-location')?.value || '';
+  const eveningSleepTarget = document.getElementById('log-evening-sleep-target')?.value || '';
 
   const todayLog = {
     date: new Date().toISOString(),
@@ -2382,15 +2601,19 @@ async function submitLog() {
     notes, sleep, stress,
     crossActivity, crossDistance, crossDuration, crossIntensity,
     walkType, walkDistance, walkDuration, walkElevation, walkTerrain, walkPace, walkPoles, walkPainLoc,
-    isRestDay: dayMode !== 'run' && dayMode !== 'cross' && dayMode !== 'walk'
+    isRestDay: dayMode !== 'run' && dayMode !== 'cross' && dayMode !== 'walk',
+    morningSleep, morningEnergy, morningPainLoc, morningPlan,
+    eveningSession, eveningBody, eveningPainLoc, eveningSleepTarget
   };
 
   const bibleContext = blueprint ? JSON.stringify(blueprint) : JAX_BIBLE;
   const recentLogs = logs.slice(-7).map(l => {
     if (l.mode === 'cross') return `${new Date(l.date).toLocaleDateString('en-GB')}: CROSS TRAINING — ${l.crossActivity} ${l.crossDistance ? l.crossDistance + 'km' : ''} ${l.crossDuration ? l.crossDuration + 'min' : ''} ${l.crossIntensity || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     if (l.mode === 'walk') return `${new Date(l.date).toLocaleDateString('en-GB')}: WALK/HIKE — ${l.walkType} ${l.walkDistance ? l.walkDistance + 'km' : ''} ${l.walkDuration ? l.walkDuration + 'min' : ''} ${l.walkElevation ? l.walkElevation + 'm elev' : ''} ${l.walkTerrain || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+    if (l.mode === 'morning') return `${new Date(l.date).toLocaleDateString('en-GB')}: MORNING CHECK | Sleep: ${l.morningSleep} | Energy: ${l.morningEnergy} | Pain: ${l.painScore}/10 | Plan: ${l.morningPlan} | Notes: ${l.notes}`;
+    if (l.mode === 'evening') return `${new Date(l.date).toLocaleDateString('en-GB')}: EVENING CHECK | Session: ${l.eveningSession} | Body felt: ${l.eveningBody} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     if (l.mode === 'body') return `${new Date(l.date).toLocaleDateString('en-GB')}: BODY CHECK | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
-    if (l.isRestDay) return `${new Date(l.date).toLocaleDateString('en-GB')}: REST DAY | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+    if (l.mode === 'rest' || (l.isRestDay && l.mode !== 'morning' && l.mode !== 'evening' && l.mode !== 'body')) return `${new Date(l.date).toLocaleDateString('en-GB')}: REST DAY | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     return `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.km}km @ ${l.pace}/km, effort ${l.effort} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
   }).join('\n');
 
@@ -2411,8 +2634,16 @@ ${walkElevation ? `Elevation gain: ${walkElevation}m | ` : ''}${walkPoles ? `Pol
   } else if (dayMode === 'rest') {
     todayContext = `REST DAY
 Soreness today: ${restSoreness} | Pain score: ${painScore}/10 | Mobility done: ${restMobility}`;
+  } else if (dayMode === 'morning') {
+    todayContext = `MORNING CHECK-IN — start of day
+Sleep last night: ${morningSleep} | Energy: ${morningEnergy} | Pain/stiffness: ${painScore}/10 | Pain location: ${morningPainLoc}
+Today's planned session: ${morningPlan} | Routine duration available: ${morningDuration} minutes`;
+  } else if (dayMode === 'evening') {
+    todayContext = `EVENING CHECK-IN — end of day
+Session completed: ${eveningSession} | Body felt today: ${eveningBody} | Pain/soreness now: ${painScore}/10 | Pain location: ${eveningPainLoc}
+Target sleep time: ${eveningSleepTarget} | Evening routine duration available: ${eveningDuration} minutes`;
   } else {
-    todayContext = `MORNING BODY CHECK — no run yet
+    todayContext = `BODY CHECK — mid-day
 Energy/mood: ${bodyEnergy} | Pain score: ${painScore}/10 | Pain location: ${bodyLocation}
 Today's plan: ${bodyDayType}`;
   }
@@ -2432,9 +2663,18 @@ ${pushModeActive ? '\nMODE: PUSH — runner has been pain-free 28+ days. Apply P
 
 ${dayMode === 'walk' ? `This is a walk or hike session. Consider how the terrain, elevation and pace affect load relative to the runner's injury history. Advise on recovery appropriate to the effort and how it influences tomorrow's plan.` : ''}
 ${dayMode === 'cross' ? `This is a cross training session. Consider how ${crossActivity} affects the runner's overall training load and recovery needs relative to their running plan and injury history. Advise on recovery specific to cross training and how it should influence tomorrow's run plan.` : ''}
-${dayMode === 'body' ? `This is a morning body check — the runner has NOT run yet today. Their plan for today is: ${bodyDayType}.
+${dayMode === 'body' ? `This is a mid-day body check — the runner has NOT run yet today. Their plan for today is: ${bodyDayType}.
 For the "recovery" array: give 3-4 PRE-SESSION preparation movements they should do BEFORE their session today — warmup, activation drills, or mobility work specific to what they are doing (${bodyDayType}) and their injury history. NOT an evening routine.
 For "tomorrowPlan": use type "Today's Plan" and give exactly what they should do in today's session, with specific details adjusted based on how they feel right now.` : ''}
+${dayMode === 'morning' ? `This is a MORNING CHECK-IN at the start of the day. The runner has ${morningDuration} minutes for their morning routine.
+For the "recovery" array: give exactly ${morningDuration === 15 ? '3-4' : morningDuration === 30 ? '5-6' : '6-8'} MORNING ACTIVATION movements — things that are specifically good in the morning: gentle spine mobility, glute activation, hip mobility, ankle priming. These should wake the body up gently and prepare for the day. Good morning choices: cat-cow, glute bridges, 90/90 hip switches, calf raises, bird dog, thoracic rotation, hip flexor stretch. Avoid anything that requires full warm-up first.
+For "tomorrowPlan": use type "Today's Session" and give exactly what they should do in their planned session today (${morningPlan}), adjusted to their pain score and energy level this morning. If pain is 3/10 or above, modify or reduce the session.
+Label the recovery section "Your morning routine — ${morningDuration} min".` : ''}
+${dayMode === 'evening' ? `This is an EVENING CHECK-IN at the end of the day. The runner has ${eveningDuration} minutes for their evening recovery routine.
+For the "recovery" array: give exactly ${eveningDuration === 15 ? '3-4' : eveningDuration === 30 ? '5-6' : '6-8'} EVENING RECOVERY movements — things that are specifically good in the evening: parasympathetic activation, gentle stretching, foam rolling, breathwork, and mobility work to help sleep and recovery. Good evening choices: couch stretch, pigeon stretch, supine hamstring stretch, foam roll quads, diaphragmatic breathing, legs up the wall, gentle spinal twist. Avoid anything stimulating or that raises heart rate.
+Include the target sleep time (${eveningSleepTarget}) and give 1-2 specific sleep hygiene tips relevant to their situation.
+For "tomorrowPlan": give a specific plan for tomorrow based on how the body felt today, the session completed, and their injury history. Adjust load up or down based on tonight's check-in.
+Label the recovery section "Your evening routine — ${eveningDuration} min".` : ''}
 
 Respond with ONLY a JSON object — no backticks, no text outside JSON:
 {
@@ -2522,8 +2762,19 @@ Only populate acuteProtocol if today's log describes a new or acute injury (fres
 
 function formatCoachingResponse(c, mode) {
   const hasAcuteInjury = c.acuteProtocol && Object.keys(c.acuteProtocol).length > 0;
-  const recoveryLabel = hasAcuteInjury ? 'Injury care — do this today' : mode === 'body' ? 'Before your session' : mode === 'run' ? 'Post-run recovery' : mode === 'cross' ? 'Recovery' : mode === 'walk' ? 'After your walk' : 'Tonight\'s recovery';
-  const planLabel = mode === 'body' && !hasAcuteInjury ? 'Today\'s plan' : hasAcuteInjury ? 'Activity plan' : 'Tomorrow\'s plan';
+  const recoveryLabel = hasAcuteInjury ? 'Injury care — do this today'
+    : mode === 'morning' ? 'Your morning routine'
+    : mode === 'evening' ? 'Your evening recovery'
+    : mode === 'body' ? 'Before your session'
+    : mode === 'run' ? 'Post-run recovery'
+    : mode === 'cross' ? 'Recovery'
+    : mode === 'walk' ? 'After your walk'
+    : 'Tonight\'s recovery';
+  const planLabel = mode === 'morning' ? 'Today\'s session'
+    : mode === 'evening' ? 'Tomorrow\'s plan'
+    : mode === 'body' && !hasAcuteInjury ? 'Today\'s plan'
+    : hasAcuteInjury ? 'Activity plan'
+    : 'Tomorrow\'s plan';
   return `
     <!-- ASSESSMENT -->
     <div style="margin-bottom:16px;">
