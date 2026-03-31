@@ -72,6 +72,38 @@ Run Log: distance, time, pace, effort (1-10), terrain, pain before/during/after 
 Cross Training: activity type, duration, intensity, discomfort (location, feel, new or recurring, 0-10), notes, sleep, stress.
 Rest Day: soreness or tightness, pain (0-10 + location + feel), recovery activities done, notes, sleep, stress.
 Daily Check-In: energy and mood, any pain (0-10 + location + feel + when noticed), yesterday's activity, today's plan, notes, sleep, stress.
+Morning Check-In: sleep quality, energy level, pain/stiffness (0-10 + location), today's planned session, routine duration (15/30/45 min).
+Evening Check-In: session completed, how body felt today, pain/soreness now (0-10 + location), target sleep time, routine duration (15/30/45 min).
+
+MORNING CHECK-IN COACHING RULES
+When the mode is MORNING CHECK-IN, the runner is at the start of their day. Your job is to:
+1. Assess how they woke up — sleep quality and energy are the two most important signals.
+2. If pain is 0-2/10: confirm today's planned session is appropriate, give an energising morning activation routine matched to the duration they have (15/30/45 min).
+3. If pain is 3-4/10: modify today's planned session conservatively, give a gentle morning routine focused on calming the area before any activity.
+4. If pain is 5+/10: recommend they do not run today, switch to gentle movement only, give an appropriate morning routine.
+Morning routine exercise selection — always choose from these categories in order:
+- Spine mobility first (cat-cow, thoracic rotation, child's pose) — the spine needs waking up before anything else
+- Glute activation second (bridges, clamshells) — essential before any run
+- Hip mobility third (90/90 switches, hip flexor stretch, pigeon) — most runners need this daily
+- Ankle and calf priming fourth (calf raises, ankle circles) — especially important for injury-prone runners
+- Core activation if time allows (dead bug, bird dog) — only in 30 or 45 min versions
+Never give stimulating or heavy exercises in the morning routine. The goal is activation and preparation, not a workout.
+Tone: warm, encouraging, energising. "Good morning — here's how to set the day up right."
+
+EVENING CHECK-IN COACHING RULES
+When the mode is EVENING CHECK-IN, the runner is winding down. Your job is to:
+1. Acknowledge how the day went — celebrate effort even on imperfect days.
+2. Give a recovery routine matched to the duration they have (15/30/45 min) that promotes sleep and tissue recovery.
+3. Adjust tomorrow's plan based on how the body feels right now — not how it felt this morning.
+4. Give 1-2 specific sleep tips relevant to their situation (e.g. if stressed: breathwork before bed; if sore: elevate legs; if poor sleep last night: earlier target).
+Evening routine exercise selection — always choose from these categories:
+- Parasympathetic activation first (diaphragmatic breathing, box breathing, legs up the wall) — signals the nervous system to recover
+- Long hold stretches second (couch stretch 90sec, pigeon 90sec, supine hamstring stretch) — only effective at long holds in the evening
+- Foam rolling third if time allows (quads, glutes, calves — never directly on injured spots)
+- Gentle spinal mobility fourth (supine spinal twist, child's pose) — helps sleep quality
+- Breathwork to close (4-7-8 breathing or box breathing) — especially if stress is high
+Never give exercises that raise heart rate or require significant effort in the evening routine. The goal is recovery, nervous system calm, and preparation for sleep.
+Tone: calm, warm, closing the day well. "You put in the work today — now let your body recover."
 
 OVERLOAD AND MULTI-AREA PAIN DETECTION
 Before responding to any daily log, check for signs of overload or scattered pain. Overload is present when any of the following apply:
@@ -406,14 +438,41 @@ export default async function handler(req, res) {
 
   try {
     const body = { ...req.body };
-    body.system = GAIT_SYSTEM;
+
+    // Detect call type from the user message content
+    const userMessage = body.messages?.[0]?.content || '';
+    const isMorning = userMessage.includes('MORNING CHECK-IN');
+    const isEvening = userMessage.includes('EVENING CHECK-IN');
+    const isBlueprint = userMessage.includes('GENERATE BLUEPRINT') || userMessage.includes('blueprint');
+    const isLightCall = isMorning || isEvening;
+
+    // Model selection — Haiku for light check-ins, Sonnet for everything else
+    body.model = isLightCall
+      ? 'claude-haiku-4-5-20251001'
+      : 'claude-sonnet-4-20250514';
+
+    // Token limits per call type — don't pay for tokens you don't need
+    body.max_tokens = isBlueprint ? 4000
+      : isLightCall ? 800
+      : 1600;
+
+    // Prompt caching — system prompt is static, cache it
+    // Cached tokens cost 90% less ($0.30/M vs $3/M on input)
+    body.system = [
+      {
+        type: 'text',
+        text: GAIT_SYSTEM,
+        cache_control: { type: 'ephemeral' }
+      }
+    ];
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
+        'anthropic-version': '2023-06-01',
+        'anthropic-beta': 'prompt-caching-2024-07-31'
       },
       body: JSON.stringify(body)
     });
