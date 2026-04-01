@@ -439,25 +439,26 @@ export default async function handler(req, res) {
   try {
     const body = { ...req.body };
 
-    // Detect call type from the user message content
-    const userMessage = body.messages?.[0]?.content || '';
-    const isMorning = userMessage.includes('MORNING CHECK-IN');
-    const isEvening = userMessage.includes('EVENING CHECK-IN');
-    const isBlueprint = userMessage.includes('GENERATE BLUEPRINT') || userMessage.includes('blueprint');
+    // Detect call type from user message (case-insensitive)
+    const userMessage = (body.messages?.[0]?.content || '').toLowerCase();
+    const isMorning = userMessage.includes('morning check-in');
+    const isEvening = userMessage.includes('evening check-in');
+    const isBlueprint = userMessage.includes('blueprint');
     const isLightCall = isMorning || isEvening;
 
-    // Model selection — Haiku for light check-ins, Sonnet for everything else
+    // Model — Haiku for light check-ins, Sonnet for everything else
     body.model = isLightCall
       ? 'claude-haiku-4-5-20251001'
       : 'claude-sonnet-4-20250514';
 
-    // Token limits per call type — don't pay for tokens you don't need
-    body.max_tokens = isBlueprint ? 3000
-      : isLightCall ? 800
-      : 1600;
+    // Max tokens per call type
+    // Blueprint calls generate large JSON so need more room
+    body.max_tokens = isBlueprint ? 3500
+      : isLightCall ? 900
+      : 1800;
 
-    // Prompt caching — system prompt is static, cache it
-    // Cached tokens cost 90% less ($0.30/M vs $3/M on input)
+    // Prompt caching — marks system prompt as cacheable
+    // Cached tokens cost 90% less on input
     body.system = [
       {
         type: 'text',
