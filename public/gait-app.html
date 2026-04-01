@@ -92,6 +92,91 @@
   .pain-btn.selected { background: var(--red); color: white; border-color: var(--red); }
   .pain-btn.selected-low { background: var(--accent); color: var(--ink); border-color: var(--accent); }
 
+  /* MULTI-INJURY SELECTOR */
+  .injury-area-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .injury-area-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg2);
+    font-family: var(--mono); font-size: 11px;
+    color: var(--muted); cursor: pointer;
+    transition: all 0.15s; text-align: left;
+  }
+  .injury-area-btn:hover { border-color: var(--red); color: var(--ink); }
+  .injury-area-btn.active {
+    border-color: var(--red);
+    background: rgba(255,61,46,0.08);
+    color: var(--ink);
+  }
+  .injury-area-btn .area-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .injury-area-btn.active .area-dot { background: var(--red); }
+  .injury-detail-panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 8px;
+  }
+  .injury-detail-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .injury-detail-name {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--red); letter-spacing: 1px; text-transform: uppercase;
+  }
+  .injury-detail-remove {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--muted); cursor: pointer; background: none;
+    border: none; padding: 0;
+  }
+  .injury-detail-remove:hover { color: var(--red); }
+  .injury-feel-options {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
+  }
+  .injury-feel-btn {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-family: var(--mono); font-size: 10px;
+    color: var(--muted); cursor: pointer;
+    background: transparent; transition: all 0.15s;
+  }
+  .injury-feel-btn:hover { border-color: var(--red); color: var(--ink); }
+  .injury-feel-btn.selected {
+    background: var(--red); color: white; border-color: var(--red);
+  }
+  .injury-pain-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .injury-pain-label {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    white-space: nowrap;
+  }
+  .injury-pain-mini {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+  .injury-pain-mini button {
+    width: 32px; height: 32px; border-radius: 4px;
+    border: 1px solid var(--border); background: var(--bg2);
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s; color: var(--ink);
+  }
+  .injury-pain-mini button:hover { border-color: var(--red); }
+  .injury-pain-mini button.sel-high { background: var(--red); color: white; border-color: var(--red); }
+  .injury-pain-mini button.sel-low { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
   .btn-row { display: flex; gap: 12px; margin-top: 32px; }
@@ -653,38 +738,24 @@
           <option>Very low — exhausted</option>
         </select>
       </div>
-      <div class="field">
-        <label>Any pain or stiffness? (0 = none)</label>
-        <div class="pain-selector" id="pain-selector-morning">
-          <button class="pain-btn" onclick="selectPain(0)">0</button>
-          <button class="pain-btn" onclick="selectPain(1)">1</button>
-          <button class="pain-btn" onclick="selectPain(2)">2</button>
-          <button class="pain-btn" onclick="selectPain(3)">3</button>
-          <button class="pain-btn" onclick="selectPain(4)">4</button>
-          <button class="pain-btn" onclick="selectPain(5)">5</button>
-          <button class="pain-btn" onclick="selectPain(6)">6</button>
-          <button class="pain-btn" onclick="selectPain(7)">7</button>
-          <button class="pain-btn" onclick="selectPain(8)">8</button>
-          <button class="pain-btn" onclick="selectPain(9)">9</button>
-          <button class="pain-btn" onclick="selectPain(10)">10</button>
+<div class="field">
+        <label>Any pain or stiffness this morning? Tap each area to add it</label>
+        <div class="injury-area-grid">
+          <button class="injury-area-btn" onclick="toggleInjuryArea('knee_front')" data-area="knee_front"><span class="area-dot"></span>Knee — front</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('knee_side')" data-area="knee_side"><span class="area-dot"></span>Knee — back/side</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('hip_glute')" data-area="hip_glute"><span class="area-dot"></span>Hip / glute</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('hamstring')" data-area="hamstring"><span class="area-dot"></span>Hamstring</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('calf')" data-area="calf"><span class="area-dot"></span>Calf</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('achilles')" data-area="achilles"><span class="area-dot"></span>Achilles</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('shin')" data-area="shin"><span class="area-dot"></span>Shin</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('foot')" data-area="foot"><span class="area-dot"></span>Foot / heel</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('lower_back')" data-area="lower_back"><span class="area-dot"></span>Lower back</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('groin')" data-area="groin"><span class="area-dot"></span>Groin</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('it_band')" data-area="it_band"><span class="area-dot"></span>IT band</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('upper_back')" data-area="upper_back"><span class="area-dot"></span>Upper back</button>
         </div>
-      </div>
-      <div class="field">
-        <label>Where? (if any)</label>
-        <select id="log-morning-pain-location">
-          <option value="">Select...</option>
-          <option>None</option>
-          <option>Knee — front</option>
-          <option>Knee — back or side</option>
-          <option>Hip / glute</option>
-          <option>Hamstring</option>
-          <option>Calf</option>
-          <option>Achilles</option>
-          <option>Shin</option>
-          <option>Foot / heel</option>
-          <option>Lower back</option>
-          <option>Multiple areas</option>
-        </select>
+        <div class="injury-details-container"></div>
+        <div class="no-pain-msg" style="font-family:var(--mono);font-size:11px;color:var(--muted);padding:8px 0;">No areas selected — tap above if you have any pain or tightness today.</div>
       </div>
       <div class="field">
         <label>What's the plan for today?</label>
@@ -738,38 +809,24 @@
           <option>Struggled — body felt off</option>
         </select>
       </div>
-      <div class="field">
-        <label>Any soreness or pain right now? (0 = none)</label>
-        <div class="pain-selector" id="pain-selector-evening">
-          <button class="pain-btn" onclick="selectPain(0)">0</button>
-          <button class="pain-btn" onclick="selectPain(1)">1</button>
-          <button class="pain-btn" onclick="selectPain(2)">2</button>
-          <button class="pain-btn" onclick="selectPain(3)">3</button>
-          <button class="pain-btn" onclick="selectPain(4)">4</button>
-          <button class="pain-btn" onclick="selectPain(5)">5</button>
-          <button class="pain-btn" onclick="selectPain(6)">6</button>
-          <button class="pain-btn" onclick="selectPain(7)">7</button>
-          <button class="pain-btn" onclick="selectPain(8)">8</button>
-          <button class="pain-btn" onclick="selectPain(9)">9</button>
-          <button class="pain-btn" onclick="selectPain(10)">10</button>
+<div class="field">
+        <label>Any soreness or pain right now? Tap each area to add it</label>
+        <div class="injury-area-grid">
+          <button class="injury-area-btn" onclick="toggleInjuryArea('knee_front')" data-area="knee_front"><span class="area-dot"></span>Knee — front</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('knee_side')" data-area="knee_side"><span class="area-dot"></span>Knee — back/side</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('hip_glute')" data-area="hip_glute"><span class="area-dot"></span>Hip / glute</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('hamstring')" data-area="hamstring"><span class="area-dot"></span>Hamstring</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('calf')" data-area="calf"><span class="area-dot"></span>Calf</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('achilles')" data-area="achilles"><span class="area-dot"></span>Achilles</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('shin')" data-area="shin"><span class="area-dot"></span>Shin</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('foot')" data-area="foot"><span class="area-dot"></span>Foot / heel</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('lower_back')" data-area="lower_back"><span class="area-dot"></span>Lower back</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('groin')" data-area="groin"><span class="area-dot"></span>Groin</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('it_band')" data-area="it_band"><span class="area-dot"></span>IT band</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('upper_back')" data-area="upper_back"><span class="area-dot"></span>Upper back</button>
         </div>
-      </div>
-      <div class="field">
-        <label>Where? (if any)</label>
-        <select id="log-evening-pain-location">
-          <option value="">Select...</option>
-          <option>None</option>
-          <option>Knee — front</option>
-          <option>Knee — back or side</option>
-          <option>Hip / glute</option>
-          <option>Hamstring</option>
-          <option>Calf</option>
-          <option>Achilles</option>
-          <option>Shin</option>
-          <option>Foot / heel</option>
-          <option>Lower back</option>
-          <option>Multiple areas</option>
-        </select>
+        <div class="injury-details-container"></div>
+        <div class="no-pain-msg" style="font-family:var(--mono);font-size:11px;color:var(--muted);padding:8px 0;">No areas selected — tap above if you have any pain or tightness today.</div>
       </div>
       <div class="field">
         <label>Target sleep time tonight</label>
@@ -857,37 +914,23 @@
         </select>
       </div>
       <div class="field">
-        <label>Any pain during or after?</label>
-        <select id="log-pain-location">
-          <option value="">Select...</option>
-          <option>None</option>
-          <option>Knee — front (kneecap)</option>
-          <option>Knee — back</option>
-          <option>Knee — side</option>
-          <option>Calf</option>
-          <option>Hamstring</option>
-          <option>Hip</option>
-          <option>Foot / ankle</option>
-          <option>Lower back</option>
-          <option>Multiple areas</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Pain level (0 = none, 10 = severe)</label>
-        <div class="pain-selector" id="pain-selector">
-          <button class="pain-btn" onclick="selectPain(0)">0</button>
-          <button class="pain-btn" onclick="selectPain(1)">1</button>
-          <button class="pain-btn" onclick="selectPain(2)">2</button>
-          <button class="pain-btn" onclick="selectPain(3)">3</button>
-          <button class="pain-btn" onclick="selectPain(4)">4</button>
-          <button class="pain-btn" onclick="selectPain(5)">5</button>
-          <button class="pain-btn" onclick="selectPain(6)">6</button>
-          <button class="pain-btn" onclick="selectPain(7)">7</button>
-          <button class="pain-btn" onclick="selectPain(8)">8</button>
-          <button class="pain-btn" onclick="selectPain(9)">9</button>
-          <button class="pain-btn" onclick="selectPain(10)">10</button>
+        <label>Any pain during or after? Tap each area</label>
+        <div class="injury-area-grid">
+          <button class="injury-area-btn" onclick="toggleInjuryArea('knee_front')" data-area="knee_front"><span class="area-dot"></span>Knee — front</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('knee_side')" data-area="knee_side"><span class="area-dot"></span>Knee — back/side</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('hip_glute')" data-area="hip_glute"><span class="area-dot"></span>Hip / glute</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('hamstring')" data-area="hamstring"><span class="area-dot"></span>Hamstring</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('calf')" data-area="calf"><span class="area-dot"></span>Calf</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('achilles')" data-area="achilles"><span class="area-dot"></span>Achilles</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('shin')" data-area="shin"><span class="area-dot"></span>Shin</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('foot')" data-area="foot"><span class="area-dot"></span>Foot / heel</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('lower_back')" data-area="lower_back"><span class="area-dot"></span>Lower back</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('groin')" data-area="groin"><span class="area-dot"></span>Groin</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('it_band')" data-area="it_band"><span class="area-dot"></span>IT band</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('upper_back')" data-area="upper_back"><span class="area-dot"></span>Upper back</button>
         </div>
+        <div class="injury-details-container"></div>
+        <div class="no-pain-msg" style="font-family:var(--mono);font-size:11px;color:var(--muted);padding:8px 0;">No pain during this run — great!</div>
       </div>
     </div>
   </div>
@@ -949,38 +992,24 @@
           <option>Poor — fatigued or unwell</option>
         </select>
       </div>
-      <div class="field">
-        <label>Any pain or tightness anywhere? (0 = none)</label>
-        <div class="pain-selector" id="pain-selector-body">
-          <button class="pain-btn" onclick="selectPain(0)">0</button>
-          <button class="pain-btn" onclick="selectPain(1)">1</button>
-          <button class="pain-btn" onclick="selectPain(2)">2</button>
-          <button class="pain-btn" onclick="selectPain(3)">3</button>
-          <button class="pain-btn" onclick="selectPain(4)">4</button>
-          <button class="pain-btn" onclick="selectPain(5)">5</button>
-          <button class="pain-btn" onclick="selectPain(6)">6</button>
-          <button class="pain-btn" onclick="selectPain(7)">7</button>
-          <button class="pain-btn" onclick="selectPain(8)">8</button>
-          <button class="pain-btn" onclick="selectPain(9)">9</button>
-          <button class="pain-btn" onclick="selectPain(10)">10</button>
+<div class="field">
+        <label>Any pain or tightness? Tap each area to add it</label>
+        <div class="injury-area-grid">
+          <button class="injury-area-btn" onclick="toggleInjuryArea('knee_front')" data-area="knee_front"><span class="area-dot"></span>Knee — front</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('knee_side')" data-area="knee_side"><span class="area-dot"></span>Knee — back/side</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('hip_glute')" data-area="hip_glute"><span class="area-dot"></span>Hip / glute</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('hamstring')" data-area="hamstring"><span class="area-dot"></span>Hamstring</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('calf')" data-area="calf"><span class="area-dot"></span>Calf</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('achilles')" data-area="achilles"><span class="area-dot"></span>Achilles</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('shin')" data-area="shin"><span class="area-dot"></span>Shin</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('foot')" data-area="foot"><span class="area-dot"></span>Foot / heel</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('lower_back')" data-area="lower_back"><span class="area-dot"></span>Lower back</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('groin')" data-area="groin"><span class="area-dot"></span>Groin</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('it_band')" data-area="it_band"><span class="area-dot"></span>IT band</button>
+          <button class="injury-area-btn" onclick="toggleInjuryArea('upper_back')" data-area="upper_back"><span class="area-dot"></span>Upper back</button>
         </div>
-      </div>
-      <div class="field">
-        <label>Where? (if any)</label>
-        <select id="log-body-location">
-          <option value="">Select...</option>
-          <option>None</option>
-          <option>Knee — front</option>
-          <option>Knee — back or side</option>
-          <option>Hip / glute</option>
-          <option>Hamstring</option>
-          <option>Calf</option>
-          <option>Achilles</option>
-          <option>Shin</option>
-          <option>Foot</option>
-          <option>Lower back</option>
-          <option>Multiple areas</option>
-        </select>
+        <div class="injury-details-container"></div>
+        <div class="no-pain-msg" style="font-family:var(--mono);font-size:11px;color:var(--muted);padding:8px 0;">No areas selected — tap above if you have any pain or tightness today.</div>
       </div>
       <div class="field">
         <label>What's today? (helps GAIT plan your day)</label>
@@ -2474,6 +2503,153 @@ function renderProStatus() {
 // ══════════════════════════════════════════
 let dayMode = 'run'; // 'run' | 'rest' | 'body'
 
+
+// ══════════════════════════════════════════
+// MULTI-INJURY SELECTOR
+// ══════════════════════════════════════════
+
+const INJURY_AREA_LABELS = {
+  knee_front: 'Knee — front',
+  knee_side: 'Knee — back/side',
+  hip_glute: 'Hip / glute',
+  hamstring: 'Hamstring',
+  calf: 'Calf',
+  achilles: 'Achilles',
+  shin: 'Shin',
+  foot: 'Foot / heel',
+  lower_back: 'Lower back',
+  groin: 'Groin',
+  it_band: 'IT band',
+  upper_back: 'Upper back'
+};
+
+const FEEL_OPTIONS = ['tight', 'sharp', 'dull ache', 'stiff', 'burning', 'pain after activity', 'pinching'];
+
+// State: array of {area, feel[], pain}
+let activeInjuries = [];
+
+function toggleInjuryArea(area) {
+  const existing = activeInjuries.find(i => i.area === area);
+  if (existing) {
+    activeInjuries = activeInjuries.filter(i => i.area !== area);
+  } else {
+    activeInjuries.push({ area, feel: [], pain: null });
+  }
+  renderInjurySelector();
+  updateLegacyPainScore();
+}
+
+function setInjuryFeel(area, feel) {
+  const inj = activeInjuries.find(i => i.area === area);
+  if (!inj) return;
+  if (inj.feel.includes(feel)) {
+    inj.feel = inj.feel.filter(f => f !== feel);
+  } else {
+    inj.feel.push(feel);
+  }
+  renderInjurySelector();
+}
+
+function setInjuryPain(area, score) {
+  const inj = activeInjuries.find(i => i.area === area);
+  if (!inj) return;
+  inj.pain = score;
+  renderInjurySelector();
+  updateLegacyPainScore();
+}
+
+function setInjuryOther(area, text) {
+  const inj = activeInjuries.find(i => i.area === area);
+  if (!inj) return;
+  inj.other = text;
+}
+
+function updateLegacyPainScore() {
+  // Keep legacy selectedPain as the highest pain score across all injuries
+  // for backward compatibility with the rest of the code
+  if (activeInjuries.length === 0) {
+    selectedPain = 0;
+  } else {
+    const scores = activeInjuries.map(i => i.pain || 0);
+    selectedPain = Math.max(...scores);
+  }
+}
+
+function getActiveInjurySection() {
+  // Find the currently visible injury selector section
+  const sections = document.querySelectorAll('.injury-area-grid');
+  for (const grid of sections) {
+    const parent = grid.closest('[id$="-fields"], #run-fields');
+    if (parent && parent.style.display !== 'none') return grid.parentElement;
+  }
+  return null;
+}
+
+function renderInjurySelector() {
+  // Update ALL area buttons across all sections
+  document.querySelectorAll('.injury-area-btn').forEach(btn => {
+    const area = btn.getAttribute('data-area');
+    if (!area) return;
+    const isActive = activeInjuries.some(i => i.area === area);
+    btn.className = 'injury-area-btn' + (isActive ? ' active' : '');
+  });
+
+  // Render detail panels in ALL visible containers
+  document.querySelectorAll('.injury-details-container').forEach(container => {
+    const noPainMsg = container.nextElementSibling;
+
+    if (activeInjuries.length === 0) {
+      container.innerHTML = '';
+      if (noPainMsg && noPainMsg.classList.contains('no-pain-msg')) noPainMsg.style.display = 'block';
+      return;
+    }
+    if (noPainMsg && noPainMsg.classList.contains('no-pain-msg')) noPainMsg.style.display = 'none';
+
+    container.innerHTML = activeInjuries.map(inj => {
+      const label = INJURY_AREA_LABELS[inj.area] || inj.area;
+      const feelHtml = FEEL_OPTIONS.map(f => {
+        const sel = inj.feel.includes(f) ? ' selected' : '';
+        const label = f === 'pain after activity' ? 'pain after activity (not during)' : f;
+        return `<button class="injury-feel-btn${sel}" onclick="setInjuryFeel('${inj.area}', '${f}')">${label}</button>`;
+      }).join('');
+      const otherVal = inj.other || '';
+      const painBtns = [0,1,2,3,4,5,6,7,8,9,10].map(n => {
+        let cls = '';
+        if (inj.pain === n) cls = n <= 2 ? ' sel-low' : ' sel-high';
+        return `<button class="${cls}" onclick="setInjuryPain('${inj.area}', ${n})">${n}</button>`;
+      }).join('');
+      return `<div class="injury-detail-panel">
+        <div class="injury-detail-header">
+          <div class="injury-detail-name">${label}</div>
+          <button class="injury-detail-remove" onclick="toggleInjuryArea('${inj.area}')">Remove ×</button>
+        </div>
+        <div class="injury-feel-options">${feelHtml}</div>
+        <div class="injury-pain-row">
+          <div class="injury-pain-label">Pain (0–10):</div>
+          <div class="injury-pain-mini">${painBtns}</div>
+        </div>
+      </div>`;
+    }).join('');
+  });
+}
+
+function getInjurySummary() {
+  if (activeInjuries.length === 0) return 'None';
+  return activeInjuries.map(inj => {
+    const label = INJURY_AREA_LABELS[inj.area] || inj.area;
+    const feel = inj.feel.length ? inj.feel.join(', ') : 'unspecified feeling';
+    const pain = inj.pain !== null ? `${inj.pain}/10` : 'unrated';
+    const other = inj.other ? ` — "${inj.other}"` : '';
+    return `${label}: ${feel}${other}, pain ${pain}`;
+  }).join(' | ');
+}
+
+function resetInjurySelector() {
+  activeInjuries = [];
+  renderInjurySelector();
+  selectedPain = 0;
+}
+
 function setDayMode(mode) {
   dayMode = mode;
   isRestDay = mode === 'rest';
@@ -2504,11 +2680,16 @@ function setDayMode(mode) {
     if (el) el.style.display = m === mode ? 'block' : 'none';
   });
 
+  // Reset injury selector when switching modes
+  resetInjurySelector();
+
   // Hide shared sleep/stress when morning or evening has its own versions
   const sharedSleepStress = document.getElementById('shared-sleep-stress');
   if (sharedSleepStress) {
     sharedSleepStress.style.display = (mode === 'morning' || mode === 'evening') ? 'none' : 'block';
   }
+
+  const title = document.getElementById('log-title');
   if (title) {
     if (mode === 'morning') title.innerHTML = 'Good morning.<br>How are you feeling?';
     if (mode === 'run') title.innerHTML = 'How did<br>today go?';
@@ -2694,14 +2875,14 @@ async function submitLog() {
   const effort = document.getElementById('log-effort')?.value || '—';
   const terrain = document.getElementById('log-terrain')?.value || '—';
   const prePain = document.getElementById('log-pre-pain')?.value || 'Not specified';
-  const painLoc = document.getElementById('log-pain-location')?.value || 'None';
+  const painLoc = getInjurySummary();
   const painScore = selectedPain !== null ? selectedPain : 0;
 
   // Mode-specific fields
   const restSoreness = document.getElementById('log-rest-soreness')?.value || '';
   const restMobility = document.getElementById('log-rest-mobility')?.value || '';
   const bodyEnergy = document.getElementById('log-body-energy')?.value || '';
-  const bodyLocation = document.getElementById('log-body-location')?.value || '';
+  const bodyLocation = getInjurySummary();
   const bodyDayType = document.getElementById('log-body-daytype')?.value || '';
   const crossActivity = document.getElementById('log-cross-activity')?.value || '';
   const crossDistance = document.getElementById('log-cross-distance')?.value || '';
@@ -2717,11 +2898,11 @@ async function submitLog() {
   const walkPainLoc = document.getElementById('log-walk-pain-location')?.value || '';
   const morningSleep = document.getElementById('log-morning-sleep')?.value || '';
   const morningEnergy = document.getElementById('log-morning-energy')?.value || '';
-  const morningPainLoc = document.getElementById('log-morning-pain-location')?.value || '';
+  const morningPainLoc = getInjurySummary();
   const morningPlan = document.getElementById('log-morning-plan')?.value || '';
   const eveningSession = document.getElementById('log-evening-session')?.value || '';
   const eveningBody = document.getElementById('log-evening-body')?.value || '';
-  const eveningPainLoc = document.getElementById('log-evening-pain-location')?.value || '';
+  const eveningPainLoc = getInjurySummary();
   const eveningSleepTarget = document.getElementById('log-evening-sleep-target')?.value || '';
 
   const todayLog = {
@@ -2752,7 +2933,8 @@ async function submitLog() {
   if (dayMode === 'run') {
     todayContext = `RUN DAY
 Distance: ${km}km | Time: ${time} | Pace: ${pace}/km | Effort: ${effort} | Terrain: ${terrain}
-Pre-run pain: ${prePain} | Pain during/after: ${painLoc} | Pain score: ${painScore}/10`;
+Pre-run: ${prePain}
+Pain during/after: ${painLoc}`;
   } else if (dayMode === 'cross') {
     const distLabel = crossActivity === 'swimming' ? 'metres' : 'km';
     todayContext = `CROSS TRAINING DAY
