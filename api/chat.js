@@ -452,7 +452,7 @@ export default async function handler(req, res) {
       : 'claude-sonnet-4-20250514';
 
     // Token limits per call type — don't pay for tokens you don't need
-    body.max_tokens = isBlueprint ? 4000
+    body.max_tokens = isBlueprint ? 3000
       : isLightCall ? 800
       : 1600;
 
