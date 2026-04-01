@@ -1921,21 +1921,18 @@ function renderStrengthCircuitContent() {
   const core = b.strengthCircuit.core || [];
 
   // How many exercises per section based on time
-  // 15 min = 1 per section (3 total), 30 min = 2 per section (6 total)
-  // 45 min = 3 per section (9 total), 60 min = all
   let perSection;
   if (currentStrengthTime === 15) perSection = 1;
   else if (currentStrengthTime === 30) perSection = 2;
   else if (currentStrengthTime === 45) perSection = 3;
-  else perSection = 99; // show all
+  else perSection = 99;
 
-  // Sets label based on time
-  const rounds = currentStrengthTime === 15 ? '2 rounds'
-    : currentStrengthTime === 30 ? '3 rounds'
-    : currentStrengthTime === 45 ? '3 rounds'
-    : '4 rounds';
+  const totalExercises = currentStrengthTime === 15 ? 3
+    : currentStrengthTime === 30 ? 6
+    : currentStrengthTime === 45 ? 9
+    : (upper.length + legs.length + core.length);
 
-  let html = `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:12px;text-align:right;letter-spacing:1px;">${rounds} · ${currentStrengthTime} min</div>`;
+  let html = `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:14px;letter-spacing:1px;">${totalExercises} exercises · ${currentStrengthTime} min · do each once as written</div>`;
 
   if (upper.slice(0, perSection).length) {
     html += `<div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px;">💪 Upper body <span style="flex:1;height:1px;background:var(--border);display:inline-block;"></span></div>`;
