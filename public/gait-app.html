@@ -1836,12 +1836,25 @@ Return ONLY this JSON:
     const text1 = data1.content?.[0]?.text;
     const text2 = data2.content?.[0]?.text;
 
+    if (!text1 || !text2) {
+      console.error('Blueprint API error:', data1.error || data2.error, data1, data2);
+      container.innerHTML = `
+        <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">Something went wrong generating your blueprint. Please try again.</p>
+        <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
+      return;
+    }
+
     if (text1 && text2) {
       try {
-        const part1 = JSON.parse(text1.replace(/```json|```/g, '').trim());
-        const part2 = JSON.parse(text2.replace(/```json|```/g, '').trim());
+        const clean1 = text1.replace(/```json|```/g, '').trim();
+        const clean2 = text2.replace(/```json|```/g, '').trim();
+        const part1 = JSON.parse(clean1);
+        const part2 = JSON.parse(clean2);
         blueprint = { ...part1, ...part2 };
       } catch(parseErr) {
+        console.error('Blueprint parse error:', parseErr);
+        console.error('text1:', text1?.substring(0, 500));
+        console.error('text2:', text2?.substring(0, 500));
         container.innerHTML = `
           <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">Something went wrong generating your blueprint. Please try again.</p>
           <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
