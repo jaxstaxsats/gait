@@ -1742,17 +1742,20 @@ Return ONLY this JSON:
     "upperBody": [
       {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner in one sentence", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
       {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
+      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
     ],
     "legs": [
       {"name": "name", "sets": "3 × 15", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
       {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 10", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
+      {"name": "name", "sets": "3 × 10", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
     ],
     "core": [
       {"name": "name", "sets": "3 × 10", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
       {"name": "name", "sets": "30 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
+      {"name": "name", "sets": "3 × 12", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "45 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
     ]
   }
 }`;
@@ -1921,18 +1924,24 @@ function renderStrengthCircuitContent() {
   const core = b.strengthCircuit.core || [];
 
   // How many exercises per section based on time
+  // 4 exercises per section in blueprint = 16 total available
+  // 15 min = 1 per section = 3 total
+  // 30 min = 2 per section = 6 total
+  // 45 min = 3 per section = 9 total
+  // 1 hr  = 4 per section = 12 total
   let perSection;
   if (currentStrengthTime === 15) perSection = 1;
   else if (currentStrengthTime === 30) perSection = 2;
   else if (currentStrengthTime === 45) perSection = 3;
-  else perSection = 99;
+  else perSection = 4;
 
-  const totalExercises = currentStrengthTime === 15 ? 3
-    : currentStrengthTime === 30 ? 6
-    : currentStrengthTime === 45 ? 9
-    : (upper.length + legs.length + core.length);
+  const totalExercises = perSection * 3;
+  const timeNote = currentStrengthTime === 15 ? '3 exercises · quick hit'
+    : currentStrengthTime === 30 ? '6 exercises · solid session'
+    : currentStrengthTime === 45 ? '9 exercises · full circuit'
+    : '12 exercises · complete workout';
 
-  let html = `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:14px;letter-spacing:1px;">${totalExercises} exercises · ${currentStrengthTime} min · do each once as written</div>`;
+  let html = `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:14px;letter-spacing:1px;">${timeNote} · do each as written</div>`;
 
   if (upper.slice(0, perSection).length) {
     html += `<div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px;">💪 Upper body <span style="flex:1;height:1px;background:var(--border);display:inline-block;"></span></div>`;
