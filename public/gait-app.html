@@ -1162,24 +1162,26 @@
       <label>How are you feeling? Anything worth noting?</label>
       <textarea id="log-notes" placeholder="e.g. Left knee felt tight this morning. Legs heavy from yesterday. Feeling good and motivated..."></textarea>
     </div>
-    <div class="field">
-      <label>Sleep last night</label>
-      <select id="log-sleep">
-        <option value="">Select...</option>
-        <option>Poor (under 5hrs)</option>
-        <option>Average (5–6hrs)</option>
-        <option>Good (7–8hrs)</option>
-        <option>Great (8hrs+)</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Stress level today</label>
-      <select id="log-stress">
-        <option value="">Select...</option>
-        <option>Low</option>
-        <option>Moderate</option>
-        <option>High</option>
-      </select>
+    <div id="shared-sleep-stress" style="display:none;">
+      <div class="field">
+        <label>Sleep last night</label>
+        <select id="log-sleep">
+          <option value="">Select...</option>
+          <option>Poor (under 5hrs)</option>
+          <option>Average (5–6hrs)</option>
+          <option>Good (7–8hrs)</option>
+          <option>Great (8hrs+)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Stress level today</label>
+        <select id="log-stress">
+          <option value="">Select...</option>
+          <option>Low</option>
+          <option>Moderate</option>
+          <option>High</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -2502,7 +2504,11 @@ function setDayMode(mode) {
     if (el) el.style.display = m === mode ? 'block' : 'none';
   });
 
-  const title = document.getElementById('log-title');
+  // Hide shared sleep/stress when morning or evening has its own versions
+  const sharedSleepStress = document.getElementById('shared-sleep-stress');
+  if (sharedSleepStress) {
+    sharedSleepStress.style.display = (mode === 'morning' || mode === 'evening') ? 'none' : 'block';
+  }
   if (title) {
     if (mode === 'morning') title.innerHTML = 'Good morning.<br>How are you feeling?';
     if (mode === 'run') title.innerHTML = 'How did<br>today go?';
@@ -2801,7 +2807,7 @@ Include the target sleep time (${eveningSleepTarget}) and give 1-2 specific slee
 For "tomorrowPlan": give a specific plan for tomorrow based on how the body felt today, the session completed, and their injury history. Adjust load up or down based on tonight's check-in.
 Label the recovery section "Your evening routine — ${eveningDuration} min".` : ''}
 
-Respond with ONLY a JSON object — no backticks, no text outside JSON:
+Respond with ONLY a raw JSON object. No backticks. No markdown. No text before or after the JSON. Start your response with { and end with }. Nothing else:
 {
   "assessment": {
     "emoji": "one emoji",
@@ -2859,7 +2865,14 @@ Only populate acuteProtocol if today's log describes a new or acute injury (fres
     if (text) {
       let coachingData;
       try {
-        const clean = text.replace(/```json|```/g, '').trim();
+        // Strip backtick code blocks first
+        let clean = text.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+        // Extract just the JSON object — find first { and last matching }
+        const firstBrace = clean.indexOf('{');
+        const lastBrace = clean.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1) {
+          clean = clean.substring(firstBrace, lastBrace + 1);
+        }
         coachingData = JSON.parse(clean);
       } catch(e) {
         coachingData = null;
@@ -3006,7 +3019,12 @@ function formatAIResponse(text) {
 // ══════════════════════════════════════════
 function renderStoredResponse(raw, logEntry) {
   try {
-    const clean = raw.replace(/```json|```/g, '').trim();
+    let clean = raw.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+    const firstBrace = clean.indexOf('{');
+    const lastBrace = clean.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1) {
+      clean = clean.substring(firstBrace, lastBrace + 1);
+    }
     const parsed = JSON.parse(clean);
     if (parsed.assessment) return formatCoachingResponse(parsed, logEntry ? logEntry.mode : 'run');
   } catch(e) {}
