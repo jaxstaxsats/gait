@@ -501,6 +501,16 @@ Tone: Warm, supportive, honest, and encouraging. Speak like a caring coach who w
 
 Now respond to the user's message using the rules and structures above.`
 export default async function handler(req, res) {
+  // CORS headers — allow requests from any origin (needed for generator tool)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
