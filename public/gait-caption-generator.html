@@ -178,7 +178,7 @@ async function generate(){
   document.getElementById('step-1').className='loading-step active';
   document.getElementById('step-2').className='loading-step';
   try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,messages:[{role:'user',content:buildPrompt()}]})});
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,messages:[{role:'user',content:buildPrompt()}]})});
     const data=await res.json();
     const text=data.content?.[0]?.text;
     if(!text) throw new Error(data.error?.message||'No API response');
