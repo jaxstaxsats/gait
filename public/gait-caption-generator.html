@@ -6,281 +6,786 @@
 <title>GAIT Caption + Visual Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root { --bg:#0a0908;--bg2:#111009;--bg3:#181610;--border:rgba(255,255,255,0.08);--accent:#c8f23a;--red:#ff3d2e;--ink:#0f0e0b;--muted:rgba(255,255,255,0.35);--body:rgba(255,255,255,0.7);--mono:'DM Mono',monospace;--display:'Unbounded',sans-serif; }
-  body { background:var(--bg);color:white;font-family:var(--mono);min-height:100vh;padding:40px 24px; }
-  body::before { content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 15% 10%,rgba(200,242,58,0.05) 0%,transparent 45%),radial-gradient(ellipse at 85% 90%,rgba(255,61,46,0.03) 0%,transparent 40%); }
-  .container { max-width:720px;margin:0 auto;position:relative;z-index:1; }
-  .header { display:flex;align-items:center;justify-content:space-between;margin-bottom:40px; }
-  .logo { font-family:var(--display);font-weight:900;font-size:24px;letter-spacing:-1px;color:white; }
-  .logo .ai { color:var(--red); }
-  .header-tag { font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase; }
-  .section { background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:16px; }
-  .section-title { font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:16px; }
-  .pillar-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
-  .pillar-btn { padding:12px 8px;border:1px solid var(--border);border-radius:6px;background:transparent;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-align:center;transition:all 0.15s;line-height:1.5; }
-  .pillar-btn:hover { border-color:var(--accent);color:white; }
-  .pillar-btn.active { border-color:var(--accent);background:rgba(200,242,58,0.08);color:var(--accent); }
-  .pillar-icon { font-size:16px;display:block;margin-bottom:4px; }
-  .topic-grid { display:flex;flex-wrap:wrap;gap:8px; }
-  .topic-btn { padding:7px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;transition:all 0.15s; }
-  .topic-btn:hover { border-color:var(--accent);color:white; }
-  .topic-btn.active { background:var(--accent);border-color:var(--accent);color:var(--ink); }
-  .field { margin-bottom:16px; }
-  .field:last-child { margin-bottom:0; }
-  .field label { display:block;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:8px; }
-  textarea { width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-family:var(--mono);font-size:12px;color:white;resize:vertical;outline:none;transition:border-color 0.15s; }
-  textarea:focus { border-color:rgba(200,242,58,0.4); }
-  textarea::placeholder { color:rgba(255,255,255,0.2); }
-  .tone-row { display:flex;gap:8px;flex-wrap:wrap; }
-  .tone-btn { padding:7px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;transition:all 0.15s; }
-  .tone-btn:hover { border-color:rgba(255,255,255,0.3);color:white; }
-  .tone-btn.active { background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.3);color:white; }
-  .generate-btn { width:100%;background:var(--accent);color:var(--ink);font-family:var(--display);font-weight:900;font-size:13px;letter-spacing:1px;text-transform:uppercase;padding:18px;border-radius:6px;border:none;cursor:pointer;transition:all 0.2s;margin-bottom:16px; }
-  .generate-btn:hover { transform:translateY(-1px);box-shadow:0 8px 24px rgba(200,242,58,0.2); }
-  .generate-btn:disabled { opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none; }
-  .loading-bar { display:none;align-items:center;gap:12px;padding:14px 16px;background:rgba(200,242,58,0.06);border:1px solid rgba(200,242,58,0.12);border-radius:6px;margin-bottom:16px; }
-  .loading-bar.visible { display:flex; }
-  .spinner { width:16px;height:16px;border:2px solid rgba(200,242,58,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-  .loading-steps { display:flex;flex-direction:column;gap:4px; }
-  .loading-step { font-size:10px;letter-spacing:1px;color:var(--muted); }
-  .loading-step.active { color:var(--accent); }
-  .loading-step.done { color:rgba(200,242,58,0.4); }
-  .output { display:none; }
-  .output.visible { display:block; }
-  .out-section { background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:12px;position:relative; }
-  .out-label { font-size:8px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:12px; }
-  .caption-text { font-size:13px;color:var(--body);line-height:1.85;white-space:pre-wrap; }
-  .hashtag-list { display:flex;flex-wrap:wrap;gap:8px; }
-  .hashtag { font-size:11px;color:var(--accent);background:rgba(200,242,58,0.08);border:1px solid rgba(200,242,58,0.15);border-radius:20px;padding:4px 10px; }
-  .copy-btn { position:absolute;top:16px;right:16px;padding:5px 12px;border:1px solid var(--border);border-radius:4px;background:transparent;font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all 0.15s;text-transform:uppercase; }
-  .copy-btn:hover { border-color:var(--accent);color:var(--accent); }
-  .copy-btn.copied { color:var(--accent);border-color:var(--accent); }
-  .visual-wrap { background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:12px; }
-  .visual-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:16px; }
-  .visual-label { font-size:8px;letter-spacing:3px;color:var(--accent);text-transform:uppercase; }
-  .dl-btn { padding:9px 20px;border:1px solid var(--accent);border-radius:4px;background:rgba(200,242,58,0.08);font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:1px;color:var(--accent);cursor:pointer;transition:all 0.15s;text-transform:uppercase; }
-  .dl-btn:hover { background:rgba(200,242,58,0.18); }
-  #post-canvas { width:100%;border-radius:6px; }
-  .regen-btn { width:100%;padding:14px;border:1px solid var(--border);border-radius:6px;background:transparent;font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all 0.15s;text-transform:uppercase;margin-top:4px; }
-  .regen-btn:hover { border-color:var(--accent);color:var(--accent); }
-  .error-msg { display:none;padding:14px 16px;background:rgba(255,61,46,0.08);border:1px solid rgba(255,61,46,0.2);border-radius:6px;font-size:11px;color:#ff6b5e;margin-bottom:16px; }
-  .error-msg.visible { display:block; }
+* { margin:0; padding:0; box-sizing:border-box; }
+:root { --bg:#0a0908;--bg2:#111009;--bg3:#181610;--border:rgba(255,255,255,0.08);--accent:#c8f23a;--red:#ff3d2e;--ink:#0f0e0b;--muted:rgba(255,255,255,0.35);--body:rgba(255,255,255,0.7);--mono:'DM Mono',monospace;--display:'Unbounded',sans-serif; }
+body { background:var(--bg);color:white;font-family:var(--mono);min-height:100vh;padding:40px 24px; }
+body::before { content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 15% 10%,rgba(200,242,58,0.05) 0%,transparent 45%),radial-gradient(ellipse at 85% 90%,rgba(255,61,46,0.03) 0%,transparent 40%); }
+.wrap { max-width:720px;margin:0 auto;position:relative;z-index:1; }
+.hdr { display:flex;align-items:center;justify-content:space-between;margin-bottom:40px; }
+.logo { font-family:var(--display);font-weight:900;font-size:24px;letter-spacing:-1px;color:white; }
+.logo .ai { color:var(--red); }
+.hdr-tag { font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase; }
+.box { background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:16px; }
+.box-title { font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:16px; }
+.pgrid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+.pbtn { padding:12px 8px;border:1px solid var(--border);border-radius:6px;background:transparent;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-align:center;transition:all 0.15s;line-height:1.5; }
+.pbtn:hover,.pbtn.on { border-color:var(--accent);background:rgba(200,242,58,0.08);color:var(--accent); }
+.picon { font-size:16px;display:block;margin-bottom:4px; }
+.tgrid { display:flex;flex-wrap:wrap;gap:8px; }
+.tbtn { padding:7px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;transition:all 0.15s; }
+.tbtn:hover { border-color:var(--accent);color:white; }
+.tbtn.on { background:var(--accent);border-color:var(--accent);color:var(--ink); }
+.field { margin-bottom:14px; }
+.field:last-child { margin-bottom:0; }
+.field label { display:block;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:7px; }
+.field input,.field textarea,.field select { width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:11px 14px;font-family:var(--mono);font-size:12px;color:white;outline:none;transition:border-color 0.15s; }
+.field input:focus,.field textarea:focus,.field select:focus { border-color:rgba(200,242,58,0.4); }
+.field input::placeholder,.field textarea::placeholder { color:rgba(255,255,255,0.2); }
+.field textarea { resize:vertical; }
+.field select option { background:#111009;color:white; }
+.frow { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+.tone-row { display:flex;gap:8px;flex-wrap:wrap; }
+.tnbtn { padding:7px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;transition:all 0.15s; }
+.tnbtn:hover,.tnbtn.on { background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.3);color:white; }
+.custbox { background:rgba(200,242,58,0.04);border:1px solid rgba(200,242,58,0.12);border-radius:10px;padding:20px 24px;margin-bottom:16px; }
+.custbox .box-title { color:var(--accent); }
+.gen-btn { width:100%;background:var(--accent);color:var(--ink);font-family:var(--display);font-weight:900;font-size:13px;letter-spacing:1px;text-transform:uppercase;padding:18px;border-radius:6px;border:none;cursor:pointer;transition:all 0.2s;margin-bottom:16px; }
+.gen-btn:hover { transform:translateY(-1px);box-shadow:0 8px 24px rgba(200,242,58,0.2); }
+.gen-btn:disabled { opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none; }
+.lbar { display:none;align-items:center;gap:12px;padding:14px 16px;background:rgba(200,242,58,0.06);border:1px solid rgba(200,242,58,0.12);border-radius:6px;margin-bottom:16px; }
+.lbar.on { display:flex; }
+.spin { width:16px;height:16px;border:2px solid rgba(200,242,58,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.lsteps { display:flex;flex-direction:column;gap:4px; }
+.lstep { font-size:10px;letter-spacing:1px;color:var(--muted); }
+.lstep.act { color:var(--accent); }
+.lstep.done { color:rgba(200,242,58,0.4); }
+.out { display:none; }
+.out.on { display:block; }
+.osec { background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:12px;position:relative; }
+.olabel { font-size:8px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:12px; }
+.cap-text { font-size:13px;color:var(--body);line-height:1.85;white-space:pre-wrap; }
+.htags { display:flex;flex-wrap:wrap;gap:8px; }
+.htag { font-size:11px;color:var(--accent);background:rgba(200,242,58,0.08);border:1px solid rgba(200,242,58,0.15);border-radius:20px;padding:4px 10px; }
+.cpbtn { position:absolute;top:16px;right:16px;padding:5px 12px;border:1px solid var(--border);border-radius:4px;background:transparent;font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all 0.15s;text-transform:uppercase; }
+.cpbtn:hover,.cpbtn.done { border-color:var(--accent);color:var(--accent); }
+.vwrap { background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:12px; }
+.vhdr { display:flex;justify-content:space-between;align-items:center;margin-bottom:16px; }
+.vlabel { font-size:8px;letter-spacing:3px;color:var(--accent);text-transform:uppercase; }
+.dlbtn { padding:9px 20px;border:1px solid var(--accent);border-radius:4px;background:rgba(200,242,58,0.08);font-family:var(--display);font-weight:700;font-size:10px;letter-spacing:1px;color:var(--accent);cursor:pointer;transition:all 0.15s;text-transform:uppercase; }
+.dlbtn:hover { background:rgba(200,242,58,0.18); }
+#cv { width:100%;border-radius:6px; }
+.rbtn { width:100%;padding:14px;border:1px solid var(--border);border-radius:6px;background:transparent;font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all 0.15s;text-transform:uppercase;margin-top:4px; }
+.rbtn:hover { border-color:var(--accent);color:var(--accent); }
+.err { display:none;padding:14px 16px;background:rgba(255,61,46,0.08);border:1px solid rgba(255,61,46,0.2);border-radius:6px;font-size:11px;color:#ff6b5e;margin-bottom:16px; }
+.err.on { display:block; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
+<div class="wrap">
+  <div class="hdr">
     <div class="logo">G<span class="ai">AI</span>T</div>
-    <div class="header-tag">Caption + Visual · @gaitrun</div>
+    <div class="hdr-tag">Caption + Visual · @gaitrun</div>
   </div>
-  <div class="section">
-    <div class="section-title">Content pillar</div>
-    <div class="pillar-grid">
-      <button class="pillar-btn active" onclick="setPillar('journey',this)"><span class="pillar-icon">🏃</span>Jax's Journey</button>
-      <button class="pillar-btn" onclick="setPillar('howit',this)"><span class="pillar-icon">📱</span>How GAIT Works</button>
-      <button class="pillar-btn" onclick="setPillar('education',this)"><span class="pillar-icon">🧠</span>Education</button>
+
+  <div class="box">
+    <div class="box-title">Content pillar</div>
+    <div class="pgrid">
+      <button class="pbtn on" onclick="setPillar('journey',this)"><span class="picon">🏃</span>Jax's Journey</button>
+      <button class="pbtn" onclick="setPillar('howit',this)"><span class="picon">📱</span>How GAIT Works</button>
+      <button class="pbtn" onclick="setPillar('education',this)"><span class="picon">🧠</span>Education</button>
     </div>
   </div>
-  <div class="section">
-    <div class="section-title">Topic</div>
-    <div class="topic-grid" id="topic-grid"></div>
+
+  <div class="box">
+    <div class="box-title">Topic</div>
+    <div class="tgrid" id="tgrid"></div>
   </div>
-  <div class="section">
-    <div class="section-title">Context (optional)</div>
+
+  <!-- Dynamic customisation panel -->
+  <div class="custbox" id="custbox" style="display:none;">
+    <div class="box-title">Customise this post</div>
+    <div id="custfields"></div>
+  </div>
+
+  <div class="box">
+    <div class="box-title">Context & tone</div>
     <div class="field">
-      <label>What happened / specific detail to include</label>
-      <textarea id="ctx" rows="3" placeholder="e.g. Ran 8km this morning, groin felt tight at 5km but eased off. Pain 2/10 after..."></textarea>
+      <label>Extra context (optional)</label>
+      <textarea id="ctx" rows="2" placeholder="Any extra detail to include in the caption..."></textarea>
     </div>
     <div class="field">
       <label>Tone</label>
       <div class="tone-row">
-        <button class="tone-btn active" onclick="setTone('honest',this)">Honest & raw</button>
-        <button class="tone-btn" onclick="setTone('educational',this)">Educational</button>
-        <button class="tone-btn" onclick="setTone('motivating',this)">Quietly motivating</button>
-        <button class="tone-btn" onclick="setTone('minimal',this)">Minimal</button>
+        <button class="tnbtn on" onclick="setTone('honest',this)">Honest & raw</button>
+        <button class="tnbtn" onclick="setTone('educational',this)">Educational</button>
+        <button class="tnbtn" onclick="setTone('motivating',this)">Quietly motivating</button>
+        <button class="tnbtn" onclick="setTone('minimal',this)">Minimal</button>
       </div>
     </div>
   </div>
-  <button class="generate-btn" id="gen-btn" onclick="generate()">Generate caption + visual →</button>
-  <div class="loading-bar" id="loading-bar">
-    <div class="spinner"></div>
-    <div class="loading-steps">
-      <div class="loading-step" id="step-1">Writing caption...</div>
-      <div class="loading-step" id="step-2">Drawing visual...</div>
+
+  <button class="gen-btn" id="gbtn" onclick="generate()">Generate caption + visual →</button>
+
+  <div class="lbar" id="lbar">
+    <div class="spin"></div>
+    <div class="lsteps">
+      <div class="lstep" id="s1">Writing caption...</div>
+      <div class="lstep" id="s2">Drawing visual...</div>
     </div>
   </div>
-  <div class="error-msg" id="error-msg"></div>
-  <div class="output" id="output">
-    <div class="out-section">
-      <div class="out-label">Caption</div>
-      <button class="copy-btn" id="ccbtn" onclick="cp('caption-text','ccbtn')">Copy</button>
-      <div class="caption-text" id="caption-text"></div>
+  <div class="err" id="err"></div>
+
+  <div class="out" id="out">
+    <div class="osec">
+      <div class="olabel">Caption</div>
+      <button class="cpbtn" id="ccb" onclick="cp('ctxt','ccb')">Copy</button>
+      <div class="cap-text" id="ctxt"></div>
     </div>
-    <div class="out-section">
-      <div class="out-label">Hashtags</div>
-      <button class="copy-btn" id="hcbtn" onclick="cpTags()">Copy all</button>
-      <div class="hashtag-list" id="hashtag-list"></div>
+    <div class="osec">
+      <div class="olabel">Hashtags</div>
+      <button class="cpbtn" id="hcb" onclick="cpH()">Copy all</button>
+      <div class="htags" id="htags"></div>
     </div>
-    <div class="visual-wrap">
-      <div class="visual-header">
-        <div class="visual-label">Post visual — 1080 × 1350px</div>
-        <button class="dl-btn" onclick="dlPNG()">↓ Download PNG</button>
+    <div class="vwrap">
+      <div class="vhdr">
+        <div class="vlabel">Post visual — 1080 × 1350px</div>
+        <button class="dlbtn" onclick="dlPNG()">↓ Download PNG</button>
       </div>
-      <canvas id="post-canvas" width="1080" height="1350"></canvas>
+      <canvas id="cv" width="1080" height="1350"></canvas>
     </div>
-    <button class="regen-btn" onclick="generate()">↻ Regenerate</button>
+    <button class="rbtn" onclick="generate()">↻ Regenerate</button>
   </div>
 </div>
+
 <script>
-let PIL='journey',TOP='',TONE='honest',RES=null;
-const TOPICS={
-  journey:['102km month — biggest in 6 years','First run back after injury','Push Mode unlock — 28 pain-free days','Morning check-in on a pain day','Recovery day — following GAIT advice','Overload setback','Building GAIT while injured','6-year PFPS journey','Evening recovery routine','Vegan runner nutrition','Training for the ultra marathon'],
-  howit:['Blueprint reveal','Injury selector — how it works','Strength circuit with time options','The coaching response explained','Push Mode feature','Multi-injury tracking','Mileage rules','First 100 users — €4.99/month forever'],
-  education:["Runner's knee isn't a knee problem",'Why IT band stretching fails','Why rest alone doesn\'t fix injuries','The 10% mileage rule is wrong','Groin strain vs hip flexor','Why glute weakness causes knee pain','Lysine for vegan runners','Why overload hits multiple areas'],
+// ── STATE ──
+let PIL='journey', TOP='102km_month', TONE='honest', RES=null;
+
+// ── TOPIC DEFINITIONS ──
+// Each topic has: label, id, pillar, fields (custom inputs), headline, subline
+const TOPICS = {
+  journey: [
+    { id:'102km_month', label:'102km month', headline:'102. After 6 years.', subline:'The month everything changed.',
+      fields:[
+        { key:'km', label:'Total km this month', placeholder:'102', default:'102' },
+        { key:'years', label:'Years of injury', placeholder:'6', default:'6' },
+        { key:'month', label:'Month', placeholder:'April 2026', default:'April 2026' },
+      ]},
+    { id:'first_run_back', label:'First run back', headline:'First run back.', subline:'5km. Easy. Zero pain.',
+      fields:[
+        { key:'km', label:'Distance (km)', placeholder:'5', default:'5' },
+        { key:'pace', label:'Pace (/km)', placeholder:'6:20', default:'6:20' },
+        { key:'days_off', label:'Days off before this run', placeholder:'4', default:'4' },
+      ]},
+    { id:'push_mode', label:'Push Mode unlock', headline:'28 days. Unlocked.', subline:'Push Mode is live.',
+      fields:[
+        { key:'days', label:'Pain-free days', placeholder:'28', default:'28' },
+      ]},
+    { id:'morning_pain', label:'Morning check-in — pain day', headline:'Not every morning is ready.', subline:'But GAIT is.',
+      fields:[
+        { key:'area1', label:'Injury area 1', placeholder:'Groin', default:'Groin' },
+        { key:'pain1', label:'Pain score 1 (0-10)', placeholder:'3', default:'3' },
+        { key:'area2', label:'Injury area 2', placeholder:'Hip / glute', default:'Hip / glute' },
+        { key:'pain2', label:'Pain score 2 (0-10)', placeholder:'3', default:'3' },
+        { key:'area3', label:'Injury area 3 (optional)', placeholder:'Lower back', default:'Lower back' },
+        { key:'pain3', label:'Pain score 3 (0-10)', placeholder:'2', default:'2' },
+      ]},
+    { id:'recovery_day', label:'Recovery day', headline:'Rest isn\'t giving up.', subline:'It\'s how I hit 102km.',
+      fields:[
+        { key:'km', label:'Monthly km', placeholder:'102', default:'102' },
+        { key:'area1', label:'Injury area 1', placeholder:'Groin', default:'Groin' },
+        { key:'pain1', label:'Pain 1/10', placeholder:'3', default:'3' },
+        { key:'area2', label:'Injury area 2', placeholder:'Hip / glute', default:'Hip / glute' },
+        { key:'pain2', label:'Pain 2/10', placeholder:'3', default:'3' },
+      ]},
+    { id:'overload', label:'Overload setback', headline:'The body said stop.', subline:'I listened.',
+      fields:[
+        { key:'areas', label:'Number of pain areas', placeholder:'3', default:'3' },
+        { key:'highest_pain', label:'Highest pain score', placeholder:'3', default:'3' },
+      ]},
+    { id:'building_gait', label:'Building GAIT while injured', headline:'Built the fix while broken.', subline:'6 years of knee pain. 1 product.',
+      fields:[
+        { key:'years', label:'Years of injury', placeholder:'6', default:'6' },
+      ]},
+    { id:'pfps_journey', label:'6-year PFPS journey', headline:'6 years. One fix.', subline:'PFPS doesn\'t have to be forever.',
+      fields:[
+        { key:'years', label:'Years of injury', placeholder:'6', default:'6' },
+        { key:'start_year', label:'Year injury started', placeholder:'2019', default:'2019' },
+        { key:'km_now', label:'Monthly km now', placeholder:'102', default:'102' },
+      ]},
+    { id:'evening_routine', label:'Evening recovery routine', headline:'30 minutes every night.', subline:'Non-negotiable.',
+      fields:[
+        { key:'minutes', label:'Routine duration (min)', placeholder:'30', default:'30' },
+      ]},
+    { id:'vegan_nutrition', label:'Vegan runner nutrition', headline:'Rice protein isn\'t enough.', subline:'Add this if you\'re vegan.',
+      fields:[
+        { key:'protein_g', label:'Daily protein (g)', placeholder:'90', default:'90' },
+      ]},
+    { id:'ultra_training', label:'Training for the ultra', headline:'HM → Marathon → Ultra.', subline:'One step at a time.',
+      fields:[
+        { key:'hm_year', label:'Half marathon year', placeholder:'2026', default:'2026' },
+        { key:'marathon_year', label:'Marathon year', placeholder:'2026', default:'2026' },
+        { key:'ultra_year', label:'Ultra year', placeholder:'2027', default:'2027' },
+        { key:'km_now', label:'Current weekly km', placeholder:'22', default:'22' },
+      ]},
+  ],
+  howit: [
+    { id:'blueprint_reveal', label:'Blueprint reveal', headline:'Your Blueprint. Built for you.', subline:'Not a generic plan.',
+      fields:[
+        { key:'injury', label:'Primary injury', placeholder:'PFPS', default:'PFPS' },
+        { key:'race', label:'Race goal', placeholder:'Half marathon 2026', default:'Half marathon 2026' },
+      ]},
+    { id:'injury_selector', label:'Injury selector', headline:'Tap what hurts. Get real help.', subline:'Not a dropdown. A diagnosis.',
+      fields:[
+        { key:'area1', label:'Active area 1', placeholder:'Lower back', default:'Lower back' },
+        { key:'area2', label:'Active area 2', placeholder:'Hip / glute', default:'Hip / glute' },
+        { key:'area3', label:'Active area 3', placeholder:'Groin', default:'Groin' },
+      ]},
+    { id:'strength_circuit', label:'Strength circuit', headline:'15, 30, 45, or 1 hour.', subline:'Same blueprint. Your time.',
+      fields:[
+        { key:'active_duration', label:'Active duration tab', placeholder:'45', default:'45',
+          type:'select', options:['15','30','45','60'] },
+      ]},
+    { id:'coaching_response', label:'Coaching response', headline:'Not just a plan. An explanation.', subline:'Every exercise has a reason.',
+      fields:[
+        { key:'exercise', label:'Featured exercise name', placeholder:'Glute Bridge Bilateral', default:'Glute Bridge Bilateral' },
+        { key:'why', label:'The "why" line', placeholder:'Activates the strained glute safely — restores the glute-to-back connection.', default:'Activates the strained glute safely.' },
+      ]},
+    { id:'push_mode_feature', label:'Push Mode feature', headline:'28 days pain-free. Push harder.', subline:'GAIT rewards consistency.',
+      fields:[
+        { key:'days', label:'Current pain-free days', placeholder:'14', default:'14' },
+      ]},
+    { id:'multi_injury', label:'Multi-injury tracking', headline:'Three areas. One plan.', subline:'GAIT handles complexity.',
+      fields:[
+        { key:'area1', label:'Area 1', placeholder:'Lower back', default:'Lower back' },
+        { key:'pain1', label:'Pain 1', placeholder:'3/10', default:'3/10' },
+        { key:'area2', label:'Area 2', placeholder:'Hip / glute', default:'Hip / glute' },
+        { key:'pain2', label:'Pain 2', placeholder:'3/10', default:'3/10' },
+        { key:'area3', label:'Area 3', placeholder:'Groin', default:'Groin' },
+        { key:'pain3', label:'Pain 3', placeholder:'2/10', default:'2/10' },
+      ]},
+    { id:'mileage_rules', label:'Mileage rules', headline:'Your body sets the rules.', subline:'GAIT writes them down.',
+      fields:[
+        { key:'green_rule', label:'Green rule', placeholder:'Run if pain is 0–2/10', default:'Run if pain is 0–2/10' },
+        { key:'amber_rule', label:'Amber rule', placeholder:'Reduce 30% if pain is 3/10', default:'Reduce 30% if pain is 3/10' },
+        { key:'red_rule', label:'Red rule', placeholder:'No running if pain is 4/10+', default:'No running if pain is 4/10+' },
+      ]},
+    { id:'legacy_pricing', label:'First 100 users — €4.99', headline:'First 100. €4.99. Forever.', subline:'Legacy pricing. No catch.',
+      fields:[
+        { key:'price', label:'Legacy price', placeholder:'4.99', default:'4.99' },
+        { key:'standard_price', label:'Standard price after', placeholder:'7.99', default:'7.99' },
+        { key:'spots_taken', label:'Spots taken so far', placeholder:'12', default:'12' },
+      ]},
+  ],
+  education: [
+    { id:'runners_knee', label:"Runner's knee = hip problem", headline:"Your knee isn't the problem.", subline:'Your hip is.',
+      fields:[]},
+    { id:'itband', label:'IT band stretching fails', headline:"You can't stretch your IT band.", subline:'Here\'s what actually works.',
+      fields:[]},
+    { id:'rest_alone', label:'Rest alone fails', headline:'Rest removes pain. Not the cause.', subline:"That's why it keeps coming back.",
+      fields:[]},
+    { id:'ten_percent', label:'10% rule is wrong', headline:'The 10% rule is made up.', subline:"Here's what the evidence says.",
+      fields:[]},
+    { id:'groin_vs_hip', label:'Groin vs hip flexor', headline:'Groin or hip flexor?', subline:"Most runners can't tell. Here's the test.",
+      fields:[]},
+    { id:'glute_knee', label:'Glute weakness → knee pain', headline:'Weak glutes. Knee pain.', subline:'The connection most runners miss.',
+      fields:[]},
+    { id:'lysine', label:'Lysine for vegan runners', headline:'Rice protein has a gap.', subline:'One amino acid fills it.',
+      fields:[
+        { key:'protein_g', label:'Daily protein (g)', placeholder:'90', default:'90' },
+      ]},
+    { id:'overload_multi', label:'Overload hits multiple areas', headline:"It's not 3 injuries. It's 1.", subline:'Overload shows up everywhere.',
+      fields:[
+        { key:'area1', label:'Pain area 1', placeholder:'Groin', default:'Groin' },
+        { key:'area2', label:'Pain area 2', placeholder:'Hip / glute', default:'Hip / glute' },
+        { key:'area3', label:'Pain area 3', placeholder:'Lower back', default:'Lower back' },
+      ]},
+  ],
 };
-function init(){renderTopics();}
-function renderTopics(){
-  const g=document.getElementById('topic-grid');
-  g.innerHTML=TOPICS[PIL].map((t,i)=>`<button class="topic-btn${i===0?' active':''}" onclick="setTopic('${t.replace(/'/g,"\\'")}',this)">${t}</button>`).join('');
-  TOP=TOPICS[PIL][0];
+
+// ── INIT ──
+function init() { renderTopics(); updateCustFields(); }
+
+function renderTopics() {
+  const g = document.getElementById('tgrid');
+  g.innerHTML = TOPICS[PIL].map((t,i) =>
+    `<button class="tbtn${i===0?' on':''}" onclick="setTopic('${t.id}',this)">${t.label}</button>`
+  ).join('');
+  TOP = TOPICS[PIL][0].id;
 }
-function setPillar(p,b){PIL=p;document.querySelectorAll('.pillar-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderTopics();document.getElementById('output').classList.remove('visible');}
-function setTopic(t,b){TOP=t;document.querySelectorAll('.topic-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');}
-function setTone(t,b){TONE=t;document.querySelectorAll('.tone-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');}
-function buildPrompt(){
-  const ctx=document.getElementById('ctx').value.trim();
-  const tones={honest:'honest and raw — like a real runner texting a mate. Slightly tired sometimes. Real emotions.',educational:'informative and conversational — teach one thing, no jargon',motivating:'quietly motivating — not hype, like a friend who genuinely believes in you',minimal:'minimal — short, confident, let the numbers speak'};
-  const pillars={journey:'First person as Jax. Open with the real moment or pain point, not the product. Mention GAIT naturally as what helped — never as a sales pitch.',howit:'Show a specific GAIT feature in action. Describe what the runner sees. Make it feel like a real product moment.',education:'Teach one specific thing about running injuries. Lead with the counter-intuitive truth. Practical and actionable.'};
+
+function setPillar(p, btn) {
+  PIL = p;
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderTopics();
+  updateCustFields();
+  document.getElementById('out').classList.remove('on');
+}
+
+function setTopic(id, btn) {
+  TOP = id;
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  updateCustFields();
+}
+
+function setTone(t, btn) {
+  TONE = t;
+  document.querySelectorAll('.tnbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function getTopicDef() {
+  return TOPICS[PIL].find(t=>t.id===TOP) || TOPICS[PIL][0];
+}
+
+function updateCustFields() {
+  const def = getTopicDef();
+  const box = document.getElementById('custbox');
+  const container = document.getElementById('custfields');
+  if (!def.fields || def.fields.length === 0) {
+    box.style.display = 'none';
+    return;
+  }
+  box.style.display = 'block';
+  // Group fields into rows of 2
+  let html = '';
+  for (let i = 0; i < def.fields.length; i += 2) {
+    const f1 = def.fields[i];
+    const f2 = def.fields[i+1];
+    if (f2) {
+      html += `<div class="frow">`;
+      html += renderField(f1);
+      html += renderField(f2);
+      html += `</div>`;
+    } else {
+      html += renderField(f1);
+    }
+  }
+  container.innerHTML = html;
+}
+
+function renderField(f) {
+  if (f.type === 'select') {
+    return `<div class="field"><label>${f.label}</label><select id="cf_${f.key}">${f.options.map(o=>`<option value="${o}"${o===f.default?' selected':''}>${o} min</option>`).join('')}</select></div>`;
+  }
+  return `<div class="field"><label>${f.label}</label><input type="text" id="cf_${f.key}" placeholder="${f.placeholder}" value="${f.default}"></div>`;
+}
+
+function getCustomValues() {
+  const def = getTopicDef();
+  const vals = {};
+  (def.fields || []).forEach(f => {
+    const el = document.getElementById('cf_' + f.key);
+    vals[f.key] = el ? el.value.trim() || f.default : f.default;
+  });
+  return vals;
+}
+
+// ── PROMPT ──
+function buildPrompt() {
+  const def = getTopicDef();
+  const vals = getCustomValues();
+  const ctx = document.getElementById('ctx').value.trim();
+  const tones = {
+    honest: 'honest and raw — like a real runner texting a mate. Real emotions. Slightly tired sometimes.',
+    educational: 'informative and conversational — teach one thing clearly, no jargon',
+    motivating: 'quietly motivating — not hype, like a knowledgeable friend who genuinely believes in you',
+    minimal: 'minimal and confident — short, let the numbers speak',
+  };
+  const pillars = {
+    journey: 'Personal story from Jax, first person. Open with the real moment or pain point. Mention GAIT naturally as what helped — never as a sales pitch.',
+    howit: 'Show a GAIT feature in action. Describe what the runner sees and experiences. Make it feel like a real product moment.',
+    education: 'Teach one specific thing about running injuries. Lead with the counter-intuitive truth. Practical and actionable.',
+  };
+
+  // Build custom data context
+  const customContext = Object.entries(vals).map(([k,v]) => `${k}: ${v}`).join(', ');
+
   return `You write Instagram captions for @gaitrun — AI running coach for injury-prone runners.
 
-Jax, 39, Porto Portugal, 6 years PFPS, ran 102km this month. Vegan. Desk job. Training for ultra 2027.
-Currently managing: groin 3/10, right glute 3/10, lower back 2/10 after big month.
-First 100 users: €4.99/month locked forever. After: €7.99/month.
+Jax, 39, Porto Portugal, 6 years PFPS, vegan, desk job, training for ultra 2027.
 Voice: warm, honest, direct. Like a knowledgeable friend. No hype. No fitness clichés.
+First 100 users: €4.99/month forever. Standard: €7.99/month.
 
 PILLAR: ${pillars[PIL]}
 TONE: ${tones[TONE]}
-TOPIC: ${TOP}${ctx?'\nCONTEXT: '+ctx:''}
+TOPIC: ${def.label}
+HEADLINE TO USE: "${def.headline}"
+SUBLINE TO USE: "${def.subline}"
+CUSTOM DATA: ${customContext}${ctx ? '\nEXTRA CONTEXT: ' + ctx : ''}
 
-Caption rules: Strong scroll-stopping first line. 3-5 sentences. Subtle CTA at end (gait.run in bio or first 100 users €4.99/month). Max 1 emoji. No hashtags in body.
+Caption rules: Use the headline as your opening line or inspiration. 3-5 sentences. Subtle CTA at end. Max 1 emoji. No hashtags in body.
 
 Respond ONLY with valid JSON, no backticks:
-{"caption":"...","hashtags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8"],"stat":"key number e.g. 102km","stat_label":"2-4 words","headline":"4-6 word punchy headline","subline":"one short supporting sentence","accent_word":"one word from headline to highlight lime green"}`;
+{"caption":"...","hashtags":["tag1","tag2","tag3","tag4","tag5","tag6","tag7","tag8"],"stat":"${vals.km || vals.days || vals.years || vals.price || '102km'}","stat_label":"2-4 words","accent_word":"one word to highlight lime green in the visual"}`;
 }
-async function generate(){
-  const btn=document.getElementById('gen-btn');
-  const loading=document.getElementById('loading-bar');
-  const output=document.getElementById('output');
-  const err=document.getElementById('error-msg');
-  btn.disabled=true;loading.classList.add('visible');output.classList.remove('visible');err.classList.remove('visible');
-  document.getElementById('step-1').className='loading-step active';
-  document.getElementById('step-2').className='loading-step';
+
+// ── API ──
+async function callAPI(prompt, max) {
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:max, messages:[{role:'user',content:prompt}] })
+  });
+  const data = await res.json();
+  const text = data.content?.[0]?.text;
+  if (!text) throw new Error(data.error?.message || 'No API response');
+  return text;
+}
+
+// ── GENERATE ──
+async function generate() {
+  const btn = document.getElementById('gbtn');
+  const lbar = document.getElementById('lbar');
+  const out = document.getElementById('out');
+  const err = document.getElementById('err');
+  btn.disabled = true;
+  lbar.classList.add('on');
+  out.classList.remove('on');
+  err.classList.remove('on');
+  document.getElementById('s1').className = 'lstep act';
+  document.getElementById('s2').className = 'lstep';
+
   try {
-    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,messages:[{role:'user',content:buildPrompt()}]})});
-    const data=await res.json();
-    const text=data.content?.[0]?.text;
-    if(!text) throw new Error(data.error?.message||'No API response');
-    let clean=text.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
-    const f=clean.indexOf('{'),l=clean.lastIndexOf('}');
+    const raw = await callAPI(buildPrompt(), 700);
+    let clean = raw.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
+    const f=clean.indexOf('{'), l=clean.lastIndexOf('}');
     if(f!==-1&&l!==-1) clean=clean.substring(f,l+1);
-    RES=JSON.parse(clean);
-    document.getElementById('caption-text').textContent=RES.caption;
-    document.getElementById('hashtag-list').innerHTML=(RES.hashtags||[]).map(h=>`<span class="hashtag">${h.startsWith('#')?h:'#'+h}</span>`).join('');
-    document.getElementById('step-1').className='loading-step done';
-    document.getElementById('step-2').className='loading-step active';
-    output.classList.add('visible');
-    await drawPost(RES);
-    document.getElementById('step-2').className='loading-step done';
-  } catch(e){
-    err.textContent=`Error: ${e.message}. Please try again.`;err.classList.add('visible');
+    RES = JSON.parse(clean);
+
+    document.getElementById('ctxt').textContent = RES.caption;
+    document.getElementById('htags').innerHTML = (RES.hashtags||[]).map(h=>`<span class="htag">${h.startsWith('#')?h:'#'+h}</span>`).join('');
+    document.getElementById('s1').className = 'lstep done';
+    document.getElementById('s2').className = 'lstep act';
+    out.classList.add('on');
+
+    await drawPost(RES, getCustomValues(), getTopicDef());
+    document.getElementById('s2').className = 'lstep done';
+  } catch(e) {
+    err.textContent = `Error: ${e.message}. Please try again.`;
+    err.classList.add('on');
   } finally {
-    btn.disabled=false;loading.classList.remove('visible');
+    btn.disabled = false;
+    lbar.classList.remove('on');
   }
 }
-async function drawPost(r){
-  const canvas=document.getElementById('post-canvas');
-  const ctx=canvas.getContext('2d');
-  const W=1080,H=1350;
+
+// ── CANVAS DRAWING ──
+async function drawPost(r, vals, def) {
+  const canvas = document.getElementById('cv');
+  const ctx = canvas.getContext('2d');
+  const W=1080, H=1350;
   await document.fonts.ready;
   ctx.clearRect(0,0,W,H);
-  // BG
-  ctx.fillStyle='#0a0908';ctx.fillRect(0,0,W,H);
-  const g1=ctx.createRadialGradient(180,160,0,180,160,550);g1.addColorStop(0,'rgba(200,242,58,0.055)');g1.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);
-  const g2=ctx.createRadialGradient(900,1200,0,900,1200,450);g2.addColorStop(0,'rgba(255,61,46,0.04)');g2.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);
-  // TOP BAR
-  ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;ln(ctx,0,108,W,108);
-  ctx.font='400 22px "DM Mono"';ctx.fillStyle='rgba(255,255,255,0.22)';ctx.textAlign='left';ctx.fillText('06:47',56,74);
-  // Logo
+
+  // Background + glows
+  ctx.fillStyle='#0a0908'; ctx.fillRect(0,0,W,H);
+  const g1=ctx.createRadialGradient(180,160,0,180,160,550);
+  g1.addColorStop(0,'rgba(200,242,58,0.055)'); g1.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g1; ctx.fillRect(0,0,W,H);
+  const g2=ctx.createRadialGradient(900,1200,0,900,1200,450);
+  g2.addColorStop(0,'rgba(255,61,46,0.04)'); g2.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g2; ctx.fillRect(0,0,W,H);
+
+  // Top bar
+  ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1;
+  ln(ctx,0,108,W,108);
+  ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.22)'; ctx.textAlign='left';
+  ctx.fillText(new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),56,74);
+
+  // GAIT Logo
   ctx.font='900 34px "Unbounded"';
-  const gW=ctx.measureText('G').width,aiW=ctx.measureText('AI').width,tW2=ctx.measureText('T').width;
-  const lx=W/2-(gW+aiW+tW2)/2;
-  ctx.textAlign='left';ctx.fillStyle='white';ctx.fillText('G',lx,76);ctx.fillStyle='#ff3d2e';ctx.fillText('AI',lx+gW,76);ctx.fillStyle='white';ctx.fillText('T',lx+gW+aiW,76);
-  ctx.font='400 16px "DM Mono"';ctx.fillStyle='rgba(255,255,255,0.18)';ctx.textAlign='right';ctx.fillText('Daily Log',W-56,74);
-  // DATE
-  ctx.font='400 18px "DM Mono"';ctx.fillStyle='rgba(255,255,255,0.2)';ctx.textAlign='left';ctx.fillText('THURSDAY · 3 APRIL 2026',56,160);
-  // STAT
-  const stat=r.stat||'102km';
-  ctx.font='900 168px "Unbounded"';ctx.fillStyle='#c8f23a';ctx.textAlign='left';ctx.fillText(stat,52,380);
-  const sw=ctx.measureText(stat).width;ctx.strokeStyle='rgba(200,242,58,0.2)';ctx.lineWidth=2;ln(ctx,52,398,Math.min(52+sw,W-52),398);
-  ctx.font='400 22px "DM Mono"';ctx.fillStyle='rgba(255,255,255,0.28)';ctx.fillText((r.stat_label||'').toUpperCase(),56,438);
-  // DIVIDER
-  ctx.fillStyle='#c8f23a';ctx.fillRect(56,474,52,3);
-  // HEADLINE with accent
-  drawHL(ctx,r.headline||TOP,r.accent_word||'',56,560,W-112,78);
-  // SUBLINE
-  ctx.font='400 24px "DM Mono"';ctx.fillStyle='rgba(255,255,255,0.45)';
-  wrapTxt(ctx,r.subline||'',56,670,W-112,38);
-  // PILLS
-  const pills=[{l:'Groin',s:'3/10'},{l:'Hip / glute',s:'3/10'},{l:'Lower back',s:'2/10'}];
-  let px=56;const py=810;ctx.font='400 19px "DM Mono"';
-  for(const p of pills){
-    const pw=ctx.measureText(p.l+'  '+p.s).width+48,ph=46;
-    rr(ctx,px,py,pw,ph,23);ctx.fillStyle='rgba(255,61,46,0.07)';ctx.fill();ctx.strokeStyle='rgba(255,61,46,0.22)';ctx.lineWidth=1;ctx.stroke();
-    ctx.beginPath();ctx.arc(px+18,py+ph/2,5,0,Math.PI*2);ctx.fillStyle='#ff3d2e';ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.6)';ctx.fillText(p.l,px+30,py+ph/2+7);
-    const lw2=ctx.measureText(p.l).width;ctx.fillStyle='#ff3d2e';ctx.font='500 19px "DM Mono"';ctx.fillText('  '+p.s,px+30+lw2,py+ph/2+7);ctx.font='400 19px "DM Mono"';
-    px+=pw+12;if(px>W-200){px=56;}
-  }
-  // SESSION BOX
-  rr(ctx,56,905,W-112,132,10);ctx.fillStyle='rgba(200,242,58,0.06)';ctx.fill();ctx.strokeStyle='rgba(200,242,58,0.12)';ctx.lineWidth=1;ctx.stroke();
-  ctx.font='400 17px "DM Mono"';ctx.fillStyle='#c8f23a';ctx.textAlign='left';ctx.fillText("TODAY'S PLAN",80,948);
-  ctx.font='700 26px "Unbounded"';ctx.fillStyle='white';ctx.fillText('Active Recovery Day',80,988);
-  ctx.font='400 18px "DM Mono"';ctx.fillStyle='rgba(255,255,255,0.5)';ctx.fillText('20-min flat walk · 8 targeted movements · no running',80,1022);
-  // BOTTOM
-  ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;ln(ctx,0,H-90,W,H-90);
-  ctx.font='400 17px "DM Mono"';ctx.fillStyle='rgba(255,255,255,0.15)';ctx.textAlign='left';ctx.fillText('Real coaching when my body says slow down',56,H-52);
-  ctx.fillStyle='rgba(200,242,58,0.4)';ctx.textAlign='right';ctx.fillText('@gaitrun · gait.run',W-56,H-52);
+  const gW=ctx.measureText('G').width, aiW=ctx.measureText('AI').width, tW=ctx.measureText('T').width;
+  const lx=W/2-(gW+aiW+tW)/2;
+  ctx.textAlign='left'; ctx.fillStyle='white'; ctx.fillText('G',lx,76);
+  ctx.fillStyle='#ff3d2e'; ctx.fillText('AI',lx+gW,76);
+  ctx.fillStyle='white'; ctx.fillText('T',lx+gW+aiW,76);
+  ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.18)';
+  ctx.textAlign='right'; ctx.fillText('@gaitrun',W-56,74);
+
+  // Date
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+  ctx.font='400 17px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.2)';
+  ctx.textAlign='left'; ctx.fillText(dateStr,56,156);
+
+  // Route to the right draw function based on topic
+  const drawFn = DRAW_FNS[def.id] || drawGeneric;
+  drawFn(ctx, W, H, r, vals, def);
+
+  // Bottom strip
+  ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1; ln(ctx,0,H-88,W,H-88);
+  ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.15)';
+  ctx.textAlign='left'; ctx.fillText('gait.run — injury-aware running coach',56,H-50);
+  ctx.fillStyle='rgba(200,242,58,0.4)'; ctx.textAlign='right';
+  ctx.fillText('@gaitrun',W-56,H-50);
 }
+
+// ── DRAW FUNCTIONS PER TOPIC ──
+const DRAW_FNS = {
+
+  '102km_month': (ctx,W,H,r,v) => {
+    const km = v.km || '102';
+    ctx.font='900 190px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left';
+    ctx.fillText(km,50,390);
+    const sw=ctx.measureText(km).width;
+    ctx.font='900 70px "Unbounded"'; ctx.fillStyle='white';
+    ctx.fillText('km',56+sw,390);
+    ctx.strokeStyle='rgba(200,242,58,0.2)'; ctx.lineWidth=2; ln(ctx,52,408,Math.min(52+sw+80,W-52),408);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)';
+    ctx.fillText(`BIGGEST MONTH IN ${v.years||'6'} YEARS · ${(v.month||'APRIL 2026').toUpperCase()}`,56,448);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,476,52,3);
+    drawHL(ctx,r.headline||'102. After 6 years.',r.accent_word||'102',56,560,W-112,78);
+    ctx.font='400 24px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.45)';
+    wrapTxt(ctx,r.subline||'The month everything changed.',56,670,W-112,38);
+    // Bar chart
+    const bars=[40,55,60,48,70,65,80,72,85,90,78,280];
+    const bw=52, gap=10, startX=56, chartY=H-200;
+    bars.forEach((bh,i) => {
+      const x=startX+i*(bw+gap);
+      const isLast=i===bars.length-1;
+      ctx.fillStyle=isLast?'#c8f23a':'rgba(255,255,255,0.1)';
+      rr(ctx,x,chartY-bh,bw,bh,4); ctx.fill();
+      if(isLast){ctx.font='500 16px "DM Mono"';ctx.fillStyle='#c8f23a';ctx.textAlign='center';ctx.fillText(km+'km',x+bw/2,chartY-bh-14);}
+    });
+  },
+
+  'first_run_back': (ctx,W,H,r,v) => {
+    const km=v.km||'5'; const pace=v.pace||'6:20'; const days=v.days_off||'4';
+    ctx.font='900 190px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left'; ctx.fillText(km,52,390);
+    const sw=ctx.measureText(km).width;
+    ctx.font='900 70px "Unbounded"'; ctx.fillStyle='white'; ctx.fillText('km',56+sw,390);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)';
+    ctx.fillText(`PACE ${pace}/KM · FIRST RUN IN ${days} DAYS`,56,440);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,468,52,3);
+    drawHL(ctx,r.headline||'First run back.',r.accent_word||'back',56,548,W-112,78);
+    ctx.font='400 24px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.45)';
+    wrapTxt(ctx,r.subline||'5km. Easy. Zero pain.',56,650,W-112,38);
+    // Zero pain pills
+    const areas=['Groin','Hip / glute','Knee'];
+    let px=56, py=750;
+    ctx.font='400 18px "DM Mono"';
+    areas.forEach(a=>{
+      const pw=ctx.measureText(a+' 0/10').width+44, ph=42;
+      rr(ctx,px,py,pw,ph,21); ctx.fillStyle='rgba(200,242,58,0.07)'; ctx.fill();
+      ctx.strokeStyle='rgba(200,242,58,0.2)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(px+16,py+ph/2,5,0,Math.PI*2); ctx.fillStyle='#c8f23a'; ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fillText(a,px+28,py+ph/2+6);
+      const lw=ctx.measureText(a).width;
+      ctx.fillStyle='#c8f23a'; ctx.font='500 18px "DM Mono"'; ctx.fillText(' 0/10',px+28+lw,py+ph/2+6);
+      ctx.font='400 18px "DM Mono"';
+      px+=pw+10;
+    });
+  },
+
+  'push_mode': (ctx,W,H,r,v) => {
+    const days=v.days||'28';
+    // Extra glow
+    const glow=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,500);
+    glow.addColorStop(0,'rgba(200,242,58,0.1)'); glow.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=glow; ctx.fillRect(0,0,W,H);
+    ctx.font='900 220px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='center'; ctx.fillText(days,W/2,420);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.textAlign='center';
+    ctx.fillText('DAYS PAIN-FREE',W/2,466);
+    // Full progress bar
+    ctx.fillStyle='rgba(255,255,255,0.06)'; rr(ctx,56,510,W-112,8,4); ctx.fill();
+    ctx.fillStyle='#c8f23a'; rr(ctx,56,510,W-112,8,4); ctx.fill();
+    // Push mode card
+    rr(ctx,56,560,W-112,140,10);
+    ctx.fillStyle='rgba(200,242,58,0.08)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.3)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='700 30px "Unbounded"'; ctx.fillStyle='white'; ctx.textAlign='center'; ctx.fillText('⚡ Push Mode — Active',W/2,630);
+    ctx.font='400 18px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.5)';
+    ctx.fillText('15% mileage increases · Tempo runs · Progressive overload',W/2,668);
+    drawHL(ctx,r.headline||'28 days. Unlocked.',r.accent_word||'Unlocked',56,780,W-112,78);
+    ctx.font='400 24px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline||'Push Mode is live.',56,880,W-112,38);
+  },
+
+  'morning_pain': (ctx,W,H,r,v) => {
+    // App screenshot style
+    const a1=v.area1||'Groin', p1=v.pain1||'3';
+    const a2=v.area2||'Hip / glute', p2=v.pain2||'3';
+    const a3=v.area3||'Lower back', p3=v.pain3||'2';
+    ctx.font='400 17px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left';
+    ctx.fillText('MORNING CHECK-IN',56,200);
+    ctx.font='900 58px "Unbounded"'; ctx.fillStyle='white';
+    wrapTxt2(ctx,r.headline||'Not every morning is ready.',56,290,W-112,72,'900 58px "Unbounded"','white');
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,360,52,3);
+    // Injury pills
+    const pills=[{a:a1,p:p1},{a:a2,p:p2},{a:a3,p:p3}];
+    let px=56, py=400;
+    ctx.font='400 18px "DM Mono"';
+    pills.forEach(({a,p})=>{
+      const pw=ctx.measureText(a+' '+p+'/10').width+44, ph=42;
+      if(px+pw>W-56){px=56;py+=58;}
+      rr(ctx,px,py,pw,ph,21); ctx.fillStyle='rgba(255,61,46,0.08)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,61,46,0.25)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(px+16,py+ph/2,5,0,Math.PI*2); ctx.fillStyle='#ff3d2e'; ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,0.65)'; ctx.fillText(a,px+28,py+ph/2+6);
+      const lw=ctx.measureText(a).width;
+      ctx.fillStyle='#ff3d2e'; ctx.font='500 18px "DM Mono"'; ctx.fillText(' '+p+'/10',px+28+lw,py+ph/2+6);
+      ctx.font='400 18px "DM Mono"'; px+=pw+10;
+    });
+    // Detail panel
+    const panelY=py+70;
+    rr(ctx,56,panelY,W-112,160,8); ctx.fillStyle='rgba(255,61,46,0.06)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,61,46,0.2)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 14px "DM Mono"'; ctx.fillStyle='#ff3d2e'; ctx.textAlign='left';
+    ctx.fillText(a1.toUpperCase(),76,panelY+28);
+    const feels=['tight','stiff','sharp','dull ache'];
+    let fx=76, fy=panelY+56;
+    feels.forEach((f,i)=>{
+      const fw=ctx.measureText(f).width+20, fh=30;
+      rr(ctx,fx,fy,fw,fh,15);
+      if(i<2){ctx.fillStyle='#ff3d2e';ctx.fill();ctx.fillStyle='white';}
+      else{ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='rgba(255,255,255,0.4)';}
+      ctx.font='400 13px "DM Mono"'; ctx.fillText(f,fx+10,fy+20);
+      fx+=fw+8;
+    });
+    // Pain score row
+    ctx.font='400 14px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.fillText('Pain (0–10):',76,panelY+108);
+    for(let i=0;i<=10;i++){
+      const bx=210+i*34, by=panelY+92, bw=28, bh=28;
+      rr(ctx,bx,by,bw,bh,4);
+      if(i===parseInt(p1)){ctx.fillStyle='#ff3d2e';ctx.fill();ctx.fillStyle='white';}
+      else{ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='rgba(255,255,255,0.4)';}
+      ctx.font='400 12px "DM Mono"'; ctx.textAlign='center'; ctx.fillText(i,bx+14,by+18);
+    }
+    ctx.textAlign='left';
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)';
+    wrapTxt(ctx,r.subline||'But GAIT is.',56,panelY+230,W-112,36);
+  },
+
+  'legacy_pricing': (ctx,W,H,r,v) => {
+    const price=v.price||'4.99', std=v.standard_price||'7.99', spots=v.spots_taken||'12';
+    ctx.font='900 160px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='center';
+    ctx.fillText('€'+price,W/2,400);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.textAlign='center';
+    ctx.fillText('/MONTH · LOCKED IN FOREVER',W/2,446);
+    ctx.fillStyle='rgba(255,61,46,0.8)'; ctx.font='500 18px "DM Mono"';
+    ctx.fillText('FIRST 100 USERS ONLY',W/2,486);
+    // Progress bar
+    const pct=Math.min(parseInt(spots)||12,100)/100;
+    ctx.fillStyle='rgba(255,255,255,0.06)'; rr(ctx,56,520,W-112,10,5); ctx.fill();
+    ctx.fillStyle='#c8f23a'; rr(ctx,56,520,(W-112)*pct,10,5); ctx.fill();
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.textAlign='center';
+    ctx.fillText(`${spots}/100 spots taken`,W/2,556);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(W/2-26,580,52,3);
+    drawHL(ctx,r.headline||'First 100. €4.99. Forever.',r.accent_word||'Forever',56,660,W-112,78);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline||'Legacy pricing. No catch.',56,760,W-112,36);
+    // Comparison
+    rr(ctx,56,830,W-112,80,8); ctx.fillStyle='rgba(255,255,255,0.04)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 18px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.textAlign='center';
+    ctx.fillText('After 100 users: €'+std+'/month standard pricing',W/2,877);
+  },
+
+  'ultra_training': (ctx,W,H,r,v) => {
+    const hm=v.hm_year||'2026', mar=v.marathon_year||'2026', ult=v.ultra_year||'2027', km=v.km_now||'22';
+    drawHL(ctx,r.headline||'HM → Marathon → Ultra.',r.accent_word||'Ultra',56,260,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    ctx.fillText(r.subline||'One step at a time.',56,330);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,356,52,3);
+    const milestones=[
+      {label:'Half Marathon',year:hm,active:true,desc:'Build to pain-free 21km'},
+      {label:'Full Marathon',year:mar,active:false,desc:'Consistent 50km+ weeks'},
+      {label:'Ultra Marathon',year:ult,active:false,desc:'The big one',lime:true},
+    ];
+    let my=410;
+    milestones.forEach((m,i)=>{
+      const cardH=110;
+      rr(ctx,56,my,W-112,cardH,8);
+      ctx.fillStyle=m.lime?'rgba(200,242,58,0.08)':m.active?'rgba(255,255,255,0.06)':'rgba(255,255,255,0.03)';
+      ctx.fill();
+      ctx.strokeStyle=m.lime?'rgba(200,242,58,0.25)':m.active?'rgba(255,255,255,0.12)':'rgba(255,255,255,0.06)';
+      ctx.lineWidth=1; ctx.stroke();
+      if(m.active){
+        rr(ctx,56,my,4,cardH,2); ctx.fillStyle='#c8f23a'; ctx.fill();
+      }
+      ctx.font='700 26px "Unbounded"'; ctx.fillStyle=m.lime?'#c8f23a':m.active?'white':'rgba(255,255,255,0.5)';
+      ctx.textAlign='left'; ctx.fillText(m.label,80,my+40);
+      ctx.font='400 17px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)';
+      ctx.fillText(m.year,80,my+68);
+      ctx.fillStyle=m.lime?'rgba(200,242,58,0.5)':'rgba(255,255,255,0.25)';
+      ctx.textAlign='right'; ctx.fillText(m.desc,W-80,my+68);
+      ctx.textAlign='left';
+      my+=cardH+10;
+    });
+    ctx.font='400 18px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.fillText(`Current: ${km}km/week · building consistently`,56,my+20);
+  },
+
+};
+
+// ── GENERIC FALLBACK DRAW ──
+function drawGeneric(ctx,W,H,r,v,def) {
+  const stat=r.stat||Object.values(v)[0]||'';
+  if(stat){
+    ctx.font='900 160px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left'; ctx.fillText(stat,52,380);
+    const sw=ctx.measureText(stat).width;
+    ctx.strokeStyle='rgba(200,242,58,0.2)'; ctx.lineWidth=2; ln(ctx,52,400,Math.min(52+sw,W-52),400);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)';
+    ctx.fillText((r.stat_label||def.label).toUpperCase(),56,440);
+  }
+  ctx.fillStyle='#c8f23a'; ctx.fillRect(56,474,52,3);
+  drawHL(ctx,def.headline,r.accent_word||'',56,560,W-112,78);
+  ctx.font='400 24px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.45)';
+  wrapTxt(ctx,def.subline||'',56,670,W-112,38);
+
+  // Three injury pills if vals have area/pain
+  if(v.area1){
+    const pills=[];
+    if(v.area1) pills.push({a:v.area1,p:v.pain1||''});
+    if(v.area2) pills.push({a:v.area2,p:v.pain2||''});
+    if(v.area3) pills.push({a:v.area3,p:v.pain3||''});
+    let px=56,py=790; ctx.font='400 18px "DM Mono"';
+    pills.forEach(({a,p})=>{
+      const lbl=a+(p?' '+p+'/10':'');
+      const pw=ctx.measureText(lbl).width+44, ph=42;
+      if(px+pw>W-56){px=56;py+=56;}
+      rr(ctx,px,py,pw,ph,21); ctx.fillStyle='rgba(255,61,46,0.07)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,61,46,0.22)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(px+16,py+ph/2,5,0,Math.PI*2); ctx.fillStyle='#ff3d2e'; ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fillText(lbl,px+28,py+ph/2+6);
+      px+=pw+10;
+    });
+  }
+}
+
+// ── HELPERS ──
 function ln(c,x1,y1,x2,y2){c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath();}
 function wrapTxt(c,txt,x,y,maxW,lh){if(!txt)return;const ws=txt.split(' ');let line='',cy=y;for(const w of ws){const t=line+(line?' ':'')+w;if(c.measureText(t).width>maxW&&line){c.fillText(line,x,cy);line=w;cy+=lh;}else{line=t;}}if(line)c.fillText(line,x,cy);}
+function wrapTxt2(c,txt,x,y,maxW,lh,font,col){c.font=font;c.fillStyle=col;wrapTxt(c,txt,x,y,maxW,lh);}
 function drawHL(c,hl,aw,x,y,maxW,lh){
   c.font='900 68px "Unbounded"';
   const words=hl.split(' ');let cx=x,cy=y;const sp=c.measureText(' ').width;
   for(let i=0;i<words.length;i++){
     const w=words[i],ww=c.measureText(w).width;
     if(cx>x&&cx+ww>x+maxW){cx=x;cy+=lh;}
-    const isA=w.toLowerCase().replace(/[^a-z]/g,'')===aw.toLowerCase().replace(/[^a-z]/g,'');
-    c.fillStyle=isA?'#c8f23a':'white';c.fillText(w,cx,cy);
+    const isA=w.toLowerCase().replace(/[^a-z0-9]/g,'')===aw.toLowerCase().replace(/[^a-z0-9]/g,'');
+    c.fillStyle=isA?'#c8f23a':'white';c.textAlign='left';c.fillText(w,cx,cy);
     cx+=ww+(i<words.length-1?sp:0);
   }
 }
+
+// ── DOWNLOAD + COPY ──
 function dlPNG(){
-  const canvas=document.getElementById('post-canvas');
-  const t=TOP.replace(/[^a-z0-9]/gi,'_').toLowerCase();
-  const a=document.createElement('a');a.download=`gaitrun_${t}_${Date.now()}.png`;a.href=canvas.toDataURL('image/png');a.click();
+  const canvas=document.getElementById('cv');
+  const def=getTopicDef();
+  const a=document.createElement('a');
+  a.download=`gaitrun_${def.id}_${Date.now()}.png`;
+  a.href=canvas.toDataURL('image/png');
+  a.click();
 }
 async function cp(id,bid){
   await navigator.clipboard.writeText(document.getElementById(id).textContent);
-  const b=document.getElementById(bid);b.textContent='Copied ✓';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy';b.classList.remove('copied');},2000);
+  const b=document.getElementById(bid);b.textContent='Copied ✓';b.classList.add('done');
+  setTimeout(()=>{b.textContent='Copy';b.classList.remove('done');},2000);
 }
-async function cpTags(){
-  const t=Array.from(document.querySelectorAll('.hashtag')).map(e=>e.textContent).join(' ');
+async function cpH(){
+  const t=Array.from(document.querySelectorAll('.htag')).map(e=>e.textContent).join(' ');
   await navigator.clipboard.writeText(t);
-  const b=document.getElementById('hcbtn');b.textContent='Copied ✓';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy all';b.classList.remove('copied');},2000);
+  const b=document.getElementById('hcb');b.textContent='Copied ✓';b.classList.add('done');
+  setTimeout(()=>{b.textContent='Copy all';b.classList.remove('done');},2000);
 }
+
 init();
 </script>
 </body>
