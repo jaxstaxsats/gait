@@ -158,9 +158,11 @@ const TOPICS = {
   journey: [
     { id:'102km_month', label:'102km month', headline:'102. After 6 years.', subline:'The month everything changed.',
       fields:[
-        { key:'km', label:'Total km this month', placeholder:'102', default:'102' },
+        { key:'km', label:'km last month', placeholder:'102', default:'102' },
+        { key:'month', label:'Which month', placeholder:'March 2026', default:'March 2026' },
         { key:'years', label:'Years of injury', placeholder:'6', default:'6' },
-        { key:'month', label:'Month', placeholder:'April 2026', default:'April 2026' },
+        { key:'km_this_month', label:'km so far this month', placeholder:'0', default:'0' },
+        { key:'status', label:'Current status', placeholder:'In recovery — April, no running yet', default:'In recovery — April, no running yet' },
       ]},
     { id:'first_run_back', label:'First run back', headline:'First run back.', subline:'5km. Easy. Zero pain.',
       fields:[
@@ -397,6 +399,8 @@ function buildPrompt() {
   return `You write Instagram captions for @gaitrun — AI running coach for injury-prone runners.
 
 Jax, 39, Porto Portugal, 6 years PFPS, vegan, desk job, training for ultra 2027.
+Last month (March 2026): ran 102km — biggest month in 6 years.
+This month (April 2026): currently in recovery — zero km so far, managing groin/glute/lower back overload from March.
 Voice: warm, honest, direct. Like a knowledgeable friend. No hype. No fitness clichés.
 First 100 users: €4.99/month forever. Standard: €7.99/month.
 
@@ -484,7 +488,7 @@ async function drawPost(r, vals, def) {
   ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1;
   ln(ctx,0,108,W,108);
   ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.22)'; ctx.textAlign='left';
-  ctx.fillText(new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),56,74);
+  ctx.fillText(now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone}),56,74);
 
   // GAIT Logo
   ctx.font='900 34px "Unbounded"';
@@ -498,7 +502,7 @@ async function drawPost(r, vals, def) {
 
   // Date
   const now = new Date();
-  const dateStr = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+  const dateStr = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone}).toUpperCase();
   ctx.font='400 17px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.2)';
   ctx.textAlign='left'; ctx.fillText(dateStr,56,156);
 
@@ -519,6 +523,8 @@ const DRAW_FNS = {
 
   '102km_month': (ctx,W,H,r,v) => {
     const km = v.km || '102';
+    const month = v.month || 'March 2026';
+    const years = v.years || '6';
     ctx.font='900 190px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left';
     ctx.fillText(km,50,390);
     const sw=ctx.measureText(km).width;
@@ -526,21 +532,36 @@ const DRAW_FNS = {
     ctx.fillText('km',56+sw,390);
     ctx.strokeStyle='rgba(200,242,58,0.2)'; ctx.lineWidth=2; ln(ctx,52,408,Math.min(52+sw+80,W-52),408);
     ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)';
-    ctx.fillText(`BIGGEST MONTH IN ${v.years||'6'} YEARS · ${(v.month||'APRIL 2026').toUpperCase()}`,56,448);
-    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,476,52,3);
-    drawHL(ctx,r.headline||'102. After 6 years.',r.accent_word||'102',56,560,W-112,78);
+    ctx.fillText(`${month.toUpperCase()} · BIGGEST IN ${years} YEARS`,56,448);
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.18)';
+    ctx.fillText('April — in recovery. Building back.',56,474);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,498,52,3);
+    drawHL(ctx,r.headline||'102. After 6 years.',r.accent_word||'102',56,582,W-112,78);
     ctx.font='400 24px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.45)';
-    wrapTxt(ctx,r.subline||'The month everything changed.',56,670,W-112,38);
-    // Bar chart
-    const bars=[40,55,60,48,70,65,80,72,85,90,78,280];
-    const bw=52, gap=10, startX=56, chartY=H-200;
-    bars.forEach((bh,i) => {
+    wrapTxt(ctx,r.subline||'The month everything changed.',56,688,W-112,38);
+    // Bar chart — March is the peak, April is a tiny red recovery bar
+    const rawBars=[40,55,60,48,70,65,80,72,85,90,parseInt(km)||102,6];
+    const maxVal=Math.max(...rawBars);
+    const bw=50, gap=9, startX=56, chartY=H-195;
+    rawBars.forEach((bh,i) => {
+      const scaledH=Math.round((bh/maxVal)*230);
       const x=startX+i*(bw+gap);
-      const isLast=i===bars.length-1;
-      ctx.fillStyle=isLast?'#c8f23a':'rgba(255,255,255,0.1)';
-      rr(ctx,x,chartY-bh,bw,bh,4); ctx.fill();
-      if(isLast){ctx.font='500 16px "DM Mono"';ctx.fillStyle='#c8f23a';ctx.textAlign='center';ctx.fillText(km+'km',x+bw/2,chartY-bh-14);}
+      const isPeak=i===rawBars.length-2; // March
+      const isApr=i===rawBars.length-1; // April
+      ctx.fillStyle=isPeak?'#c8f23a':isApr?'rgba(255,61,46,0.45)':'rgba(255,255,255,0.1)';
+      rr(ctx,x,chartY-scaledH,bw,scaledH,4); ctx.fill();
+      if(isPeak){
+        ctx.font='500 14px "DM Mono"';ctx.fillStyle='#c8f23a';ctx.textAlign='center';
+        ctx.fillText(km+'km',x+bw/2,chartY-scaledH-14);
+        ctx.font='400 12px "DM Mono"';ctx.fillStyle='rgba(200,242,58,0.5)';
+        ctx.fillText('MAR',x+bw/2,chartY+16);
+      }
+      if(isApr){
+        ctx.font='400 12px "DM Mono"';ctx.fillStyle='rgba(255,61,46,0.5)';ctx.textAlign='center';
+        ctx.fillText('APR',x+bw/2,chartY+16);
+      }
     });
+    ctx.textAlign='left';
   },
 
   'first_run_back': (ctx,W,H,r,v) => {
@@ -709,6 +730,714 @@ const DRAW_FNS = {
     });
     ctx.font='400 18px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)';
     ctx.fillText(`Current: ${km}km/week · building consistently`,56,my+20);
+  },
+
+  // ── RECOVERY DAY ──
+  'recovery_day': (ctx,W,H,r,v) => {
+    const a1=v.area1||'Groin', p1=v.pain1||'3', a2=v.area2||'Hip / glute', p2=v.pain2||'3', km=v.km||'102';
+    ctx.font='900 160px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left'; ctx.fillText('2/10',52,350);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fillText('PAIN LEVEL TODAY · RECOVERY DAY',56,396);
+    ctx.fillStyle='rgba(255,61,46,0.7)'; ctx.font='500 16px "DM Mono"'; ctx.fillText('NO RUNNING',56,424);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,446,52,3);
+    drawHL(ctx,r.headline||"Rest isn't giving up.",r.accent_word||'Rest',56,528,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)';
+    wrapTxt(ctx,`It\'s how I hit ${km}km last month.`,56,624,W-112,36);
+    // Injury pills
+    const pills=[{a:a1,p:p1},{a:a2,p:p2}];
+    let px=56, py=692; ctx.font='400 18px "DM Mono"';
+    pills.forEach(({a,p})=>{
+      const pw=ctx.measureText(a+' '+p+'/10').width+44, ph=42;
+      rr(ctx,px,py,pw,ph,21); ctx.fillStyle='rgba(255,61,46,0.07)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,61,46,0.22)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(px+16,py+ph/2,5,0,Math.PI*2); ctx.fillStyle='#ff3d2e'; ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fillText(a,px+28,py+ph/2+6);
+      const lw=ctx.measureText(a).width; ctx.fillStyle='#ff3d2e'; ctx.font='500 18px "DM Mono"';
+      ctx.fillText(' '+p+'/10',px+28+lw,py+ph/2+6); ctx.font='400 18px "DM Mono"'; px+=pw+10;
+    });
+    // Session box
+    rr(ctx,56,772,W-112,120,8); ctx.fillStyle='rgba(200,242,58,0.06)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.12)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 15px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left'; ctx.fillText("TODAY'S PLAN",80,810);
+    ctx.font='700 24px "Unbounded"'; ctx.fillStyle='white'; ctx.fillText('🚶 Active Recovery',80,846);
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.fillText('20-min flat walk · 8 targeted movements · no running',80,876);
+    // Avoidances
+    const avoid=['No aggressive stretching','No squats or lunges','No running until pain ≤ 2/10'];
+    let ay=938; ctx.font='400 17px "DM Mono"';
+    avoid.forEach(a=>{
+      rr(ctx,56,ay,W-112,44,6); ctx.fillStyle='rgba(255,61,46,0.05)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,61,46,0.15)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.fillStyle='#ff3d2e'; ctx.fillText('✕',76,ay+28); ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillText(a,106,ay+28);
+      ay+=54;
+    });
+  },
+
+  // ── OVERLOAD ──
+  'overload': (ctx,W,H,r,v) => {
+    const areas=v.areas||'3', pain=v.highest_pain||'3';
+    const g=ctx.createRadialGradient(W,H,0,W,H,700); g.addColorStop(0,'rgba(255,61,46,0.06)'); g.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.font='900 180px "Unbounded"'; ctx.fillStyle='#ff3d2e'; ctx.textAlign='left'; ctx.fillText(pain+'/10',50,360);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fillText(`PAIN ACROSS ${areas} AREAS SIMULTANEOUSLY`,56,406);
+    ctx.fillStyle='#ff3d2e'; ctx.fillRect(56,432,52,3);
+    drawHL(ctx,r.headline||'The body said stop.',r.accent_word||'stop',56,520,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)';
+    wrapTxt(ctx,r.subline||'I listened.',56,614,W-112,36);
+    // Warning card
+    rr(ctx,56,680,W-112,100,8); ctx.fillStyle='rgba(255,61,46,0.07)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,61,46,0.2)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.18)'; rr(ctx,56,680,4,100,2); ctx.fill();
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='#ff3d2e'; ctx.textAlign='left'; ctx.fillText('⚠️  OVERLOAD DETECTED',80,718);
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillText(`${areas} areas simultaneously — no running today`,80,748);
+    // Calm card below
+    rr(ctx,56,800,W-112,80,8); ctx.fillStyle='rgba(200,242,58,0.06)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.12)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(200,242,58,0.8)'; ctx.textAlign='center';
+    ctx.fillText('This is data, not failure.',W/2,847); ctx.textAlign='left';
+    // Injury pills
+    const areas3=['Groin','Hip / glute','Lower back'];
+    const pains3=[pain,pain,'2'];
+    let px=56, py=920; ctx.font='400 17px "DM Mono"';
+    areas3.forEach((a,i)=>{
+      const pw=ctx.measureText(a+' '+pains3[i]+'/10').width+44, ph=42;
+      if(px+pw>W-56){px=56;py+=54;}
+      rr(ctx,px,py,pw,ph,21); ctx.fillStyle='rgba(255,61,46,0.07)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,61,46,0.22)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(px+16,py+ph/2,5,0,Math.PI*2); ctx.fillStyle='#ff3d2e'; ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fillText(a,px+28,py+ph/2+6);
+      const lw=ctx.measureText(a).width; ctx.fillStyle='#ff3d2e'; ctx.font='500 17px "DM Mono"';
+      ctx.fillText(' '+pains3[i]+'/10',px+28+lw,py+ph/2+6); ctx.font='400 17px "DM Mono"'; px+=pw+10;
+    });
+  },
+
+  // ── BUILDING GAIT WHILE INJURED ──
+  'building_gait': (ctx,W,H,r,v) => {
+    const years=v.years||'6';
+    drawHL(ctx,r.headline||'Built the fix while broken.',r.accent_word||'fix',56,260,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,340,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,390,52,3);
+    // Split timeline + logo
+    const items=[
+      {year:'2019',text:'First knee pain — PFPS diagnosis',col:'rgba(255,255,255,0.3)'},
+      {year:'2021',text:'Stopped running entirely',col:'rgba(255,255,255,0.3)'},
+      {year:'2023',text:'Started building GAIT',col:'rgba(255,255,255,0.6)'},
+      {year:'2024',text:'Used it on myself daily',col:'rgba(255,255,255,0.6)'},
+      {year:'2025',text:'102km. Back running.',col:'#c8f23a'},
+    ];
+    let ty=440;
+    items.forEach(item=>{
+      ctx.beginPath(); ctx.arc(68,ty-6,5,0,Math.PI*2);
+      ctx.fillStyle=item.col; ctx.fill();
+      if(ty<440+items.length*90-90){
+        ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(68,ty); ctx.lineTo(68,ty+76); ctx.stroke();
+      }
+      ctx.font='500 16px "DM Mono"'; ctx.fillStyle='rgba(200,242,58,0.6)'; ctx.fillText(item.year,88,ty);
+      ctx.font='400 22px "DM Mono"'; ctx.fillStyle=item.col; ctx.fillText(item.text,88,ty+28);
+      ty+=90;
+    });
+    // GAIT logo large at bottom
+    ctx.font='900 90px "Unbounded"';
+    const gW=ctx.measureText('G').width, aiW=ctx.measureText('AI').width, tW=ctx.measureText('T').width;
+    const lx=W/2-(gW+aiW+tW)/2;
+    ctx.fillStyle='rgba(255,255,255,0.06)'; ctx.fillText('G',lx,H-160);
+    ctx.fillStyle='rgba(255,61,46,0.15)'; ctx.fillText('AI',lx+gW,H-160);
+    ctx.fillStyle='rgba(255,255,255,0.06)'; ctx.fillText('T',lx+gW+aiW,H-160);
+  },
+
+  // ── PFPS JOURNEY ──
+  'pfps_journey': (ctx,W,H,r,v) => {
+    const years=v.years||'6', startYear=v.start_year||'2019', km=v.km_now||'102';
+    ctx.font='900 170px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left'; ctx.fillText(years,52,340);
+    const sw=ctx.measureText(years).width;
+    ctx.font='900 60px "Unbounded"'; ctx.fillStyle='white'; ctx.fillText('yrs',60+sw,340);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)';
+    ctx.fillText(`PFPS · STARTED ${startYear} · NOW ${km}KM/MONTH`,56,390);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,416,52,3);
+    drawHL(ctx,r.headline||'6 years. One fix.',r.accent_word||'fix',56,500,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)';
+    wrapTxt(ctx,r.subline,56,594,W-112,36);
+    // Vertical dotted timeline
+    const dots=[
+      {label:'Injury starts',y:660,muted:true},
+      {label:'Physio — helped briefly',y:730,muted:true},
+      {label:'Gave up running',y:800,muted:true},
+      {label:'Built GAIT',y:870,muted:false},
+      {label:km+'km month',y:940,lime:true},
+    ];
+    dots.forEach((d,i)=>{
+      ctx.beginPath(); ctx.arc(76,d.y,d.lime?8:5,0,Math.PI*2);
+      ctx.fillStyle=d.lime?'#c8f23a':d.muted?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.6)'; ctx.fill();
+      if(d.lime){ctx.strokeStyle='rgba(200,242,58,0.3)';ctx.lineWidth=2;ctx.stroke();}
+      ctx.font=d.lime?'700 24px "Unbounded"':'400 20px "DM Mono"';
+      ctx.fillStyle=d.lime?'#c8f23a':d.muted?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.7)';
+      ctx.textAlign='left'; ctx.fillText(d.label,104,d.y+7);
+      if(i<dots.length-1){ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(76,d.y+12);ctx.lineTo(76,dots[i+1].y-12);ctx.stroke();ctx.setLineDash([]);}
+    });
+  },
+
+  // ── EVENING ROUTINE ──
+  'evening_routine': (ctx,W,H,r,v) => {
+    const mins=v.minutes||'30';
+    ctx.font='900 170px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='left'; ctx.fillText(mins,52,330);
+    const sw=ctx.measureText(mins).width;
+    ctx.font='900 60px "Unbounded"'; ctx.fillStyle='white'; ctx.fillText('min',60+sw,330);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fillText('EVERY NIGHT · NON-NEGOTIABLE',56,378);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,404,52,3);
+    drawHL(ctx,r.headline||'30 minutes every night.',r.accent_word||'night',56,490,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)';
+    wrapTxt(ctx,r.subline,56,582,W-112,36);
+    // Evening exercises list
+    const moves=[
+      {icon:'🌙',name:'Pigeon Stretch',dur:'90 sec each side'},
+      {icon:'🌙',name:'Supine Spinal Twist',dur:'30 sec each side'},
+      {icon:'🌙',name:'Foam Roll Quads',dur:'60 sec each leg'},
+      {icon:'🌙',name:'Seated Hip Flexor',dur:'60 sec each side'},
+      {icon:'🌙',name:'Diaphragmatic Breathing',dur:'2 min'},
+    ];
+    let my=648;
+    moves.forEach(m=>{
+      ctx.fillStyle='rgba(255,255,255,0.04)'; rr(ctx,56,my,W-112,60,6); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 20px "DM Mono"'; ctx.fillStyle='white'; ctx.textAlign='left'; ctx.fillText(m.icon+' '+m.name,80,my+36);
+      ctx.font='400 16px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='right'; ctx.fillText(m.dur,W-80,my+36);
+      ctx.textAlign='left'; my+=68;
+    });
+  },
+
+  // ── VEGAN NUTRITION ──
+  'vegan_nutrition': (ctx,W,H,r,v) => {
+    const pg=v.protein_g||'90';
+    drawHL(ctx,r.headline||'Rice protein isn\'t enough.',r.accent_word||'enough',56,240,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,322,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,368,52,3);
+    const rows=[
+      {icon:'🌾',label:'Rice protein',val:pg+'g daily',note:'Incomplete — low in lysine',col:'rgba(255,255,255,0.5)',valcol:'white'},
+      {icon:'⚠️',label:'Missing: Lysine',val:'1–3g daily',note:'Critical for collagen synthesis',col:'#ff3d2e',valcol:'#ff3d2e'},
+      {icon:'🍊',label:'Vitamin C',val:'500mg',note:'Cofactor — activates collagen',col:'rgba(255,255,255,0.5)',valcol:'white'},
+      {icon:'✓',label:'Rice + Lysine + Vit C',val:'Complete',note:'Tendon & ligament repair',col:'#c8f23a',valcol:'#c8f23a'},
+    ];
+    let ry=420;
+    rows.forEach((row,i)=>{
+      const cardH=96;
+      rr(ctx,56,ry,W-112,cardH,8);
+      ctx.fillStyle=i===3?'rgba(200,242,58,0.07)':i===1?'rgba(255,61,46,0.06)':'rgba(255,255,255,0.03)'; ctx.fill();
+      ctx.strokeStyle=i===3?'rgba(200,242,58,0.2)':i===1?'rgba(255,61,46,0.2)':'rgba(255,255,255,0.07)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 26px "DM Mono"'; ctx.fillStyle=row.col; ctx.textAlign='left'; ctx.fillText(row.icon+' '+row.label,80,ry+36);
+      ctx.font='500 20px "DM Mono"'; ctx.fillStyle=row.valcol; ctx.textAlign='right'; ctx.fillText(row.val,W-80,ry+36);
+      ctx.font='400 15px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.textAlign='left'; ctx.fillText(row.note,80,ry+64);
+      ctx.textAlign='left'; ry+=cardH+10;
+    });
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)';
+    ctx.fillText('Best plant lysine sources: Edamame · Tempeh · Lentils',56,ry+16);
+  },
+
+  // ── BLUEPRINT REVEAL ──
+  'blueprint_reveal': (ctx,W,H,r,v) => {
+    const injury=v.injury||'PFPS', race=v.race||'Half marathon 2026';
+    drawHL(ctx,r.headline||'Your Blueprint. Built for you.',r.accent_word||'Blueprint',56,230,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,314,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,360,52,3);
+    // Injury alert card
+    rr(ctx,56,390,W-112,80,8); ctx.fillStyle='rgba(255,61,46,0.08)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,61,46,0.25)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.fillStyle='rgba(255,61,46,0.8)'; rr(ctx,56,390,4,80,2); ctx.fill();
+    ctx.font='400 14px "DM Mono"'; ctx.fillStyle='#ff3d2e'; ctx.fillText('⚠️  INJURY ALERT',80,422);
+    ctx.font='700 22px "Unbounded"'; ctx.fillStyle='white'; ctx.fillText(injury+' — High priority',80,452);
+    // 7-day grid
+    ctx.font='400 14px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fillText('7-DAY TRAINING PLAN',56,510);
+    const days=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+    const cols=['#c8f23a','rgba(100,150,255,0.8)','#c8f23a','rgba(255,255,255,0.2)','rgba(100,150,255,0.8)','rgba(255,180,50,0.8)','rgba(255,255,255,0.1)'];
+    const types=['Easy run','Strength','Tempo','Rest','Strength','Long run','Full rest'];
+    const bw2=Math.floor((W-112-48)/7), gx=56;
+    days.forEach((d,i)=>{
+      const x=gx+i*(bw2+8);
+      rr(ctx,x,524,bw2,90,6); ctx.fillStyle=cols[i]; ctx.fill();
+      ctx.font='500 11px "DM Mono"'; ctx.fillStyle=i===6||i===3?'rgba(255,255,255,0.3)':'rgba(0,0,0,0.7)';
+      ctx.textAlign='center'; ctx.fillText(d,x+bw2/2,546);
+      ctx.font='400 10px "DM Mono"'; ctx.fillStyle=i===6||i===3?'rgba(255,255,255,0.3)':'rgba(0,0,0,0.6)';
+      ctx.fillText(types[i].split(' ')[0],x+bw2/2,572);
+    });
+    ctx.textAlign='left';
+    // Sections list
+    const sections=['Strength circuit — 15/30/45/1hr options','Morning routine — 15/30/45 min','Evening recovery — 15/30/45 min','Mileage rules (your limits, not generic)'];
+    let sy=642;
+    sections.forEach(s=>{
+      ctx.font='400 18px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.5)';
+      ctx.fillText('→  '+s,56,sy); sy+=46;
+    });
+    // Race goal
+    rr(ctx,56,sy+10,W-112,64,8); ctx.fillStyle='rgba(200,242,58,0.06)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.15)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 18px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.fillText('🎯  Goal: '+race,80,sy+46);
+  },
+
+  // ── INJURY SELECTOR ──
+  'injury_selector': (ctx,W,H,r,v) => {
+    const a1=v.area1||'Lower back', a2=v.area2||'Hip / glute', a3=v.area3||'Groin';
+    drawHL(ctx,r.headline||'Tap what hurts. Get real help.',r.accent_word||'real',56,220,W-112,72);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,306,W-112,34);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,350,52,3);
+    ctx.font='400 15px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillText('ANY PAIN OR STIFFNESS? TAP EACH AREA',56,392);
+    // 12 area buttons grid
+    const areas=['Knee — front','Knee — back/side','Hip / glute','Hamstring','Calf','Achilles','Shin','Foot / heel','Lower back','Groin','IT band','Upper back'];
+    const active=[a1,a2,a3];
+    const bw3=Math.floor((W-112-8)/2), bh=44;
+    areas.forEach((area,i)=>{
+      const col=i%2, row=Math.floor(i/2);
+      const x=56+col*(bw3+8), y=410+row*(bh+8);
+      const isActive=active.includes(area);
+      rr(ctx,x,y,bw3,bh,6);
+      ctx.fillStyle=isActive?'rgba(255,61,46,0.1)':'rgba(255,255,255,0.03)'; ctx.fill();
+      ctx.strokeStyle=isActive?'rgba(255,61,46,0.4)':'rgba(255,255,255,0.08)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(x+16,y+bh/2,4,0,Math.PI*2);
+      ctx.fillStyle=isActive?'#ff3d2e':'rgba(255,255,255,0.15)'; ctx.fill();
+      ctx.font='400 13px "DM Mono"'; ctx.fillStyle=isActive?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.35)';
+      ctx.textAlign='left'; ctx.fillText(area,x+28,y+bh/2+5);
+    });
+    ctx.textAlign='left';
+    // Expanded detail panel
+    rr(ctx,56,880,W-112,130,8); ctx.fillStyle='rgba(255,61,46,0.07)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,61,46,0.2)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 13px "DM Mono"'; ctx.fillStyle='#ff3d2e'; ctx.fillText(a3.toUpperCase()+'  — expanded',80,910);
+    const fp=['tight','stiff','sharp','dull ache'];
+    let fx=80,fy=930;
+    fp.forEach((f,i)=>{
+      const fw=ctx.measureText(f).width+18,fh=28;
+      rr(ctx,fx,fy,fw,fh,14);
+      if(i<2){ctx.fillStyle='#ff3d2e';ctx.fill();ctx.fillStyle='white';}
+      else{ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='rgba(255,255,255,0.35)';}
+      ctx.font='400 12px "DM Mono"'; ctx.fillText(f,fx+9,fy+19); fx+=fw+8;
+    });
+    ctx.font='400 13px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fillText('Pain (0-10):',80,988);
+    for(let i=0;i<=10;i++){
+      const bx=190+i*32,by=972;
+      rr(ctx,bx,by,26,26,4);
+      if(i===3){ctx.fillStyle='#ff3d2e';ctx.fill();ctx.fillStyle='white';}
+      else{ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='rgba(255,255,255,0.35)';}
+      ctx.font='400 11px "DM Mono"'; ctx.textAlign='center'; ctx.fillText(i,bx+13,by+17);
+    }
+    ctx.textAlign='left';
+  },
+
+  // ── STRENGTH CIRCUIT ──
+  'strength_circuit': (ctx,W,H,r,v) => {
+    const active=v.active_duration||'45';
+    drawHL(ctx,r.headline||'15, 30, 45, or 1 hour.',r.accent_word||'45',56,220,W-112,72);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,304,W-112,34);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,348,52,3);
+    // Duration picker
+    const opts=['15','30','45','60'];
+    const labels=['15 min','30 min','45 min','1 hr'];
+    const bw4=Math.floor((W-112-24)/4);
+    opts.forEach((o,i)=>{
+      const x=56+i*(bw4+8), y=376;
+      rr(ctx,x,y,bw4,48,6);
+      if(o===active){ctx.fillStyle='rgba(200,242,58,0.12)';ctx.fill();ctx.strokeStyle='#c8f23a';ctx.lineWidth=1;ctx.stroke();}
+      else{ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;ctx.stroke();}
+      ctx.font=o===active?'700 16px "Unbounded"':'400 14px "DM Mono"';
+      ctx.fillStyle=o===active?'#c8f23a':'rgba(255,255,255,0.3)';
+      ctx.textAlign='center'; ctx.fillText(labels[i],x+bw4/2,y+29);
+    });
+    ctx.textAlign='left';
+    const countMap={'15':'3 exercises · quick hit','30':'6 exercises · solid session','45':'9 exercises · full circuit','60':'12 exercises · complete workout'};
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fillText(countMap[active]||'9 exercises · full circuit',56,456);
+    // Exercise cards
+    const exs=[
+      {sec:'💪 Upper body',name:'Single-arm Dumbbell Row',sets:'3 × 12'},
+      {sec:'🦵 Legs',name:'Single-leg Glute Bridge',sets:'3 × 10 each'},
+      {sec:'🔥 Core & abs',name:'Dead Bug',sets:'3 × 8 each side'},
+    ];
+    let ey=490;
+    exs.forEach(ex=>{
+      ctx.font='400 13px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillText(ex.sec,56,ey); ey+=24;
+      rr(ctx,56,ey,W-112,72,6); ctx.fillStyle='rgba(255,255,255,0.04)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,0.07)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 20px "DM Mono"'; ctx.fillStyle='white'; ctx.textAlign='left'; ctx.fillText(ex.name,80,ey+40);
+      ctx.font='400 16px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='right'; ctx.fillText(ex.sets,W-80,ey+40);
+      ctx.textAlign='left'; ey+=82;
+    });
+  },
+
+  // ── COACHING RESPONSE ──
+  'coaching_response': (ctx,W,H,r,v) => {
+    const exName=v.exercise||'Glute Bridge Bilateral', why=v.why||'Activates the strained glute safely.';
+    drawHL(ctx,r.headline||'Not just a plan. An explanation.',r.accent_word||'explanation',56,220,W-112,72);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,304,W-112,34);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,348,52,3);
+    // Assessment block
+    rr(ctx,56,380,W-112,100,8); ctx.fillStyle='rgba(255,255,255,0.03)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.07)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 28px "DM Mono"'; ctx.fillStyle='white'; ctx.textAlign='left'; ctx.fillText('🚨',80,426);
+    ctx.font='700 22px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.fillText('Recovery day — no running',120,416);
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.fillText('Three areas overloaded — groin, glute, lower back.',120,448);
+    ctx.font='400 13px "DM Mono"'; ctx.fillStyle='rgba(200,242,58,0.5)'; ctx.textAlign='left'; ctx.fillText('INJURY CARE — DO THIS TODAY',56,512);
+    // Exercise cards with WHY highlighted
+    const exercises=[
+      {icon:'🌅',name:'Cat-Cow Stretch',dur:'1 min · 10 reps',why:'Mobilises all spinal segments — start here.'},
+      {icon:'⚡',name:exName,dur:'2 × 12 reps',why:why},
+      {icon:'🔄',name:'90/90 Hip Switches',dur:'8 each side',why:'Opens hip rotation safely.'},
+      {icon:'🌅',name:'Supine Spinal Twist',dur:'20 sec each side',why:'Melts lower back tightness gently.'},
+    ];
+    let ey2=534;
+    exercises.forEach((ex,i)=>{
+      ctx.fillStyle='rgba(255,255,255,0.04)'; rr(ctx,56,ey2,W-112,76,6); ctx.fill();
+      ctx.strokeStyle=i===1?'rgba(200,242,58,0.15)':'rgba(255,255,255,0.05)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 20px "DM Mono"'; ctx.fillStyle=i===1?'white':'rgba(255,255,255,0.8)';
+      ctx.textAlign='left'; ctx.fillText(ex.icon+' '+ex.name,76,ey2+28);
+      ctx.font='400 14px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='right'; ctx.fillText(ex.dur,W-76,ey2+28);
+      ctx.textAlign='left';
+      if(i===1){
+        ctx.font='400 13px "DM Mono"'; ctx.fillStyle='rgba(200,242,58,0.65)';
+        wrapTxt(ctx,'→ '+ex.why,76,ey2+52,W-140,20);
+      } else {
+        ctx.font='400 13px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)';
+        ctx.fillText('→ '+ex.why.substring(0,55)+(ex.why.length>55?'…':''),76,ey2+52);
+      }
+      ey2+=86;
+    });
+  },
+
+  // ── PUSH MODE FEATURE ──
+  'push_mode_feature': (ctx,W,H,r,v) => {
+    const days=parseInt(v.days)||14;
+    const pct=Math.min(days/28,1);
+    ctx.font='900 150px "Unbounded"'; ctx.fillStyle=days>=28?'#c8f23a':'white'; ctx.textAlign='left'; ctx.fillText(days,52,320);
+    const sw=ctx.measureText(days+'').width;
+    ctx.font='900 50px "Unbounded"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.fillText('/28',60+sw,320);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fillText('PAIN-FREE DAYS',56,368);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,394,52,3);
+    // Progress bar
+    ctx.fillStyle='rgba(255,255,255,0.06)'; rr(ctx,56,420,W-112,12,6); ctx.fill();
+    ctx.fillStyle='#c8f23a'; rr(ctx,56,420,(W-112)*pct,12,6); ctx.fill();
+    ctx.font='400 15px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.textAlign='right';
+    ctx.fillText(`${28-days} more days to unlock`,W-56,452); ctx.textAlign='left';
+    drawHL(ctx,r.headline||'28 days pain-free. Push harder.',r.accent_word||'harder',56,538,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)';
+    wrapTxt(ctx,r.subline,56,630,W-112,36);
+    // Locked vs unlocked states
+    const locked=days<28;
+    rr(ctx,56,700,W-112,130,8);
+    ctx.fillStyle=locked?'rgba(255,255,255,0.03)':'rgba(200,242,58,0.08)'; ctx.fill();
+    ctx.strokeStyle=locked?'rgba(255,255,255,0.08)':'rgba(200,242,58,0.25)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='700 26px "Unbounded"'; ctx.fillStyle=locked?'rgba(255,255,255,0.3)':'white'; ctx.textAlign='center';
+    ctx.fillText(locked?'🔒 Push Mode locked':'⚡ Push Mode — Active',W/2,750);
+    ctx.font='400 17px "DM Mono"'; ctx.fillStyle=locked?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.55)';
+    ctx.fillText('15% mileage increases · Tempo runs · Progressive overload',W/2,784);
+    ctx.textAlign='left';
+    const perks=['Faster weekly mileage build','Tempo and threshold runs unlocked','Progressive strength overload','Direct push to race pace training'];
+    let py2=870;
+    perks.forEach(p=>{
+      ctx.font='400 18px "DM Mono"'; ctx.fillStyle=locked?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.55)';
+      ctx.fillText((locked?'○  ':'✓  ')+p,56,py2); py2+=44;
+      if(!locked){ctx.strokeStyle='rgba(200,242,58,0.15)';ctx.lineWidth=1;ln(ctx,56,py2-26,W-56,py2-26);}
+    });
+  },
+
+  // ── MULTI INJURY ──
+  'multi_injury': (ctx,W,H,r,v) => {
+    const a1=v.area1||'Lower back', p1=v.pain1||'3/10', a2=v.area2||'Hip / glute', p2=v.pain2||'3/10', a3=v.area3||'Groin', p3=v.pain3||'2/10';
+    drawHL(ctx,r.headline||'Three areas. One plan.',r.accent_word||'One',56,220,W-112,72);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,304,W-112,34);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,348,52,3);
+    // Three injury panels
+    const panels=[
+      {area:a1,pain:p1,feels:'tight, stiff',ex:'Cat-Cow · Pelvic tilts · Child\'s pose'},
+      {area:a2,pain:p2,feels:'sharp, dull ache',ex:'Glute bridge · Clamshells · 90/90'},
+      {area:a3,pain:p3,feels:'tight, stiff',ex:'Hip switches · Hip flexor stretch'},
+    ];
+    let py3=380;
+    panels.forEach(p=>{
+      rr(ctx,56,py3,W-112,126,8); ctx.fillStyle='rgba(255,61,46,0.06)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,61,46,0.18)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.fillStyle='#ff3d2e'; rr(ctx,56,py3,4,126,2); ctx.fill();
+      ctx.font='400 13px "DM Mono"'; ctx.fillStyle='#ff3d2e'; ctx.fillText(p.area.toUpperCase()+' — '+p.pain,80,py3+26);
+      ctx.font='400 17px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillText('Feels: '+p.feels,80,py3+52);
+      ctx.font='400 14px "DM Mono"'; ctx.fillStyle='rgba(200,242,58,0.6)'; ctx.fillText('→ '+p.ex,80,py3+80);
+      ctx.font='400 13px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.fillText('Specific exercises for this area',80,py3+104);
+      py3+=136;
+    });
+    // Connection note
+    rr(ctx,56,py3+10,W-112,80,8); ctx.fillStyle='rgba(200,242,58,0.05)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.1)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 17px "DM Mono"'; ctx.fillStyle='rgba(200,242,58,0.7)'; ctx.textAlign='center';
+    ctx.fillText('Lower back + hip/glute are connected — treat together.',W/2,py3+46); ctx.textAlign='left';
+    ctx.font='400 14px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.textAlign='center';
+    ctx.fillText('GAIT identifies the pattern, not just the symptoms',W/2,py3+70); ctx.textAlign='left';
+  },
+
+  // ── MILEAGE RULES ──
+  'mileage_rules': (ctx,W,H,r,v) => {
+    drawHL(ctx,r.headline||'Your body sets the rules.',r.accent_word||'body',56,220,W-112,72);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,304,W-112,34);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,348,52,3);
+    const rules=[
+      {dot:'#c8f23a',text:v.green_rule||'Run if pain is 0–2/10 and energy is good',type:'green'},
+      {dot:'rgba(255,180,50,0.9)',text:v.amber_rule||'Reduce distance 30% if pain is 3/10',type:'amber'},
+      {dot:'#ff3d2e',text:v.red_rule||'No running if pain is 4/10 or above',type:'red'},
+      {dot:'#c8f23a',text:'Max 10% weekly increase in standard mode',type:'green'},
+      {dot:'rgba(255,180,50,0.9)',text:'48hr minimum between hard sessions',type:'amber'},
+      {dot:'#ff3d2e',text:'Groin pain above 3/10 — stop, no exceptions',type:'red'},
+    ];
+    let ry2=390;
+    rules.forEach(rule=>{
+      rr(ctx,56,ry2,W-112,72,6);
+      ctx.fillStyle=rule.type==='green'?'rgba(200,242,58,0.04)':rule.type==='red'?'rgba(255,61,46,0.05)':'rgba(255,180,50,0.04)'; ctx.fill();
+      ctx.strokeStyle=rule.type==='green'?'rgba(200,242,58,0.12)':rule.type==='red'?'rgba(255,61,46,0.15)':'rgba(255,180,50,0.12)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(82,ry2+36,8,0,Math.PI*2); ctx.fillStyle=rule.dot; ctx.fill();
+      ctx.font='400 18px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.textAlign='left';
+      wrapTxt(ctx,rule.text,106,ry2+42,W-180,26);
+      ry2+=82;
+    });
+  },
+
+  // ── EDUCATION: RUNNER'S KNEE ──
+  'runners_knee': (ctx,W,H,r,v) => {
+    drawHL(ctx,r.headline||"Your knee isn't the problem.",r.accent_word||'knee',56,220,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline||'Your hip is.',56,304,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,350,52,3);
+    // Split diagram
+    const midX=W/2;
+    ctx.font='400 14px "DM Mono"'; ctx.fillStyle='rgba(255,61,46,0.7)'; ctx.textAlign='center';
+    ctx.fillText('WHERE IT HURTS',midX/2,410);
+    ctx.fillStyle='rgba(200,242,58,0.7)'; ctx.fillText('WHERE IT STARTS',midX+midX/2,410);
+    // Knee box (red)
+    rr(ctx,56,430,midX-80,200,8); ctx.fillStyle='rgba(255,61,46,0.07)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,61,46,0.2)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='900 52px "Unbounded"'; ctx.fillStyle='#ff3d2e'; ctx.textAlign='center'; ctx.fillText('Knee',midX/2,508);
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.fillText('kneecap tracking wrong',midX/2,548); ctx.fillText('→ pain, swelling, stiffness',midX/2,572);
+    // Hip box (lime)
+    rr(ctx,midX+24,430,midX-80,200,8); ctx.fillStyle='rgba(200,242,58,0.07)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.2)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='900 48px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.fillText('Hip',midX+midX/2,508);
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.fillText('glute weakness',midX+midX/2,548); ctx.fillText('pelvis drops → knee pain',midX+midX/2,572);
+    // Arrow
+    ctx.strokeStyle='rgba(200,242,58,0.4)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(midX-50,530); ctx.lineTo(midX+50,530); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(midX-12,518); ctx.lineTo(midX-50,530); ctx.lineTo(midX-12,542); ctx.stroke();
+    ctx.textAlign='left';
+    // Chain explanation
+    const chain=['Weak glute medius fails to stabilise pelvis','Pelvis drops on the non-stance side','Femur rotates inward under load','Kneecap tracks laterally → PAIN'];
+    let cy2=672;
+    chain.forEach((c,i)=>{
+      ctx.font='400 18px "DM Mono"'; ctx.fillStyle=i===3?'#ff3d2e':'rgba(255,255,255,0.55)';
+      ctx.fillText(`${i+1}.  `+c,56,cy2); cy2+=46;
+    });
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(200,242,58,0.6)';
+    ctx.fillText('Fix: Clamshells · Hip abduction · Single-leg bridges. Daily.',56,cy2+14);
+  },
+
+  // ── EDUCATION: IT BAND ──
+  'itband': (ctx,W,H,r,v) => {
+    drawHL(ctx,r.headline||"You can't stretch your IT band.",r.accent_word||"can't",56,220,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,306,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,350,52,3);
+    // Wrong approach
+    rr(ctx,56,382,W-112,100,8); ctx.fillStyle='rgba(255,61,46,0.07)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,61,46,0.2)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='700 20px "Unbounded"'; ctx.fillStyle='#ff3d2e'; ctx.textAlign='left'; ctx.fillText('✕  IT band stretching',80,426);
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.fillText('It\'s a tendon. It doesn\'t stretch. Wastes your time.',80,460);
+    // Right approach
+    rr(ctx,56,500,W-112,100,8); ctx.fillStyle='rgba(200,242,58,0.06)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.15)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='700 20px "Unbounded"'; ctx.fillStyle='#c8f23a'; ctx.fillText('✓  Strengthen glute medius',80,544);
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.fillText('Reduces the tension pulling on the IT band.',80,578);
+    // Exercise list
+    ctx.font='400 14px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillText('WHAT ACTUALLY WORKS',56,632);
+    const exList=[['Clamshells','3 × 15 each side'],['Hip abduction','3 × 15 each side'],['Pelvic drops','3 × 10 each side'],['Monster walks','2 × 20 steps']];
+    let ey3=654;
+    exList.forEach(([name,sets])=>{
+      ctx.fillStyle='rgba(255,255,255,0.04)'; rr(ctx,56,ey3,W-112,54,6); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 19px "DM Mono"'; ctx.fillStyle='white'; ctx.fillText('→  '+name,80,ey3+32);
+      ctx.font='400 15px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='right'; ctx.fillText(sets,W-80,ey3+32);
+      ctx.textAlign='left'; ey3+=64;
+    });
+    ctx.font='400 15px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.textAlign='center';
+    ctx.fillText('3× per week. Stronger glutes = less tension on IT band.',W/2,ey3+20); ctx.textAlign='left';
+  },
+
+  // ── EDUCATION: REST ALONE ──
+  'rest_alone': (ctx,W,H,r,v) => {
+    drawHL(ctx,r.headline||'Rest removes pain. Not the cause.',r.accent_word||'cause',56,220,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,306,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,350,52,3);
+    // Cycle diagram
+    const cycle=[{label:'Pain',x:W/2,y:460,col:'#ff3d2e'},{label:'Rest',x:W-160,y:580,col:'rgba(255,255,255,0.5)'},{label:'Pain gone',x:W-160,y:720,col:'rgba(255,255,255,0.5)'},{label:'Run again',x:W/2,y:840,col:'rgba(255,255,255,0.5)'},{label:'Pain returns',x:160,y:720,col:'#ff3d2e'}];
+    // Draw arrows
+    ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1; ctx.setLineDash([6,6]);
+    for(let i=0;i<cycle.length;i++){
+      const a=cycle[i], b=cycle[(i+1)%cycle.length];
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    cycle.forEach(node=>{
+      rr(ctx,node.x-70,node.y-22,140,44,22);
+      ctx.fillStyle=node.col==='#ff3d2e'?'rgba(255,61,46,0.15)':'rgba(255,255,255,0.05)'; ctx.fill();
+      ctx.strokeStyle=node.col; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 17px "DM Mono"'; ctx.fillStyle=node.col; ctx.textAlign='center'; ctx.fillText(node.label,node.x,node.y+6);
+    });
+    ctx.textAlign='left';
+    // Break arrow
+    ctx.strokeStyle='#c8f23a'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(W/2,840); ctx.lineTo(W/2,930); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W/2-10,920); ctx.lineTo(W/2,940); ctx.lineTo(W/2+10,920); ctx.stroke();
+    ctx.font='400 18px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='center';
+    ctx.fillText('Fix the root cause → GAIT',W/2,970); ctx.textAlign='left';
+  },
+
+  // ── EDUCATION: 10% RULE ──
+  'ten_percent': (ctx,W,H,r,v) => {
+    ctx.font='900 160px "Unbounded"'; ctx.fillStyle='rgba(255,61,46,0.25)'; ctx.textAlign='left'; ctx.fillText('10%',52,340);
+    // Cross through it
+    ctx.strokeStyle='#ff3d2e'; ctx.lineWidth=8;
+    ctx.beginPath(); ctx.moveTo(48,200); ctx.lineTo(440,360); ctx.stroke();
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fillText('THE MILEAGE RULE THAT\'S MADE UP',56,392);
+    ctx.fillStyle='#ff3d2e'; ctx.fillRect(56,416,52,3);
+    drawHL(ctx,r.headline||'The 10% rule is made up.',r.accent_word||'made',56,502,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)';
+    wrapTxt(ctx,r.subline,56,594,W-112,36);
+    // What actually matters
+    ctx.font='400 15px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillText('WHAT ACTUALLY MATTERS:',56,660);
+    const facts=['Your injury history and tissue health','Recovery quality — sleep, nutrition, stress','How your body responded last week','Cumulative load, not just weekly km'];
+    let fy2=690;
+    facts.forEach(f=>{
+      ctx.font='400 19px "DM Mono"'; ctx.fillStyle='rgba(200,242,58,0.7)'; ctx.fillText('✓  ',56,fy2);
+      ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fillText(f,100,fy2); fy2+=48;
+    });
+    ctx.font='400 15px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.textAlign='center';
+    ctx.fillText('GAIT adapts based on how your body actually responds.',W/2,fy2+20); ctx.textAlign='left';
+  },
+
+  // ── EDUCATION: GROIN VS HIP ──
+  'groin_vs_hip': (ctx,W,H,r,v) => {
+    drawHL(ctx,r.headline||'Groin or hip flexor?',r.accent_word||'Groin',56,220,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,304,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,348,52,3);
+    const midX2=W/2-10;
+    ctx.font='400 14px "DM Mono"'; ctx.fillStyle='#ff3d2e'; ctx.textAlign='center'; ctx.fillText('GROIN STRAIN',midX2/2,396);
+    ctx.fillStyle='rgba(255,180,50,0.8)'; ctx.fillText('HIP FLEXOR',midX2+midX2/2+10,396);
+    const groin=['Pain inner thigh','Squeezing aggravates','History of sudden load','Hurts kicking / jumping'];
+    const hip=['Pain front of hip','Lifting knee hurts','Worse after sitting','Tight after running'];
+    groin.forEach((g,i)=>{
+      const y=424+i*50;
+      rr(ctx,56,y,midX2-66,42,6); ctx.fillStyle='rgba(255,61,46,0.06)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,61,46,0.15)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.textAlign='center'; ctx.fillText(g,midX2/2,y+26);
+    });
+    hip.forEach((h,i)=>{
+      const y=424+i*50;
+      rr(ctx,midX2+24,y,midX2-66,42,6); ctx.fillStyle='rgba(255,180,50,0.05)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,180,50,0.15)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.textAlign='center'; ctx.fillText(h,midX2+midX2/2+10,y+26);
+    });
+    ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(midX2-10,410); ctx.lineTo(midX2-10,640); ctx.stroke();
+    ctx.textAlign='left';
+    rr(ctx,56,660,W-112,100,8); ctx.fillStyle='rgba(200,242,58,0.07)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.15)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='700 18px "Unbounded"'; ctx.fillStyle='white'; ctx.textAlign='center'; ctx.fillText('THE TEST',W/2,696);
+    ctx.font='400 17px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fillText('Squeeze a ball between your knees — pain = groin.',W/2,724);
+    ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.fillText('No pain = hip flexor.',W/2,748); ctx.textAlign='left';
+  },
+
+  // ── EDUCATION: GLUTE KNEE ──
+  'glute_knee': (ctx,W,H,r,v) => {
+    drawHL(ctx,r.headline||'Weak glutes. Knee pain.',r.accent_word||'glutes',56,220,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,304,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,348,52,3);
+    const steps=[
+      {n:'1',text:'Weak glute medius fails to stabilise the pelvis',col:'rgba(255,255,255,0.5)'},
+      {n:'2',text:'Pelvis drops on the non-stance side under load',col:'rgba(255,255,255,0.6)'},
+      {n:'3',text:'Femur rotates inward with each stride',col:'rgba(255,255,255,0.7)'},
+      {n:'4',text:'Kneecap tracks laterally → friction → pain',col:'#ff3d2e'},
+    ];
+    let sy2=390;
+    steps.forEach(s=>{
+      ctx.font=s.n==='4'?'900 72px "Unbounded"':'900 60px "Unbounded"';
+      ctx.fillStyle=s.n==='4'?'rgba(255,61,46,0.2)':'rgba(255,255,255,0.06)';
+      ctx.textAlign='left'; ctx.fillText(s.n,56,sy2+48);
+      const nw=ctx.measureText(s.n).width;
+      ctx.font=s.n==='4'?'700 22px "Unbounded"':'400 21px "DM Mono"';
+      ctx.fillStyle=s.col;
+      wrapTxt(ctx,s.text,56+nw+20,sy2+28,W-200,34);
+      sy2+=100;
+    });
+    // Fix box
+    rr(ctx,56,sy2,W-112,90,8); ctx.fillStyle='rgba(200,242,58,0.07)'; ctx.fill();
+    ctx.strokeStyle='rgba(200,242,58,0.15)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.font='400 15px "DM Mono"'; ctx.fillStyle='#c8f23a'; ctx.textAlign='center'; ctx.fillText('THE FIX',W/2,sy2+28);
+    ctx.font='400 18px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fillText('Clamshells · Hip abduction · Single-leg bridges',W/2,sy2+58);
+    ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='400 14px "DM Mono"'; ctx.fillText('Daily. 3 sets each. Results in 4–6 weeks.',W/2,sy2+82); ctx.textAlign='left';
+  },
+
+  // ── EDUCATION: LYSINE ──
+  'lysine': (ctx,W,H,r,v) => {
+    const pg=v.protein_g||'90';
+    drawHL(ctx,r.headline||'Rice protein has a gap.',r.accent_word||'gap',56,220,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.textAlign='left';
+    wrapTxt(ctx,r.subline,56,304,W-112,36);
+    ctx.fillStyle='#c8f23a'; ctx.fillRect(56,348,52,3);
+    // Same as vegan_nutrition but focused on lysine
+    const rows2=[
+      {icon:'🌾',label:'Rice protein — '+pg+'g daily',val:'Low in lysine',note:'Cannot fully repair tendons and ligaments',col:'rgba(255,255,255,0.5)',valcol:'#ff3d2e'},
+      {icon:'🔑',label:'Lysine — 1-3g supplement',val:'Fill the gap',note:'Directly supports collagen cross-linking',col:'#c8f23a',valcol:'#c8f23a'},
+      {icon:'🍊',label:'Vitamin C — 500mg',val:'Activate it',note:'Cofactor — without it, lysine doesn\'t work',col:'rgba(255,255,255,0.5)',valcol:'white'},
+    ];
+    let ry3=390;
+    rows2.forEach((row,i)=>{
+      rr(ctx,56,ry3,W-112,100,8);
+      ctx.fillStyle=i===1?'rgba(200,242,58,0.07)':i===0?'rgba(255,61,46,0.05)':'rgba(255,255,255,0.03)'; ctx.fill();
+      ctx.strokeStyle=i===1?'rgba(200,242,58,0.2)':i===0?'rgba(255,61,46,0.15)':'rgba(255,255,255,0.07)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 22px "DM Mono"'; ctx.fillStyle=row.col; ctx.textAlign='left'; ctx.fillText(row.icon+'  '+row.label,80,ry3+36);
+      ctx.font='500 18px "DM Mono"'; ctx.fillStyle=row.valcol; ctx.textAlign='right'; ctx.fillText(row.val,W-80,ry3+36);
+      ctx.font='400 15px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.textAlign='left'; ctx.fillText(row.note,80,ry3+66);
+      ry3+=112;
+    });
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.25)';
+    ctx.fillText('Best plant sources: Edamame · Tempeh · Lentils',56,ry3+16);
+    ctx.fillText('Take lysine + Vit C together with your protein shake.',56,ry3+44);
+  },
+
+  // ── EDUCATION: OVERLOAD MULTI ──
+  'overload_multi': (ctx,W,H,r,v) => {
+    const a1=v.area1||'Groin', a2=v.area2||'Hip / glute', a3=v.area3||'Lower back';
+    ctx.font='900 130px "Unbounded"'; ctx.fillStyle='#ff3d2e'; ctx.textAlign='center'; ctx.fillText('3→1',W/2,290);
+    ctx.font='400 20px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fillText('THREE AREAS. ONE ROOT CAUSE.',W/2,334);
+    ctx.fillStyle='#ff3d2e'; ctx.fillRect(W/2-26,356,52,3);
+    ctx.textAlign='left';
+    drawHL(ctx,r.headline||"It's not 3 injuries. It's 1.",r.accent_word||'1',56,440,W-112,72);
+    ctx.font='400 22px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.4)';
+    wrapTxt(ctx,r.subline,56,534,W-112,36);
+    // Spider diagram — centre node with 3 connecting areas
+    const cx3=W/2, cy3=720, r3=200;
+    ctx.strokeStyle='rgba(255,61,46,0.2)'; ctx.lineWidth=1;
+    [[a1,cx3-r3,cy3-80],[a2,cx3+r3,cy3-80],[a3,cx3,cy3+r3+20]].forEach(([area,ax,ay])=>{
+      ctx.beginPath(); ctx.moveTo(cx3,cy3); ctx.lineTo(ax,ay); ctx.stroke();
+      rr(ctx,ax-70,ay-22,140,44,22); ctx.fillStyle='rgba(255,61,46,0.1)'; ctx.fill();
+      ctx.strokeStyle='rgba(255,61,46,0.3)'; ctx.lineWidth=1; ctx.stroke();
+      ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.textAlign='center'; ctx.fillText(area,ax,ay+6);
+    });
+    // Centre node
+    ctx.beginPath(); ctx.arc(cx3,cy3,48,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,61,46,0.15)'; ctx.fill();
+    ctx.strokeStyle='#ff3d2e'; ctx.lineWidth=2; ctx.stroke();
+    ctx.font='700 18px "Unbounded"'; ctx.fillStyle='#ff3d2e'; ctx.textAlign='center'; ctx.fillText('OVER',cx3,cy3-4); ctx.fillText('LOAD',cx3,cy3+20);
+    ctx.textAlign='left';
+    ctx.font='400 16px "DM Mono"'; ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.textAlign='center';
+    ctx.fillText('GAIT identifies the pattern, not just the symptoms.',W/2,980); ctx.textAlign='left';
   },
 
 };
