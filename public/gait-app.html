@@ -898,6 +898,32 @@
         </select>
       </div>
       <div class="field">
+        <label>Zone 2 effort check</label>
+        <select id="log-zone2">
+          <option value="">Select...</option>
+          <option>✅ Fully Zone 2 — conversational the whole way</option>
+          <option>⚠️ Mostly Zone 2 — drifted a little above</option>
+          <option>🔴 Above Zone 2 — hard effort throughout</option>
+        </select>
+        <div id="zone2-nudge" style="display:none;margin-top:8px;padding:10px 14px;background:rgba(255,180,50,0.08);border:1px solid rgba(255,180,50,0.2);border-radius:6px;font-family:var(--mono);font-size:11px;color:rgba(255,180,50,0.9);line-height:1.6;">
+          ⚡ Easy runs should feel conversational — full sentences, no breathlessness. Slowing down today protects your comeback.
+        </div>
+      </div>
+      <div class="field">
+        <label>Heart rate (optional — from your watch or device)</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">AVG HR (bpm)</div>
+            <input type="number" id="log-avg-hr" placeholder="142" min="60" max="220" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:var(--mono);font-size:13px;color:white;outline:none;">
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">MAX HR (bpm)</div>
+            <input type="number" id="log-max-hr" placeholder="168" min="60" max="220" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:var(--mono);font-size:13px;color:white;outline:none;">
+          </div>
+        </div>
+        <div id="hr-zone2-check" style="display:none;margin-top:8px;padding:10px 14px;border-radius:6px;font-family:var(--mono);font-size:11px;line-height:1.6;"></div>
+      </div>
+      <div class="field">
         <label>Any pain during or after? Tap each area</label>
         <div class="injury-area-grid">
           <button class="injury-area-btn" onclick="toggleInjuryArea('knee_front')" data-area="knee_front"><span class="area-dot"></span>Knee — front</button>
@@ -1721,6 +1747,7 @@ Medical conditions: ${answers.chronicConditions || 'none'}
 EQUIPMENT: ${answers.equipment ? answers.equipment.replace(/\|/g, ', ') : 'not specified'} | Details: ${answers.equipmentDetail || 'none'}
 Shoes: ${answers.shoeType} — ${answers.shoeAge} old | Warm-up habit: ${answers.warmUp}
 Flexibility: ${answers.flexibility}
+HEART RATE: Monitor: ${answers.hrMonitor || 'not specified'} | Resting HR: ${answers.restingHR || 'not provided'}
 LIFESTYLE: Work: ${answers.job} | Daily physical demand: ${answers.dailyDemand}
 Sleep: ${answers.sleepQuality} | Stress: ${answers.stressLevel}
 Nutrition: ${answers.nutrition} | Alcohol: ${answers.alcohol || 'not specified'}
@@ -1738,6 +1765,11 @@ Return ONLY this JSON:
   "name": "first name",
   "tagline": "one sentence about who this runner is",
   "primaryFocus": "the #1 thing to protect in one sentence",
+  "zone2Card": {
+    "hrRange": "personalised Zone 2 HR range based on age and resting HR — if resting HR provided use Karvonen formula, otherwise use 60-70% of 220-age. Format: e.g. 120–135 bpm",
+    "paceRange": "estimated Zone 2 pace equivalent based on their current running data. Format: e.g. 5:30–5:50/km",
+    "tagline": "one warm encouraging sentence specific to this runner about Zone 2 — e.g. This is exactly how you build the durability to go from 22km weeks to half marathons."
+  },
   "injuryAlert": {
     "title": "main injury name",
     "level": "high/medium/low",
@@ -1745,13 +1777,13 @@ Return ONLY this JSON:
     "rules": ["rule 1", "rule 2", "rule 3"]
   },
   "weeklyPlan": [
-    {"day": "MON", "type": "session type", "detail": "km and pace", "purpose": "one word purpose", "icon": "🏃", "color": "green"},
-    {"day": "TUE", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue"},
-    {"day": "WED", "type": "session type", "detail": "km and pace", "purpose": "purpose", "icon": "🏃", "color": "yellow"},
-    {"day": "THU", "type": "Rest", "detail": "Mobility only", "purpose": "Recovery", "icon": "🧘", "color": "gray"},
+    {"day": "MON", "type": "session type", "detail": "km and pace", "purpose": "one word purpose", "icon": "🏃", "color": "green", "zone": "Z2 — Zone 2 easy run | Z3 — moderate | Z4 — hard/tempo | strength — strength session | rest — rest or mobility"},
+    {"day": "TUE", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue", "zone": "strength"},
+    {"day": "WED", "type": "session type", "detail": "km and pace", "purpose": "purpose", "icon": "🏃", "color": "yellow", "zone": "Z3"},
+    {"day": "THU", "type": "Rest", "detail": "Mobility only", "purpose": "Recovery", "icon": "🧘", "color": "gray", "zone": "rest"},
     {"day": "FRI", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue"},
-    {"day": "SAT", "type": "Long Run", "detail": "km and pace", "purpose": "Endurance", "icon": "🏃", "color": "orange"},
-    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Recovery", "icon": "😴", "color": "gray"}
+    {"day": "SAT", "type": "Long Run", "detail": "km and pace", "purpose": "Endurance", "icon": "🏃", "color": "orange", "zone": "Z2"},
+    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Recovery", "icon": "😴", "color": "gray", "zone": "rest"}
   ],
   "strengthCircuit": {
     "upperBody": [
@@ -2126,6 +2158,27 @@ function renderBlueprint() {
     </ul>
   </div>
 
+  <!-- ZONE 2 CARD -->
+  ${b.zone2Card ? `
+  <div style="background:linear-gradient(135deg,rgba(200,242,58,0.08) 0%,rgba(200,242,58,0.03) 100%);border:1px solid rgba(200,242,58,0.2);border-radius:10px;padding:18px 20px;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;">Your Zone 2</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div>
+        <div style="font-family:var(--display);font-weight:900;font-size:22px;color:var(--accent);letter-spacing:-1px;">${b.zone2Card.hrRange}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;">HEART RATE</div>
+      </div>
+      <div>
+        <div style="font-family:var(--display);font-weight:900;font-size:22px;color:white;letter-spacing:-1px;">${b.zone2Card.paceRange}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;">PACE EQUIVALENT</div>
+      </div>
+    </div>
+    <div style="font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.7);font-style:italic;line-height:1.5;padding-top:10px;border-top:1px solid rgba(200,242,58,0.1);">"${b.zone2Card.tagline}"</div>
+    <div style="margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.6;">Can speak in full sentences comfortably? That's Zone 2. 70–80% of your runs should feel like this.</div>
+  </div>` : ''}
+
   <!-- WEEKLY PLAN -->
   <div class="bp-section-label">Your week</div>
   <div class="bp-week">
@@ -2135,6 +2188,7 @@ function renderBlueprint() {
         <span class="bp-day-icon">${d.icon}</span>
         <div class="bp-day-type">${d.type}</div>
         <div class="bp-day-detail">${d.detail}</div>
+        ${d.zone ? `<div style="margin-top:4px;font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:3px;display:inline-block;background:${d.zone==='Z2'?'rgba(200,242,58,0.15)':d.zone==='Z3'?'rgba(255,180,50,0.15)':d.zone==='strength'?'rgba(100,150,255,0.15)':'rgba(255,255,255,0.08)'};color:${d.zone==='Z2'?'var(--accent)':d.zone==='Z3'?'rgba(255,180,50,0.9)':d.zone==='strength'?'rgba(130,170,255,0.9)':'var(--muted)'};">${d.zone}</div>` : ''}
       </div>`).join('')}
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:8px;">
@@ -2744,6 +2798,42 @@ function setEveningDuration(mins, btn) {
 }
 
 
+function checkZone2Nudge() {
+  const zone2El = document.getElementById('log-zone2');
+  const nudgeEl = document.getElementById('zone2-nudge');
+  if (!zone2El || !nudgeEl) return;
+  const val = zone2El.value;
+  nudgeEl.style.display = (val.includes('drifted') || val.includes('Above')) ? 'block' : 'none';
+}
+
+function checkHRZone2() {
+  const avgHR = parseInt(document.getElementById('log-avg-hr')?.value);
+  const checkEl = document.getElementById('hr-zone2-check');
+  if (!checkEl || !avgHR) { if(checkEl) checkEl.style.display='none'; return; }
+  // Zone 2 ceiling ~135 bpm for this user (adjust based on profile)
+  const z2Max = 135;
+  const z2Min = 120;
+  if (avgHR <= z2Max && avgHR >= z2Min) {
+    checkEl.style.display = 'block';
+    checkEl.style.background = 'rgba(200,242,58,0.07)';
+    checkEl.style.border = '1px solid rgba(200,242,58,0.2)';
+    checkEl.style.color = 'rgba(200,242,58,0.8)';
+    checkEl.textContent = '✅ Zone 2 — great aerobic base work at ' + avgHR + ' bpm.';
+  } else if (avgHR < z2Min) {
+    checkEl.style.display = 'block';
+    checkEl.style.background = 'rgba(255,255,255,0.04)';
+    checkEl.style.border = '1px solid rgba(255,255,255,0.08)';
+    checkEl.style.color = 'rgba(255,255,255,0.4)';
+    checkEl.textContent = '💤 Below Zone 2 (' + avgHR + ' bpm) — recovery effort, fine for easy days.';
+  } else {
+    checkEl.style.display = 'block';
+    checkEl.style.background = 'rgba(255,61,46,0.06)';
+    checkEl.style.border = '1px solid rgba(255,61,46,0.18)';
+    checkEl.style.color = 'rgba(255,100,80,0.9)';
+    checkEl.textContent = '⚠️ Above Zone 2 (' + avgHR + ' bpm) — this was a grey zone or quality effort. Make tomorrow Zone 2.';
+  }
+}
+
 function initLog() {
   const now = new Date();
   document.getElementById('log-date').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -2765,6 +2855,10 @@ function initLog() {
 
   // Auto calculate pace
   document.getElementById('log-km').addEventListener('input', calcPace);
+  const z2Select = document.getElementById('log-zone2');
+  if (z2Select) z2Select.addEventListener('change', checkZone2Nudge);
+  const avgHRInput = document.getElementById('log-avg-hr');
+  if (avgHRInput) avgHRInput.addEventListener('input', checkHRZone2);
   document.getElementById('log-time').addEventListener('input', calcPace);
 }
 
@@ -2861,6 +2955,9 @@ async function submitLog() {
   const prePain = document.getElementById('log-pre-pain')?.value || 'Not specified';
   const painLoc = getInjurySummary();
   const painScore = selectedPain !== null ? selectedPain : 0;
+  const zone2Effort = document.getElementById('log-zone2')?.value || '';
+  const avgHR = document.getElementById('log-avg-hr')?.value || '';
+  const maxHR = document.getElementById('log-max-hr')?.value || '';
 
   // Mode-specific fields
   const restSoreness = document.getElementById('log-rest-soreness')?.value || '';
@@ -2895,6 +2992,7 @@ async function submitLog() {
     km: dayMode === 'run' ? km : dayMode === 'cross' ? crossDistance : dayMode === 'walk' ? walkDistance : '0',
     time, pace, effort, terrain, prePain, painLoc, painScore,
     notes, sleep, stress,
+    zone2Effort, avgHR, maxHR,
     crossActivity, crossDistance, crossDuration, crossIntensity,
     walkType, walkDistance, walkDuration, walkElevation, walkTerrain, walkPace, walkPoles, walkPainLoc,
     isRestDay: dayMode !== 'run' && dayMode !== 'cross' && dayMode !== 'walk',
@@ -2910,15 +3008,17 @@ async function submitLog() {
     if (l.mode === 'evening') return `${new Date(l.date).toLocaleDateString('en-GB')}: EVENING CHECK | Session: ${l.eveningSession} | Body felt: ${l.eveningBody} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     if (l.mode === 'body') return `${new Date(l.date).toLocaleDateString('en-GB')}: BODY CHECK | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     if (l.mode === 'rest' || (l.isRestDay && l.mode !== 'morning' && l.mode !== 'evening' && l.mode !== 'body')) return `${new Date(l.date).toLocaleDateString('en-GB')}: REST DAY | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
-    return `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.km}km @ ${l.pace}/km, effort ${l.effort} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+    return `${new Date(l.date).toLocaleDateString('en-GB')}: ${l.km}km @ ${l.pace}/km, effort ${l.effort}${l.avgHR ? ' | HR: ' + l.avgHR + 'bpm avg' : ''}${l.zone2Effort ? ' | ' + l.zone2Effort.replace(/[✅⚠️🔴]/g,'').trim() : ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
   }).join('\n');
 
   let todayContext = '';
   if (dayMode === 'run') {
+    const hrData = avgHR ? `Avg HR: ${avgHR}bpm${maxHR ? ' | Max HR: ' + maxHR + 'bpm' : ''}` : '';
+    const z2Data = zone2Effort ? `Zone 2 check: ${zone2Effort}` : '';
     todayContext = `RUN DAY
 Distance: ${km}km | Time: ${time} | Pace: ${pace}/km | Effort: ${effort} | Terrain: ${terrain}
 Pre-run: ${prePain}
-Pain during/after: ${painLoc}`;
+${hrData ? hrData + '\n' : ''}${z2Data ? z2Data + '\n' : ''}Pain during/after: ${painLoc}`;
   } else if (dayMode === 'cross') {
     const distLabel = crossActivity === 'swimming' ? 'metres' : 'km';
     todayContext = `CROSS TRAINING DAY
@@ -2971,7 +3071,8 @@ Always give 7-8 evening recovery movements ordered from most essential to least 
 Include sleep hygiene tips in the tomorrowPlan based on their target sleep time (${eveningSleepTarget}).
 For "tomorrowPlan": give a specific plan for tomorrow based on how they felt today and their injury history.` : ''}
 
-Respond with ONLY a raw JSON object. No backticks. No markdown. No text before or after the JSON. Start your response with { and end with }. Nothing else:
+Respond with ONLY a raw JSON object. No backticks. No markdown. No text before or after the JSON. Start your response with { and end with }. Nothing else.
+Optional field: include "zone2Nudge" (string) when the run pace or HR data suggests the runner was above Zone 2 on what should have been an easy day. Keep it warm, specific, and encouraging — reference their actual pace if provided. Example: "Your pace today (5:05/km) looks like it drifted above Zone 2 — at your current fitness, easy runs should feel closer to 5:30–5:50/km at conversational effort. Slowing down on easy days is exactly how we protect your comeback."
 {
   "assessment": {
     "emoji": "one emoji",
@@ -3143,6 +3244,16 @@ function formatCoachingResponse(c, mode) {
         <div style="font-family:var(--mono);font-size:11px;color:rgba(245,242,235,0.5);font-style:italic;">${c.tomorrowPlan?.reason || ''}</div>
       </div>
     </div>
+
+    <!-- ZONE 2 NUDGE — shown when pace looks too fast for easy run -->
+    ${c.zone2Nudge ? `
+    <div style="margin:12px 0;padding:12px 16px;background:rgba(255,180,50,0.08);border:1px solid rgba(255,180,50,0.2);border-radius:6px;display:flex;align-items:flex-start;gap:10px;">
+      <div style="font-size:18px;flex-shrink:0;">⚡</div>
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:rgba(255,180,50,0.8);text-transform:uppercase;margin-bottom:4px;">Zone 2 check</div>
+        <div style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.75);line-height:1.65;">${c.zone2Nudge}</div>
+      </div>
+    </div>` : ''}
 
     <!-- WATCH THIS -->
     <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.1);">Watch this week</div>
