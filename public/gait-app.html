@@ -1765,11 +1765,6 @@ Return ONLY this JSON:
   "name": "first name",
   "tagline": "one sentence about who this runner is",
   "primaryFocus": "the #1 thing to protect in one sentence",
-  "zone2Card": {
-    "hrRange": "personalised Zone 2 HR range based on age and resting HR — if resting HR provided use Karvonen formula, otherwise use 60-70% of 220-age. Format: e.g. 120–135 bpm",
-    "paceRange": "estimated Zone 2 pace equivalent based on their current running data. Format: e.g. 5:30–5:50/km",
-    "tagline": "one warm encouraging sentence specific to this runner about Zone 2 — e.g. This is exactly how you build the durability to go from 22km weeks to half marathons."
-  },
   "injuryAlert": {
     "title": "main injury name",
     "level": "high/medium/low",
@@ -1785,6 +1780,7 @@ Return ONLY this JSON:
     {"day": "SAT", "type": "Long Run", "detail": "km and pace", "purpose": "Endurance", "icon": "🏃", "color": "orange", "zone": "Z2"},
     {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Recovery", "icon": "😴", "color": "gray", "zone": "rest"}
   ],
+  "shoeAlert": "ONLY include this field if shoe age is Over 12 months — write a specific 2-sentence recommendation to replace their shoes, mentioning that running shoes typically last 500–800km and worn midsoles increase injury risk. Leave this field OUT entirely if shoes are under 12 months old.",
   "strengthCircuit": {
     "upperBody": [
       {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner in one sentence", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
@@ -1864,7 +1860,9 @@ Return ONLY this JSON:
     "duration": "X min daily",
     "description": "what to do",
     "why": "why this prevents their injury"
-  }
+  },
+  "sleepCoaching": "ONLY include if sleep quality is Poor or Average — write 3–4 sentences: why sleep is the single most important recovery tool for injury-prone runners (collagen synthesis, tissue repair, HRV, injury risk), then 3 specific actionable habits this runner can start tonight. Make it warm and practical, not clinical. Leave this field OUT entirely if sleep is Good or Excellent.",
+  "stressNote": "ONLY include if stress is High or Very high — write 2–3 sentences connecting their stress level directly to running injury risk (cortisol raises inflammation, slows tissue repair, increases perceived exertion) and give 2 specific low-effort stress management habits suited to a runner with a desk job. Do not be preachy. Leave this field OUT entirely if stress is Low or Moderate."
 }`;
 
   try {
@@ -2159,24 +2157,24 @@ function renderBlueprint() {
   </div>
 
   <!-- ZONE 2 CARD -->
-  ${b.zone2Card ? `
-  <div style="background:linear-gradient(135deg,rgba(200,242,58,0.08) 0%,rgba(200,242,58,0.03) 100%);border:1px solid rgba(200,242,58,0.2);border-radius:10px;padding:18px 20px;margin-bottom:16px;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+  ${b.zone2Card && logs.some(l => l.avgHR) ? `
+  <div style="background:#111;border:1px solid rgba(200,242,58,0.25);border-radius:10px;padding:18px 20px;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>
       <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;">Your Zone 2</div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-      <div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div style="background:rgba(255,255,255,0.05);border-radius:6px;padding:12px 14px;">
         <div style="font-family:var(--display);font-weight:900;font-size:22px;color:var(--accent);letter-spacing:-1px;">${b.zone2Card.hrRange}</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;">HEART RATE</div>
+        <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1px;margin-top:4px;">HEART RATE</div>
       </div>
-      <div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:6px;padding:12px 14px;">
         <div style="font-family:var(--display);font-weight:900;font-size:22px;color:white;letter-spacing:-1px;">${b.zone2Card.paceRange}</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;">PACE EQUIVALENT</div>
+        <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1px;margin-top:4px;">PACE EQUIVALENT</div>
       </div>
     </div>
-    <div style="font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.7);font-style:italic;line-height:1.5;padding-top:10px;border-top:1px solid rgba(200,242,58,0.1);">"${b.zone2Card.tagline}"</div>
-    <div style="margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.6;">Can speak in full sentences comfortably? That's Zone 2. 70–80% of your runs should feel like this.</div>
+    <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.8);font-style:italic;line-height:1.6;padding:10px 14px;background:rgba(200,242,58,0.07);border-radius:6px;border-left:2px solid rgba(200,242,58,0.35);">"${b.zone2Card.tagline}"</div>
+    <div style="margin-top:10px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4);line-height:1.7;">Can you speak in full sentences comfortably? That's Zone 2. 70–80% of your runs should feel this easy.</div>
   </div>` : ''}
 
   <!-- WEEKLY PLAN -->
@@ -2271,6 +2269,36 @@ function renderBlueprint() {
     <div class="bp-habit-desc">${b.dailyHabit?.description || ''}</div>
     <div class="bp-habit-why">Why: ${b.dailyHabit?.why || ''}</div>
   </div>
+
+  <!-- SHOE ALERT — only if shoes over 12 months -->
+  ${b.shoeAlert ? `
+  <div style="margin-top:16px;padding:14px 16px;background:rgba(255,180,50,0.07);border:1px solid rgba(255,180,50,0.2);border-radius:8px;display:flex;align-items:flex-start;gap:12px;">
+    <div style="font-size:20px;flex-shrink:0;">👟</div>
+    <div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:rgba(255,180,50,0.8);text-transform:uppercase;margin-bottom:6px;">Shoe check</div>
+      <div style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.7);line-height:1.7;">${b.shoeAlert}</div>
+    </div>
+  </div>` : ''}
+
+  <!-- SLEEP COACHING — only if sleep is poor or average -->
+  ${b.sleepCoaching ? `
+  <div style="margin-top:16px;padding:16px 18px;background:rgba(100,130,255,0.06);border:1px solid rgba(100,130,255,0.15);border-radius:8px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="font-size:18px;">😴</div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:rgba(130,160,255,0.8);text-transform:uppercase;">Sleep & recovery</div>
+    </div>
+    <div style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.7);line-height:1.8;">${b.sleepCoaching}</div>
+  </div>` : ''}
+
+  <!-- STRESS NOTE — only if stress is high or very high -->
+  ${b.stressNote ? `
+  <div style="margin-top:16px;padding:16px 18px;background:rgba(255,61,46,0.05);border:1px solid rgba(255,61,46,0.15);border-radius:8px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="font-size:18px;">🧠</div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:rgba(255,100,80,0.8);text-transform:uppercase;">Stress & recovery</div>
+    </div>
+    <div style="font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.7);line-height:1.8;">${b.stressNote}</div>
+  </div>` : ''}
 
   <!-- TRAINING LOAD -->
   <div class="bp-section-label" style="margin-top:20px;">Training load</div>
