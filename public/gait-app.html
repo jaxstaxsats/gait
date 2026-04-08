@@ -2543,6 +2543,212 @@ function resetBlueprint() {
   answers = {};
   renderQ();
 }
+
+// ══════════════════════════════════════════
+// BACKGROUND BLUEPRINT REFRESH
+// Triggered automatically after every evening log
+// ══════════════════════════════════════════
+async function refreshBlueprintInBackground() {
+  const statusEl = document.getElementById('blueprint-refresh-status');
+  const a = profileData || answers;
+
+  // Bail out if we don't have enough profile data to regenerate
+  if (!a || !a.name || !a.shortGoal) {
+    if (statusEl) statusEl.innerHTML = '';
+    return;
+  }
+
+  if (statusEl) {
+    statusEl.innerHTML = `<div style="margin-top:12px;font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.5);letter-spacing:1px;">
+      <span style="display:inline-block;animation:spin 1s linear infinite;margin-right:6px;">◌</span> Refreshing your blueprint for tomorrow...
+    </div>`;
+  }
+
+  // Build runner context from saved profile answers
+  const runnerContext = `RUNNER: ${a.name}, ${a.age}yo${a.gender ? ', ' + a.gender : ''}
+RUNS: ${a.runTime || 'not specified'} | Units: ${a.units || 'km'}
+HISTORY: Running for ${a.yearsRunning || 'not specified'} | Weekly: ${a.weeklyKm || 'not specified'} | Days/week: ${a.daysRunning || 'not specified'}
+Longest recent run: ${a.longestRun || 'not specified'}
+Why returning now: ${a.whyNow || 'not shared'}
+INJURIES: Areas affected: ${a.injuryAreas ? a.injuryAreas.replace(/\|/g, ', ') : 'none selected'}
+${a.injuryFollowUps ? 'Injury detail: ' + Object.entries(a.injuryFollowUps).map(([area, d]) => `${area}: last bothered ${d.when || 'n/a'}, currently ${d.current || 'n/a'}`).join(' | ') : ''}
+Stopped 2+ weeks from injury: ${a.previousInjuryStop || 'not specified'} | Current rehab: ${a.currentRehab || 'not specified'}
+EQUIPMENT: ${a.equipment ? a.equipment.replace(/\|/g, ', ') : 'not specified'} | Details: ${a.equipmentDetail || 'none'}
+Shoes: ${a.shoeType || 'not specified'} — ${a.shoeAge || 'not specified'} old | Warm-up: ${a.warmUp || 'not specified'}
+HR Monitor: ${a.hrMonitor || 'not specified'}
+LIFESTYLE: Work: ${a.job || 'not specified'} | Sleep: ${a.sleepQuality || 'not specified'} | Stress: ${a.stressLevel || 'not specified'} | Nutrition: ${a.nutrition || 'not specified'}
+GOALS: Short term: ${a.shortGoal} | 6-12 month: ${a.raceGoal || 'not specified'} | Race: ${a.hasRace || 'none'} ${a.raceDetails ? '— ' + a.raceDetails : ''}
+Vision: ${a.bigVision || 'not shared'}`;
+
+  // Recent log data for the prompts — last 14 days
+  const recentLogContext = logs.slice(-14).map(l => {
+    const d = new Date(l.date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+    if (l.mode === 'rest') return `${d}: REST | Pain: ${l.painScore}/10 | ${l.notes || ''}`;
+    if (l.mode === 'morning') return `${d}: MORNING | Sleep: ${l.morningSleep} | Energy: ${l.morningEnergy} | Pain: ${l.painScore}/10`;
+    if (l.mode === 'evening') return `${d}: EVENING | Session: ${l.eveningSession} | Body: ${l.eveningBody} | Pain: ${l.painScore}/10`;
+    if (l.mode === 'cross') return `${d}: CROSS — ${l.crossActivity} ${l.crossDuration ? l.crossDuration + 'min' : ''} | Pain: ${l.painScore}/10`;
+    if (l.mode === 'walk') return `${d}: WALK ${l.walkDistance ? l.walkDistance + 'km' : ''} ${l.walkDuration ? l.walkDuration + 'min' : ''} | Pain: ${l.painScore}/10`;
+    return `${d}: ${l.km}km @ ${l.pace}/km | Effort: ${l.effort}${l.avgHR ? ' | HR: ' + l.avgHR + 'bpm' : ''} | Pain: ${l.painScore}/10 | ${l.notes || ''}`;
+  }).join('\n');
+
+  const recentSection = recentLogContext
+    ? `\n\nRECENT TRAINING LOG (last 14 days — use this to adapt the plan):\n${recentLogContext}`
+    : '';
+
+  // Push Mode status
+  const pushNote = pushModeActive ? '\n\nMODE: PUSH — runner has been pain-free 28+ consecutive days. Apply Push Mode progression rules.' : '';
+
+  const prompt1 = `Generate part 1 of an updated GAIT Blueprint for this runner. This is a DAILY REFRESH — use the recent log data to adapt the weekly plan and injury guidance based on how they've actually been feeling. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
+
+${runnerContext}${recentSection}${pushNote}
+
+Return ONLY this JSON:
+{
+  "name": "first name",
+  "tagline": "one sentence — updated to reflect current momentum or challenge from the logs",
+  "primaryFocus": "the #1 thing to protect right now based on recent log data",
+  "injuryAlert": {
+    "title": "main injury risk based on recent logs",
+    "level": "high/medium/low",
+    "description": "2 sentences specific to what the logs show this week",
+    "rules": ["rule 1", "rule 2", "rule 3"]
+  },
+  "weeklyPlan": [
+    {"day": "MON", "type": "session type", "detail": "km and pace", "purpose": "purpose", "icon": "🏃", "color": "green", "zone": "Z2"},
+    {"day": "TUE", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue", "zone": "strength"},
+    {"day": "WED", "type": "session type", "detail": "km and pace", "purpose": "purpose", "icon": "🏃", "color": "yellow", "zone": "Z3"},
+    {"day": "THU", "type": "Rest", "detail": "Mobility only", "purpose": "Recovery", "icon": "🧘", "color": "gray", "zone": "rest"},
+    {"day": "FRI", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue", "zone": "strength"},
+    {"day": "SAT", "type": "Long Run", "detail": "km and pace", "purpose": "Endurance", "icon": "🏃", "color": "orange", "zone": "Z2"},
+    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Recovery", "icon": "😴", "color": "gray", "zone": "rest"}
+  ],
+  "shoeAlert": "only include if shoe age is Over 12 months — 2 sentences. Omit entirely otherwise.",
+  "strengthCircuit": {
+    "upperBody": [
+      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
+    ],
+    "legs": [
+      {"name": "name", "sets": "3 × 15", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 10", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
+    ],
+    "core": [
+      {"name": "name", "sets": "3 × 10", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "30 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "3 × 12", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
+      {"name": "name", "sets": "45 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
+    ]
+  }
+}`;
+
+  const prompt2 = `Generate part 2 of an updated GAIT Blueprint. This is a DAILY REFRESH — adapt routines based on recent log data. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
+
+${runnerContext}${recentSection}${pushNote}
+
+Return ONLY this JSON:
+{
+  "morningRoutine": {
+    "note": "injury note based on recent logs, or empty string",
+    "spineSection": [
+      {"name": "name", "duration": "1 min", "icon": "🌅", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "30 sec each side", "icon": "🌅", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "45 sec", "icon": "🌅", "instruction": "how to do it", "why": "why"}
+    ],
+    "hipSection": [
+      {"name": "name", "duration": "10 reps each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "60 sec", "icon": "🔄", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "20 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "30 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"}
+    ],
+    "activationSection": [
+      {"name": "name", "duration": "2 × 12 reps", "icon": "⚡", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "10 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "15 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "12 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "10 reps each foot", "icon": "⚡", "instruction": "how to do it", "why": "why"}
+    ]
+  },
+  "eveningRoutine": {
+    "note": "injury note based on recent logs, or empty string",
+    "stretches": [
+      {"name": "name", "duration": "60-90 sec each side", "icon": "🌙", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "60 sec", "icon": "🌙", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "90 sec each side", "icon": "🌙", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "60 sec each leg", "icon": "🌙", "instruction": "how to do it", "why": "why"},
+      {"name": "name", "duration": "60 sec", "icon": "🌙", "instruction": "how to do it", "why": "why"}
+    ]
+  },
+  "mileageRules": [
+    {"rule": "rule adapted to recent log data", "type": "green"},
+    {"rule": "rule 2", "type": "amber"},
+    {"rule": "rule 3", "type": "red"},
+    {"rule": "rule 4", "type": "amber"},
+    {"rule": "rule 5", "type": "green"},
+    {"rule": "rule 6", "type": "red"}
+  ],
+  "milestones": [
+    {"period": "This Week", "target": "specific target based on recent logs", "focus": "focus"},
+    {"period": "Month 1", "target": "target", "focus": "focus"},
+    {"period": "Month 2", "target": "target", "focus": "focus"},
+    {"period": "6 Months", "target": "target", "focus": "focus"},
+    {"period": "Big Vision", "target": "target", "focus": "focus"}
+  ],
+  "dailyHabit": {
+    "title": "habit name — adapted to what the logs show they need most",
+    "duration": "X min daily",
+    "description": "what to do",
+    "why": "why this matters based on recent data"
+  },
+  "sleepCoaching": "only if sleep is Poor or Average in recent logs — 3-4 sentences practical and warm. Omit entirely otherwise.",
+  "stressNote": "only if stress is High or Very high in recent logs. Omit entirely otherwise."
+}`;
+
+  try {
+    const [res1, res2] = await Promise.all([
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt1 }] })
+      }),
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt2 }] })
+      })
+    ]);
+
+    const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+    const text1 = data1.content?.[0]?.text;
+    const text2 = data2.content?.[0]?.text;
+
+    if (text1 && text2) {
+      const clean1 = text1.replace(/```json|```/g, '').trim();
+      const clean2 = text2.replace(/```json|```/g, '').trim();
+      const part1 = JSON.parse(clean1);
+      const part2 = JSON.parse(clean2);
+      const freshBlueprint = { ...part1, ...part2 };
+
+      // Save silently
+      blueprint = freshBlueprint;
+      await saveBlueprint(currentUser?.id, freshBlueprint);
+
+      if (statusEl) {
+        statusEl.innerHTML = `<div style="margin-top:12px;padding:12px 16px;background:rgba(200,242,58,0.07);border:1px solid rgba(200,242,58,0.2);border-radius:6px;font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.8);line-height:1.6;">
+          ✦ Blueprint updated for tomorrow — open the Blueprint tab in the morning to see your adapted plan.
+        </div>`;
+      }
+    }
+  } catch (e) {
+    // Fail silently — don't disrupt the user's evening log experience
+    console.warn('Background blueprint refresh failed:', e);
+    if (statusEl) statusEl.innerHTML = '';
+  }
+}
+
 // ══════════════════════════════════════════
 // QUOTES
 // ══════════════════════════════════════════
@@ -3380,10 +3586,21 @@ Only populate acuteProtocol if today's log describes a new or acute injury (fres
       await saveLog(currentUser?.id, todayLog);
       bodyEl.innerHTML = coachingData ? formatCoachingResponse(coachingData, dayMode) : formatAIResponse(text);
 
-      // Evening refresh nudge
-      bodyEl.innerHTML += `<div style="margin-top:20px;padding:14px 16px;background:rgba(200,242,58,0.06);border:1px solid rgba(200,242,58,0.15);border-radius:6px;font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.6);line-height:1.6;">
-        ✦ Unlimited quick coaching today. Your full GAIT Blueprint refreshes every evening with tomorrow's complete plan.
-      </div>`;
+      // Status div — used by background refresh to show progress
+      bodyEl.innerHTML += `<div id="blueprint-refresh-status"></div>`;
+
+      if (dayMode === 'evening') {
+        // Evening log — trigger silent background blueprint refresh
+        bodyEl.innerHTML += `<div style="margin-top:12px;padding:12px 16px;background:rgba(200,242,58,0.05);border:1px solid rgba(200,242,58,0.12);border-radius:6px;font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.5);line-height:1.6;">
+          ✦ Evening logged. Refreshing your blueprint for tomorrow in the background...
+        </div>`;
+        // Fire and forget — don't await, don't block
+        refreshBlueprintInBackground();
+      } else {
+        bodyEl.innerHTML += `<div style="margin-top:12px;padding:12px 16px;background:rgba(200,242,58,0.05);border:1px solid rgba(200,242,58,0.12);border-radius:6px;font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.5);line-height:1.6;">
+          ✦ Unlimited quick coaching today. Log your evening check-in tonight to refresh your blueprint for tomorrow.
+        </div>`;
+      }
       renderProCoachingStatus();
       updateStats();
     }
