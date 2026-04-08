@@ -2547,6 +2547,10 @@ function renderBlueprint() {
       Start Daily Log →
     </button>
   </div>
+  <div id="blueprint-sync-banner" style="display:none;margin-top:12px;padding:12px 16px;background:rgba(200,242,58,0.06);border:1px solid rgba(200,242,58,0.2);border-radius:6px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+    <div style="font-family:var(--mono);font-size:11px;color:rgba(200,242,58,0.7);line-height:1.5;">Blueprint not yet saved to your account — tap to sync across all devices.</div>
+    <button onclick="syncBlueprintNow(this)" style="background:var(--ink);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:8px 14px;border-radius:4px;border:none;cursor:pointer;white-space:nowrap;">Sync now</button>
+  </div>
 
   </div>`;
 
@@ -2555,6 +2559,16 @@ function renderBlueprint() {
   renderStrengthCircuitContent();
   renderEveningRoutineContent();
   renderBlueprintCharts();
+
+  // Show sync banner if user is logged in but we don't know if blueprint is in Supabase
+  // (i.e. blueprint exists locally but currentUser exists — could be a cross-device situation)
+  if (currentUser?.id) {
+    _supa.from('blueprints').select('user_id').eq('user_id', currentUser.id).limit(1).maybeSingle()
+      .then(({ data }) => {
+        const banner = document.getElementById('blueprint-sync-banner');
+        if (banner) banner.style.display = data ? 'none' : 'flex';
+      }).catch(() => {});
+  }
 }
 
 function resetBlueprint() {
@@ -4045,34 +4059,42 @@ async function handleSignout() {
 // SUPABASE DATA FUNCTIONS
 // ══════════════════════════════════════════
 async function loadUserData(userId) {
+  // Load blueprint — use maybeSingle() so missing rows return null instead of throwing
   try {
-    // Load blueprint
-    const { data: bpData } = await _supa
+    const { data: bpData, error: bpError } = await _supa
       .from('blueprints')
       .select('blueprint')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
     if (bpData?.blueprint) {
       blueprint = bpData.blueprint;
       blueprintRaw = JSON.stringify(blueprint);
       localStorage.setItem('gait_blueprint', blueprintRaw);
     }
+  } catch(e) {
+    console.warn('Error loading blueprint:', e);
+  }
 
-    // Load profile/answers
+  // Load profile/answers — separate try/catch so one failure doesn't block others
+  try {
     const { data: profileRow } = await _supa
       .from('profiles')
       .select('answers')
       .eq('id', userId)
-      .single();
+      .maybeSingle();
     if (profileRow?.answers) {
       profileData = profileRow.answers;
       answers = profileRow.answers;
       localStorage.setItem('gait_profile', JSON.stringify(profileData));
     }
+  } catch(e) {
+    console.warn('Error loading profile:', e);
+  }
 
-    // Load logs (last 90 days)
+  // Load logs (last 90 days)
+  try {
     const since = new Date();
     since.setDate(since.getDate() - 90);
     const { data: logRows } = await _supa
@@ -4086,7 +4108,7 @@ async function loadUserData(userId) {
       localStorage.setItem('gait_logs', JSON.stringify(logs));
     }
   } catch(e) {
-    console.warn('Error loading user data:', e);
+    console.warn('Error loading logs:', e);
   }
 }
 
@@ -4098,6 +4120,22 @@ async function saveBlueprint(userId, bpObj) {
     await _supa.from('blueprints').delete().eq('user_id', userId);
     await _supa.from('blueprints').insert({ user_id: userId, blueprint: bpObj });
   } catch(e) { console.warn('Error saving blueprint:', e); }
+}
+
+async function syncBlueprintNow(btn) {
+  if (!currentUser?.id || !blueprint) return;
+  if (btn) { btn.textContent = 'Syncing...'; btn.disabled = true; }
+  try {
+    await saveBlueprint(currentUser.id, blueprint);
+    if (profileData || answers.name) {
+      await saveProfile(currentUser.id, profileData || answers);
+    }
+    const banner = document.getElementById('blueprint-sync-banner');
+    if (banner) banner.style.display = 'none';
+    if (btn) { btn.textContent = '✓ Synced'; }
+  } catch(e) {
+    if (btn) { btn.textContent = 'Failed — try again'; btn.disabled = false; }
+  }
 }
 
 async function saveProfile(userId, profileObj) {
