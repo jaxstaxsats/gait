@@ -3480,6 +3480,7 @@ async function submitLog() {
     notes, sleep, stress,
     zone2Effort, avgHR, maxHR,
     crossActivity, crossDistance, crossDuration, crossIntensity,
+    crossDistanceUnit: crossActivity === 'swimming' ? 'm' : 'km',
     walkType, walkDistance, walkDuration, walkElevation, walkTerrain, walkPace, walkPoles, walkPainLoc,
     isRestDay: dayMode !== 'run' && dayMode !== 'cross' && dayMode !== 'walk',
     morningSleep, morningEnergy, morningPainLoc, morningPlan,
@@ -3488,7 +3489,7 @@ async function submitLog() {
 
   const bibleContext = blueprint ? JSON.stringify(blueprint) : JAX_BIBLE;
   const recentLogs = logs.slice(-7).map(l => {
-    if (l.mode === 'cross') return `${new Date(l.date).toLocaleDateString('en-GB')}: CROSS TRAINING — ${l.crossActivity} ${l.crossDistance ? l.crossDistance + 'km' : ''} ${l.crossDuration ? l.crossDuration + 'min' : ''} ${l.crossIntensity || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
+    if (l.mode === 'cross') { const cUnit = l.crossActivity === 'swimming' ? 'm' : 'km'; return `${new Date(l.date).toLocaleDateString('en-GB')}: CROSS TRAINING — ${l.crossActivity} ${l.crossDistance ? l.crossDistance + cUnit : ''} ${l.crossDuration ? l.crossDuration + 'min' : ''} ${l.crossIntensity || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`; }
     if (l.mode === 'walk') return `${new Date(l.date).toLocaleDateString('en-GB')}: WALK/HIKE — ${l.walkType} ${l.walkDistance ? l.walkDistance + 'km' : ''} ${l.walkDuration ? l.walkDuration + 'min' : ''} ${l.walkElevation ? l.walkElevation + 'm elev' : ''} ${l.walkTerrain || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
     if (l.mode === 'morning') return `${new Date(l.date).toLocaleDateString('en-GB')}: MORNING CHECK | Sleep: ${l.morningSleep} | Energy: ${l.morningEnergy} | Pain: ${l.painScore}/10 | Plan: ${l.morningPlan} | Notes: ${l.notes}`;
     if (l.mode === 'evening') return `${new Date(l.date).toLocaleDateString('en-GB')}: EVENING CHECK | Session: ${l.eveningSession} | Body felt: ${l.eveningBody} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
@@ -3902,7 +3903,7 @@ function renderHistory() {
       <div class="history-card-top">
         <div>
           <div class="history-date">${dateStr}</div>
-          <div class="history-km">${log.isRestDay ? 'Rest day' : `${log.km} km`}</div>
+          <div class="history-km">${log.isRestDay ? 'Rest day' : `${log.km} ${log.mode === 'cross' && log.crossActivity === 'swimming' ? 'm' : log.mode === 'walk' ? 'km' : 'km'}`}</div>
         </div>
         <div class="history-pain">
           <div class="pain-dot ${painClass}"></div>
