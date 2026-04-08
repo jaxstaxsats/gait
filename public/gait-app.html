@@ -2560,13 +2560,29 @@ function renderBlueprint() {
   renderEveningRoutineContent();
   renderBlueprintCharts();
 
-  // Show sync banner if user is logged in but we don't know if blueprint is in Supabase
-  // (i.e. blueprint exists locally but currentUser exists — could be a cross-device situation)
-  if (currentUser?.id) {
-    _supa.from('blueprints').select('user_id').eq('user_id', currentUser.id).limit(1).maybeSingle()
+  // Always silently sync blueprint to Supabase when it renders and user is logged in
+  // This ensures cross-device access works even if original save failed
+  if (currentUser?.id && blueprint && _supa) {
+    _supa.from('blueprints')
+      .select('user_id')
+      .eq('user_id', currentUser.id)
+      .limit(1)
+      .maybeSingle()
       .then(({ data }) => {
         const banner = document.getElementById('blueprint-sync-banner');
-        if (banner) banner.style.display = data ? 'none' : 'flex';
+        if (!data) {
+          // Not in Supabase — save it now and show banner briefly
+          saveBlueprint(currentUser.id, blueprint).then(() => {
+            if (banner) {
+              banner.style.display = 'flex';
+              banner.querySelector('div').textContent = '✦ Blueprint saved to your account — now accessible on all devices.';
+              banner.querySelector('button').style.display = 'none';
+              setTimeout(() => { if (banner) banner.style.display = 'none'; }, 4000);
+            }
+          });
+        } else {
+          if (banner) banner.style.display = 'none';
+        }
       }).catch(() => {});
   }
 }
@@ -3883,7 +3899,7 @@ function renderHistory() {
     return;
   }
 
-  const totalKm = logs.filter(l => !l.isRestDay).reduce((s, l) => s + parseFloat(l.km || 0), 0);
+  const totalKm = logs.filter(l => !l.isRestDay).reduce((s, l) => s + logKm(l), 0);
   const totalRuns = logs.filter(l => !l.isRestDay).length;
 
   let html = `<div class="stats-strip" style="margin-bottom:24px;">
@@ -3903,7 +3919,11 @@ function renderHistory() {
       <div class="history-card-top">
         <div>
           <div class="history-date">${dateStr}</div>
-          <div class="history-km">${log.isRestDay ? 'Rest day' : `${log.km} ${log.mode === 'cross' && log.crossActivity === 'swimming' ? 'm' : log.mode === 'walk' ? 'km' : 'km'}`}</div>
+          <div class="history-km">${log.isRestDay ? 'Rest day' : 
+            log.mode === 'cross' && log.crossActivity === 'swimming' 
+              ? `${log.km}m` 
+              : `${logKm(log).toFixed(2)} km`
+          }</div>
         </div>
         <div class="history-pain">
           <div class="pain-dot ${painClass}"></div>
@@ -3932,9 +3952,17 @@ function toggleExpanded(idx) {
 // ══════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════
+// Helper — convert log's km field to actual km
+// Swimming stores metres, everything else stores km
+function logKm(l) {
+  const raw = parseFloat(l.km) || 0;
+  if (l.mode === 'cross' && l.crossActivity === 'swimming') return raw / 1000;
+  return raw;
+}
+
 function updateStats() {
   const runs = logs.filter(l => !l.isRestDay);
-  const totalKm = runs.reduce((s, l) => s + parseFloat(l.km || 0), 0);
+  const totalKm = runs.reduce((s, l) => s + logKm(l), 0);
   document.getElementById('stat-runs').textContent = runs.length;
   document.getElementById('stat-km').textContent = totalKm.toFixed(1);
   // Streak
@@ -4062,7 +4090,7 @@ async function handleSignout() {
 async function loadUserData(userId) {
   // Load blueprint — use maybeSingle() so missing rows return null instead of throwing
   try {
-    const { data: bpData, error: bpError } = await _supa
+    const { data: bpData } = await _supa
       .from('blueprints')
       .select('blueprint')
       .eq('user_id', userId)
@@ -4070,12 +4098,29 @@ async function loadUserData(userId) {
       .limit(1)
       .maybeSingle();
     if (bpData?.blueprint) {
+      // Found in Supabase — use it
       blueprint = bpData.blueprint;
       blueprintRaw = JSON.stringify(blueprint);
       localStorage.setItem('gait_blueprint', blueprintRaw);
+    } else {
+      // Not in Supabase — check localStorage and sync up if found
+      const lsRaw = localStorage.getItem('gait_blueprint');
+      if (lsRaw) {
+        try {
+          blueprint = JSON.parse(lsRaw);
+          // Push it to Supabase now so other devices can access it
+          _supa.from('blueprints').delete().eq('user_id', userId)
+            .then(() => _supa.from('blueprints').insert({ user_id: userId, blueprint }))
+            .catch(() => {});
+        } catch(e) {}
+      }
     }
   } catch(e) {
-    console.warn('Error loading blueprint:', e);
+    // Supabase failed — fall back to localStorage
+    const lsRaw = localStorage.getItem('gait_blueprint');
+    if (lsRaw) {
+      try { blueprint = JSON.parse(lsRaw); } catch(e2) {}
+    }
   }
 
   // Load profile/answers — separate try/catch so one failure doesn't block others
@@ -4171,7 +4216,7 @@ async function initApp() {
       _supa = supabase.createClient(SUPA_URL, cfg.supabaseKey);
     }
   } catch(e) {
-    console.warn('Config fetch failed, using localStorage only');
+    // Config fetch failed — running locally or offline, localStorage only
   }
 
   if (!_supa) {
@@ -4423,7 +4468,7 @@ function renderMileageChart() {
     if (l.isRestDay || l.mode === 'rest' || l.mode === 'body') return;
     const key = l.date ? isoWeek(l.date.slice(0, 10)) : null;
     if (key && weekMap[key] !== undefined) {
-      weekMap[key].km += parseFloat(l.km) || 0;
+      weekMap[key].km += logKm(l);
     }
   });
 
@@ -4561,7 +4606,7 @@ function renderACWR() {
 
   logs.forEach(l => {
     if (l.isRestDay || l.mode === 'rest' || l.mode === 'body') return;
-    const km = parseFloat(l.km) || 0;
+    const km = logKm(l);
     const daysAgo = Math.floor((today - new Date(l.date)) / 86400000);
     if (daysAgo < 7) acute += km;
     if (daysAgo < 28) {
