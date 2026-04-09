@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GAIT — The AI running coach built for comeback runners</title>
+
+<!-- OG / Social sharing -->
+<meta name="description" content="GAIT builds a living training blueprint around your injuries and how your body actually feels every day. Built for comeback runners.">
+<meta property="og:title" content="GAIT — The AI running coach built for comeback runners">
+<meta property="og:description" content="Built for comeback runners. PFPS, IT Band, Achilles, Hamstring — GAIT builds a plan that actually protects you while you build back.">
+<meta property="og:url" content="https://gait.run">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://gait.run/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GAIT — The AI running coach built for comeback runners">
+<meta name="twitter:description" content="Built for comeback runners. PFPS, IT Band, Achilles, Hamstring — GAIT builds a plan that actually protects you while you build back.">
+<meta name="twitter:image" content="https://gait.run/og-image.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700;900&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -30,21 +43,29 @@
     color: var(--ink);
     font-family: var(--mono);
     overflow-x: hidden;
-    cursor: none;
   }
 
-  .cursor {
-    width: 10px; height: 10px;
-    background: var(--red);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s, width 0.2s, height 0.2s;
-    mix-blend-mode: multiply;
+  /* Custom cursor — desktop only */
+  @media (hover: hover) {
+    body { cursor: none; }
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--red);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s;
+      mix-blend-mode: multiply;
+    }
+    .cursor.grow { width: 48px; height: 48px; }
+    .btn-primary, .btn-ghost, .nav-cta, .pricing-btn, .email-form button { cursor: none; }
   }
-  .cursor.grow { width: 48px; height: 48px; }
+  @media (hover: none) {
+    .cursor { display: none; }
+    .btn-primary, .btn-ghost, .nav-cta, .pricing-btn, .email-form button { cursor: pointer; }
+  }
 
   body::before {
     content: '';
@@ -53,7 +74,7 @@
     pointer-events: none; z-index: 100; opacity: 0.4;
   }
 
-  /* ── NAV ── */
+  /* NAV */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
     padding: 16px 40px;
@@ -63,20 +84,14 @@
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(15,14,11,0.08);
   }
-
-  /* Logo mark — always G·AI·T with AI red */
   .nav-logo {
     display: flex; align-items: center;
     font-family: var(--display);
-    font-weight: 900;
-    font-size: 22px;
-    letter-spacing: -1px;
-    line-height: 1;
-    gap: 0;
+    font-weight: 900; font-size: 22px;
+    letter-spacing: -1px; line-height: 1; gap: 0;
   }
   .nav-logo .g, .nav-logo .t { color: var(--ink); }
   .nav-logo .ai { color: var(--red); }
-
   .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
   .nav-links a {
     font-family: var(--mono); font-size: 11px; letter-spacing: 2px;
@@ -94,26 +109,21 @@
   }
   .nav-cta:hover { background: var(--ink2) !important; color: var(--accent) !important; }
 
-  /* ── HERO ── */
+  /* HERO */
   .hero {
     min-height: 100vh;
-    display: grid;
-    grid-template-rows: 1fr auto;
+    display: grid; grid-template-rows: 1fr auto;
     padding: 0 24px 48px;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
     background: var(--bg);
   }
-
   .hero-bg-text { display: none; }
-
   .hero-content {
     display: flex; flex-direction: column;
     justify-content: center;
     padding-top: 120px;
     position: relative; z-index: 2;
   }
-
   .hero-eyebrow {
     font-family: var(--mono); font-size: 11px; letter-spacing: 4px;
     color: var(--muted); text-transform: uppercase;
@@ -122,69 +132,53 @@
     display: flex; align-items: center; gap: 8px;
   }
   .hero-eyebrow::before {
-    content: '';
-    display: inline-block; width: 24px; height: 2px;
-    background: var(--red);
+    content: ''; display: inline-block; width: 24px; height: 2px; background: var(--red);
   }
-
   .hero-headline {
-    font-family: var(--display);
-    font-weight: 900;
+    font-family: var(--display); font-weight: 900;
     font-size: clamp(56px, 10vw, 140px);
-    line-height: 0.88;
-    letter-spacing: -4px;
-    color: var(--ink);
+    line-height: 0.88; letter-spacing: -4px; color: var(--ink);
     opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
   }
   .hero-headline .red { color: var(--red); }
   .hero-headline em {
-    font-family: var(--serif);
-    font-style: italic;
-    font-weight: 400;
-    color: var(--red);
-    letter-spacing: -2px;
+    font-family: var(--serif); font-style: italic;
+    font-weight: 400; color: var(--red); letter-spacing: -2px;
   }
-
   .hero-sub {
     margin-top: 36px; max-width: 480px;
     font-family: var(--mono); font-size: 13px; line-height: 1.8;
     color: var(--muted);
     opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
   }
-
   .hero-cta-row {
     display: flex; align-items: center; gap: 24px;
     margin-top: 48px;
     opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
   }
-
   .btn-primary {
     background: var(--ink); color: var(--accent);
     font-family: var(--display); font-weight: 700;
     font-size: 14px; letter-spacing: 1px;
     padding: 18px 36px; border: none; border-radius: 2px;
-    cursor: none; text-transform: uppercase;
+    text-transform: uppercase;
     transition: background 0.2s, transform 0.2s;
     text-decoration: none; display: inline-block;
   }
   .btn-primary:hover { background: var(--ink2); transform: translateY(-2px); }
-
   .btn-ghost {
     font-family: var(--mono); font-size: 11px; letter-spacing: 2px;
     color: var(--muted); text-transform: uppercase;
     text-decoration: none;
-    border-bottom: 1px solid var(--muted);
-    padding-bottom: 2px;
+    border-bottom: 1px solid var(--muted); padding-bottom: 2px;
     transition: color 0.2s, border-color 0.2s;
   }
   .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
 
   /* Ticker */
   .running-line {
-    border-top: 1px solid var(--ink2);
-    padding-top: 20px;
-    display: flex; overflow: hidden;
-    position: relative; z-index: 2;
+    border-top: 1px solid var(--ink2); padding-top: 20px;
+    display: flex; overflow: hidden; position: relative; z-index: 2;
   }
   .running-ticker {
     display: flex; gap: 48px;
@@ -193,20 +187,19 @@
   }
   .running-ticker span {
     font-family: var(--display); font-weight: 700;
-    font-size: 12px; letter-spacing: 3px;
-    color: var(--muted); text-transform: uppercase;
+    font-size: 12px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase;
   }
   .running-ticker span.dot { color: var(--red); }
   @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-  /* ── SECTIONS ── */
+  /* SECTIONS */
   section { padding: 120px 40px; }
   .section-label {
     font-family: var(--mono); font-size: 10px; letter-spacing: 4px;
     color: var(--muted); text-transform: uppercase; margin-bottom: 20px;
   }
 
-  /* ── HOW IT WORKS ── */
+  /* HOW IT WORKS */
   .how { background: var(--ink); color: var(--bg); }
   .how-header {
     display: flex; align-items: flex-start; justify-content: space-between;
@@ -226,9 +219,7 @@
     display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1px; background: rgba(255,255,255,0.08);
   }
-  .step-card {
-    background: var(--ink); padding: 40px 32px; transition: background 0.2s;
-  }
+  .step-card { background: var(--ink); padding: 40px 32px; transition: background 0.2s; }
   .step-card:hover { background: var(--ink2); }
   .step-num {
     font-family: var(--display); font-weight: 900;
@@ -237,46 +228,34 @@
   }
   .step-name {
     font-family: var(--display); font-weight: 700;
-    font-size: 20px; letter-spacing: -0.5px;
-    color: var(--bg); margin-bottom: 12px;
+    font-size: 20px; letter-spacing: -0.5px; color: var(--bg); margin-bottom: 12px;
   }
-  .step-desc {
-    font-family: var(--mono); font-size: 12px;
-    line-height: 1.8; color: var(--muted);
-  }
+  .step-desc { font-family: var(--mono); font-size: 12px; line-height: 1.8; color: var(--muted); }
 
-  /* ── FEATURES ── */
+  /* FEATURES */
   .features { background: var(--bg2); }
   .features-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: grid; grid-template-columns: 1fr 1fr;
     gap: 2px; margin-top: 60px; background: rgba(0,0,0,0.1);
   }
-  .features-grid .feature-card:last-child {
-    grid-column: 1 / -1;
-  }
+  .features-grid .feature-card:last-child { grid-column: 1 / -1; }
   .feature-card {
     background: var(--bg2); padding: 48px 40px;
     position: relative; overflow: hidden;
   }
   .feature-card::before {
     content: ''; position: absolute; top: 0; left: 0;
-    width: 3px; height: 0; background: var(--red);
-    transition: height 0.3s;
+    width: 3px; height: 0; background: var(--red); transition: height 0.3s;
   }
   .feature-card:hover::before { height: 100%; }
   .feature-icon { font-size: 28px; margin-bottom: 20px; display: block; }
   .feature-title {
     font-family: var(--display); font-weight: 700;
-    font-size: 22px; letter-spacing: -0.5px;
-    color: var(--ink); margin-bottom: 12px;
+    font-size: 22px; letter-spacing: -0.5px; color: var(--ink); margin-bottom: 12px;
   }
-  .feature-body {
-    font-family: var(--mono); font-size: 12px;
-    line-height: 1.8; color: var(--muted);
-  }
+  .feature-body { font-family: var(--mono); font-size: 12px; line-height: 1.8; color: var(--muted); }
 
-  /* ── STATS ── */
+  /* STATS */
   .stats {
     background: var(--accent); padding: 60px 40px;
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
@@ -284,48 +263,14 @@
   .stat-item { text-align: center; padding: 20px; }
   .stat-num {
     font-family: var(--display); font-weight: 900;
-    font-size: clamp(40px, 6vw, 72px);
-    letter-spacing: -3px; color: var(--ink); line-height: 1;
+    font-size: clamp(40px, 6vw, 72px); letter-spacing: -3px; color: var(--ink); line-height: 1;
   }
   .stat-label {
     font-family: var(--mono); font-size: 11px; letter-spacing: 2px;
     color: var(--ink2); text-transform: uppercase; margin-top: 8px;
   }
 
-  /* ── VERSUS ── */
-  .versus { background: var(--ink); padding: 120px 40px; }
-  .versus-title {
-    font-family: var(--display); font-weight: 900;
-    font-size: clamp(36px, 5vw, 64px);
-    letter-spacing: -2px; line-height: 0.95;
-    color: var(--bg); margin-bottom: 60px;
-  }
-  .versus-title .red { color: var(--red); }
-  .versus-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-    background: rgba(255,255,255,0.06);
-  }
-  .versus-col { padding: 48px 40px; }
-  .versus-col.them { background: rgba(255,255,255,0.03); }
-  .versus-col.us { background: rgba(200,242,58,0.06); }
-  .versus-col-label {
-    font-family: var(--mono); font-size: 10px; letter-spacing: 4px;
-    text-transform: uppercase; margin-bottom: 32px;
-  }
-  .versus-col.them .versus-col-label { color: var(--muted); }
-  .versus-col.us .versus-col-label { color: var(--accent); }
-  .versus-item {
-    display: flex; align-items: flex-start; gap: 16px;
-    margin-bottom: 24px;
-  }
-  .versus-icon { font-size: 16px; margin-top: 2px; flex-shrink: 0; }
-  .versus-text {
-    font-family: var(--mono); font-size: 13px; line-height: 1.7;
-  }
-  .versus-col.them .versus-text { color: var(--muted); }
-  .versus-col.us .versus-text { color: var(--bg); }
-
-  /* ── PRICING ── */
+  /* PRICING */
   .pricing { background: var(--bg); padding: 120px 40px; }
   .pricing-title {
     font-family: var(--display); font-weight: 900;
@@ -340,70 +285,41 @@
     display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2px; background: rgba(0,0,0,0.08);
   }
-  .pricing-card {
-    background: var(--bg); padding: 48px 40px; position: relative;
-  }
-  .pricing-card.featured {
-    background: var(--bg);
-    border-top: 4px solid var(--red);
-  }
+  .pricing-card { background: var(--bg); padding: 48px 40px; position: relative; }
+  .pricing-card.featured { background: var(--bg); border-top: 4px solid var(--red); }
   .pricing-badge {
     display: inline-block;
     font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
-    text-transform: uppercase; padding: 4px 10px; border-radius: 2px;
-    margin-bottom: 24px;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 2px; margin-bottom: 24px;
   }
-  .pricing-card:not(.featured) .pricing-badge {
-    background: var(--bg2); color: var(--red);
-  }
-  .pricing-card.featured .pricing-badge {
-    background: var(--bg2); color: var(--red);
-  }
+  .pricing-card:not(.featured) .pricing-badge { background: var(--bg2); color: var(--red); }
+  .pricing-card.featured .pricing-badge { background: var(--bg2); color: var(--red); }
   .pricing-card.featured .pricing-price { color: var(--ink); }
   .pricing-card.featured .pricing-name { color: var(--ink); }
-  .pricing-card.featured .pricing-features li {
-    color: var(--muted); border-color: rgba(0,0,0,0.06);
-  }
+  .pricing-card.featured .pricing-features li { color: var(--muted); border-color: rgba(0,0,0,0.06); }
   .pricing-card.featured .pricing-features li::before { color: var(--red); }
-  .pricing-card.featured .pricing-btn {
-    background: var(--ink); color: var(--accent);
-  }
+  .pricing-card.featured .pricing-btn { background: var(--ink); color: var(--accent); }
   .pricing-card.featured .pricing-btn:hover { background: var(--ink2); }
   .pricing-card.featured .pricing-period { color: var(--muted); }
   .pricing-price {
     font-family: var(--display); font-weight: 900;
-    font-size: 64px; letter-spacing: -3px; line-height: 1;
-    margin-bottom: 8px;
+    font-size: 64px; letter-spacing: -3px; line-height: 1; margin-bottom: 8px;
   }
   .pricing-card:not(.featured) .pricing-price { color: var(--ink); }
   .pricing-card.featured .pricing-price { color: var(--red); }
-  .pricing-period {
-    font-family: var(--mono); font-size: 12px; letter-spacing: 1px;
-    color: var(--muted); margin-bottom: 32px;
-  }
-  .pricing-name {
-    font-family: var(--display); font-weight: 700;
-    font-size: 24px; letter-spacing: -0.5px;
-    margin-bottom: 24px;
-  }
+  .pricing-period { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--muted); margin-bottom: 32px; }
+  .pricing-name { font-family: var(--display); font-weight: 700; font-size: 24px; letter-spacing: -0.5px; margin-bottom: 24px; }
   .pricing-card:not(.featured) .pricing-name { color: var(--ink); }
   .pricing-card.featured .pricing-name { color: var(--bg); }
   .pricing-features { list-style: none; margin-bottom: 40px; }
   .pricing-features li {
     font-family: var(--mono); font-size: 12px; line-height: 1.8;
     padding: 8px 0; border-bottom: 1px solid;
-    display: flex; align-items: center; gap: 12px;
-    color: var(--ink2);
+    display: flex; align-items: center; gap: 12px; color: var(--ink2);
   }
-  .pricing-card:not(.featured) .pricing-features li {
-    border-color: rgba(0,0,0,0.06);
-  }
-  .pricing-card.featured .pricing-features li {
-    color: var(--ink2); border-color: rgba(0,0,0,0.06);
-  }
-  .pricing-features li::before {
-    content: '✦'; font-size: 8px; flex-shrink: 0;
-  }
+  .pricing-card:not(.featured) .pricing-features li { border-color: rgba(0,0,0,0.06); }
+  .pricing-card.featured .pricing-features li { color: var(--ink2); border-color: rgba(0,0,0,0.06); }
+  .pricing-features li::before { content: '✦'; font-size: 8px; flex-shrink: 0; }
   .pricing-card:not(.featured) .pricing-features li::before { color: var(--accent); }
   .pricing-card.featured .pricing-features li::before { color: var(--red); }
   .pricing-btn {
@@ -411,22 +327,16 @@
     font-family: var(--display); font-weight: 700;
     font-size: 16px; letter-spacing: 1px;
     padding: 16px 24px; border-radius: 2px;
-    text-transform: uppercase; transition: all 0.2s; cursor: none;
+    text-transform: uppercase; transition: all 0.2s;
     border: none; width: 100%;
   }
-  .pricing-card:not(.featured) .pricing-btn {
-    background: var(--ink); color: var(--accent);
-  }
+  .pricing-card:not(.featured) .pricing-btn { background: var(--ink); color: var(--accent); }
   .pricing-card:not(.featured) .pricing-btn:hover { background: var(--ink2); }
-  .pricing-card.featured .pricing-btn {
-    background: var(--accent); color: var(--ink);
-  }
+  .pricing-card.featured .pricing-btn { background: var(--accent); color: var(--ink); }
   .pricing-card.featured .pricing-btn:hover { background: #d4f94a; }
 
-  /* ── TESTIMONIAL ── */
-  .testimonial {
-    background: var(--bg2); text-align: center; padding: 120px 40px;
-  }
+  /* TESTIMONIAL */
+  .testimonial { background: var(--bg2); text-align: center; padding: 120px 40px; }
   .quote-mark {
     font-family: var(--serif); font-style: italic;
     font-size: 120px; color: rgba(0,0,0,0.06);
@@ -438,18 +348,15 @@
     color: var(--ink); line-height: 1.3;
     max-width: 800px; margin: 0 auto 32px;
   }
-  .quote-attr {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 3px;
-    color: var(--muted); text-transform: uppercase;
-  }
+  .quote-attr { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
 
-  /* ── WAITLIST ── */
+  /* WAITLIST */
   .waitlist {
     background: var(--ink); text-align: center;
     padding: 120px 40px; position: relative; overflow: hidden;
   }
   .waitlist::before {
-    content: 'G​A​IT';
+    content: 'GbAbIT';
     position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     font-family: var(--display); font-weight: 900;
@@ -457,56 +364,37 @@
     -webkit-text-stroke: 1px rgba(255,255,255,0.03);
     pointer-events: none; letter-spacing: -20px; white-space: nowrap;
   }
-  .waitlist-eyebrow {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 4px;
-    color: var(--red); text-transform: uppercase; margin-bottom: 24px;
-  }
+  .waitlist-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 4px; color: var(--red); text-transform: uppercase; margin-bottom: 24px; }
   .waitlist-title {
     font-family: var(--display); font-weight: 900;
     font-size: clamp(48px, 8vw, 100px);
-    letter-spacing: -3px; line-height: 0.9;
-    color: var(--bg); margin-bottom: 20px;
+    letter-spacing: -3px; line-height: 0.9; color: var(--bg); margin-bottom: 20px;
   }
-  .waitlist-title em {
-    font-family: var(--serif); font-style: italic;
-    font-weight: 400; color: var(--accent);
-  }
-  .waitlist-sub {
-    font-family: var(--mono); font-size: 13px; line-height: 1.8;
-    color: var(--muted); max-width: 420px; margin: 0 auto 48px;
-  }
+  .waitlist-title em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .waitlist-sub { font-family: var(--mono); font-size: 13px; line-height: 1.8; color: var(--muted); max-width: 420px; margin: 0 auto 48px; }
   .email-form {
     display: flex; flex-direction: column; max-width: 480px; width: 100%; margin: 0 auto;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 2px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden;
   }
-  @media (max-width: 600px) {
-    #preview .bp-grid { grid-template-columns: 1fr !important; }
-  }
-  @media (min-width: 480px) {
-    .email-form { flex-direction: row; }
-  }
+  @media (max-width: 600px) { #preview .bp-grid { grid-template-columns: 1fr !important; } }
+  @media (min-width: 480px) { .email-form { flex-direction: row; } }
   .email-form input {
     flex: 1; background: transparent; border: none; outline: none;
-    padding: 18px 20px; font-family: var(--mono); font-size: 13px;
-    color: var(--bg);
+    padding: 18px 20px; font-family: var(--mono); font-size: 13px; color: var(--bg);
   }
   .email-form input::placeholder { color: rgba(255,255,255,0.25); }
   .email-form button {
     background: var(--accent); color: var(--ink);
     font-family: var(--display); font-weight: 700;
     font-size: 13px; letter-spacing: 1px;
-    padding: 18px 20px; border: none; cursor: none;
+    padding: 18px 20px; border: none;
     text-transform: uppercase; transition: background 0.2s;
     white-space: nowrap; flex-shrink: 0;
   }
   .email-form button:hover { background: #d4f94a; }
-  .success-msg {
-    display: none; font-family: var(--mono); font-size: 13px;
-    color: var(--accent); letter-spacing: 1px; margin-top: 16px;
-  }
+  .success-msg { display: none; font-family: var(--mono); font-size: 13px; color: var(--accent); letter-spacing: 1px; margin-top: 16px; }
 
-  /* ── FOOTER ── */
+  /* FOOTER */
   footer {
     background: var(--ink);
     border-top: 1px solid rgba(255,255,255,0.06);
@@ -514,29 +402,19 @@
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 16px;
   }
-  .footer-logo {
-    font-family: var(--display); font-weight: 900;
-    font-size: 18px; letter-spacing: -1px;
-    display: flex; gap: 0;
-  }
+  .footer-logo { font-family: var(--display); font-weight: 900; font-size: 18px; letter-spacing: -1px; display: flex; gap: 0; }
   .footer-logo .g, .footer-logo .t { color: var(--bg); }
   .footer-logo .ai { color: var(--red); }
-  .footer-right {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
-    color: var(--muted);
-  }
+  .footer-right { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--muted); }
   .footer-right a { color: var(--muted); text-decoration: none; }
   .footer-right a:hover { color: var(--accent); }
 
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
   .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s, transform 0.7s; }
   .reveal.visible { opacity: 1; transform: none; }
 
-  /* ── MOBILE ── */
+  /* MOBILE */
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
     .nav-links { display: none; }
@@ -564,7 +442,6 @@
   </a>
   <ul class="nav-links">
     <li><a href="#how">How it works</a></li>
-
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="/gait-app" class="nav-cta">Start my comeback</a></li>
   </ul>
@@ -584,7 +461,7 @@
       GAIT builds a living blueprint around your injuries and how your body actually feels every day — so you can come back stronger, stay consistent, and keep running long-term. No generic plans. No guesswork.
     </p>
     <div class="hero-cta-row">
-      <a href="/gait-app" class="btn-primary">Get your comeback blueprint</a>
+      <a href="/gait-app" class="btn-primary">Start my comeback</a>
       <a href="#how" class="btn-ghost">See how it works</a>
     </div>
   </div>
@@ -709,18 +586,15 @@
   .bp-strength-grid{grid-template-columns:1fr !important;}
 }
 </style>
+
 <!-- BLUEPRINT PREVIEW -->
 <section id="preview" style="background:#edeae0;padding:100px 24px;">
 <div style="max-width:880px;margin:0 auto;">
-
   <p style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:#9a9688;text-transform:uppercase;margin-bottom:24px;text-align:center;">Real output. Built for a real comeback.</p>
   <h2 style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,42px);letter-spacing:-2px;line-height:1.35;color:#0f0e0b;margin-bottom:24px;text-align:center;">This is what a comeback blueprint<br>actually looks like.</h2>
   <p style="font-family:'DM Mono',monospace;font-size:12px;color:#9a9688;max-width:460px;margin:0 auto 72px;line-height:2;text-align:center;">Every section built around injury history, equipment, terrain, and goals. Not a template. Jason's actual plan after 6 years of PFPS.</p>
 
-  <!-- DOCUMENT WRAPPER -->
   <div class="bp-doc" style="background:white;border-radius:20px;box-shadow:0 32px 80px rgba(0,0,0,0.10),0 4px 16px rgba(0,0,0,0.06);">
-
-    <!-- COVER -->
     <div class="bp-cover" style="background:#0f0e0b;">
       <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#ff3d2e;text-transform:uppercase;margin-bottom:32px;">✦ GAIT Blueprint &nbsp;·&nbsp; Generated 27 March 2026 &nbsp;·&nbsp; Personalised for Jason</div>
       <div class="bp-cover-grid" style="margin-bottom:32px;">
@@ -748,7 +622,6 @@
       </div>
     </div>
 
-    <!-- INJURY ALERT -->
     <div class="bp-alert" style="background:#fffaf9;border-top:3px solid #ff3d2e;">
       <div style="display:flex;align-items:flex-start;gap:14px;">
         <div style="font-size:20px;flex-shrink:0;margin-top:1px;">⚠️</div>
@@ -764,7 +637,6 @@
       </div>
     </div>
 
-    <!-- WEEKLY PLAN -->
     <div class="bp-section" style="border-top:1px solid #f0ece4;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;flex-wrap:wrap;gap:8px;">
         <div>
@@ -775,7 +647,6 @@
       </div>
       <div style="overflow-x:auto;margin:0 -4px;">
       <div style="display:grid;grid-template-columns:repeat(7,minmax(80px,1fr));gap:8px;min-width:560px;">
-
         <div style="background:#f0f7f0;border:1px solid #d4ead4;border-radius:10px;padding:16px 6px;text-align:center;">
           <div style="font-family:'DM Mono',monospace;font-size:8px;color:#5a8a5a;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">Mon</div>
           <div style="font-size:18px;margin-bottom:8px;">🏃</div>
@@ -822,7 +693,6 @@
       </div>
     </div>
 
-    <!-- STRENGTH CIRCUIT -->
     <div class="bp-section" style="border-top:1px solid #f0ece4;background:#faf8f4;">
       <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#c8793a;text-transform:uppercase;margin-bottom:4px;">Strength circuit</div>
       <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-bottom:24px;">Built for your exact equipment. Every exercise earns its place.</p>
@@ -862,116 +732,20 @@
       </div>
     </div>
 
-    <!-- MORNING ROUTINE -->
-    <div class="bp-section" style="border-top:1px solid #f0ece4;">
-      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#c8793a;text-transform:uppercase;margin-bottom:4px;">Morning routine</div>
-      <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-bottom:20px;">Every day, before anything else. 15 to 45 minutes. This is training — not optional.</p>
-      <div style="background:#fffaf9;border-left:3px solid #ff3d2e;padding:10px 16px;margin-bottom:20px;border-radius:0 4px 4px 0;">
-        <p style="font-family:'DM Mono',monospace;font-size:11px;color:#cc3322;margin:0;line-height:1.6;">Figure-4 replaces Knee-to-Chest today — groin sensitivity at 2/10. Return when 0/10.</p>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:0;">
-        <div style="display:flex;gap:16px;padding:16px 0;border-bottom:1px solid #f5f2ec;">
-          <div style="width:36px;height:36px;background:#f0ece4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🌅</div>
-          <div style="flex:1;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px;">
-              <p style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;margin:0;">Cat-Cow Mobility</p>
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:#c8793a;letter-spacing:1px;">1 min / 10 reps</span>
-            </div>
-            <p style="font-family:'DM Mono',monospace;font-size:11px;color:#555;line-height:1.7;margin-bottom:3px;">On hands and knees. Arch slowly, drop slowly. Move with your breath — this is where the day starts.</p>
-            <p style="font-family:'DM Mono',monospace;font-size:10px;color:#9a9688;font-style:italic;margin:0;">Wakes up the spine after sleep — essential before any run</p>
-          </div>
-        </div>
-        <div style="display:flex;gap:16px;padding:16px 0;border-bottom:1px solid #f5f2ec;">
-          <div style="width:36px;height:36px;background:#f0ece4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⚡</div>
-          <div style="flex:1;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px;">
-              <p style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;margin:0;">Glute Bridges</p>
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:#c8793a;letter-spacing:1px;">2 × 12 reps</span>
-            </div>
-            <p style="font-family:'DM Mono',monospace;font-size:11px;color:#555;line-height:1.7;margin-bottom:3px;">Heels flat, squeeze glutes hard at the top. Hold for 1 second. Feel this in your glutes, not your back.</p>
-            <p style="font-family:'DM Mono',monospace;font-size:10px;color:#9a9688;font-style:italic;margin:0;">Activates glutes so they protect the knee on every run</p>
-          </div>
-        </div>
-        <div style="display:flex;gap:16px;padding:16px 0;">
-          <div style="width:36px;height:36px;background:#f0ece4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔄</div>
-          <div style="flex:1;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px;">
-              <p style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;color:#0f0e0b;margin:0;">90/90 Hip Switches</p>
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:#c8793a;letter-spacing:1px;">10 reps each side</span>
-            </div>
-            <p style="font-family:'DM Mono',monospace;font-size:11px;color:#555;line-height:1.7;margin-bottom:3px;">Both knees at 90°. Rotate hips to switch — no hands. Keep your torso tall throughout.</p>
-            <p style="font-family:'DM Mono',monospace;font-size:10px;color:#9a9688;font-style:italic;margin:0;">Critical for hilly terrain — poor hip rotation feeds knee problems</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MILESTONES -->
-    <div class="bp-section" style="border-top:1px solid #f0ece4;background:#faf8f4;">
-      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#c8793a;text-transform:uppercase;margin-bottom:4px;">Your milestone roadmap</div>
-      <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-bottom:28px;">Where you're going, mapped out clearly. One step at a time.</p>
-      <div style="position:relative;padding-left:28px;">
-        <div style="position:absolute;left:7px;top:14px;bottom:14px;width:2px;background:#e8e4da;border-radius:1px;"></div>
-
-        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:12px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:#c8f23a;flex-shrink:0;margin-top:16px;position:relative;z-index:1;box-shadow:0 0 0 3px rgba(200,242,58,0.2);"></div>
-          <div style="flex:1;background:#f2ffe8;border:1px solid rgba(100,180,40,0.2);border-radius:10px;padding:16px 20px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-wrap:wrap;gap:6px;">
-              <p style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#3b7000;text-transform:uppercase;margin:0;">Right now — Month 1</p>
-              <span style="font-family:'DM Mono',monospace;font-size:9px;color:#3b7000;background:rgba(100,180,40,0.12);padding:3px 8px;border-radius:3px;">You are here</span>
-            </div>
-            <p style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:#0f0e0b;margin-bottom:4px;">Pain-free 12km long run</p>
-            <p style="font-family:'DM Mono',monospace;font-size:11px;color:#5a8a40;margin:0;">Building movement quality and glute activation. No speed work yet — just showing up consistently.</p>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:12px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:white;border:2px solid #d5d0c4;flex-shrink:0;margin-top:16px;position:relative;z-index:1;"></div>
-          <div style="flex:1;background:white;border:1px solid #ede9e0;border-radius:10px;padding:16px 20px;">
-            <p style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#9a9688;text-transform:uppercase;margin-bottom:5px;">Month 3</p>
-            <p style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:#0f0e0b;margin-bottom:4px;">First half marathon — target sub 2:10</p>
-            <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin:0;">Race preparation and pacing strategy. Learning to trust the training.</p>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:12px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:white;border:2px solid #d5d0c4;flex-shrink:0;margin-top:16px;position:relative;z-index:1;"></div>
-          <div style="flex:1;background:white;border:1px solid #ede9e0;border-radius:10px;padding:16px 20px;">
-            <p style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#9a9688;text-transform:uppercase;margin-bottom:5px;">6 Months</p>
-            <p style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:#0f0e0b;margin-bottom:4px;">Half marathon PB — sub 2:05</p>
-            <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin:0;">Progressive loading with full injury protection. Stronger knee, bigger weeks.</p>
-          </div>
-        </div>
-
-        <div style="display:flex;align-items:flex-start;gap:16px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:white;border:2px solid #d5d0c4;flex-shrink:0;margin-top:16px;position:relative;z-index:1;"></div>
-          <div style="flex:1;background:#0f0e0b;border-radius:10px;padding:16px 20px;">
-            <p style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#c8f23a;text-transform:uppercase;margin-bottom:5px;">Big Vision — 2027</p>
-            <p style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;color:white;margin-bottom:4px;">First ultra marathon — 50km trail</p>
-            <p style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.45);margin:0;">Time on feet over pace. Trail-specific strength. This is where the story ends up.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FOOTER -->
     <div class="bp-footer" style="background:#0f0e0b;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
       <div style="font-family:'DM Mono',monospace;font-size:10px;color:#ff3d2e;letter-spacing:1px;">Consistent. Injury-free. Unstoppable. &nbsp;·&nbsp; gait.run</div>
       <div style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2);">GAIT Blueprint &nbsp;·&nbsp; Jason &nbsp;·&nbsp; Season 2026</div>
     </div>
-
-  </div><!-- end document -->
-
-  <!-- CTA -->
-  <div style="text-align:center;margin-top:52px;">
-    <a href="/gait-app" style="display:inline-block;background:#0f0e0b;color:#c8f23a;font-family:'Unbounded',sans-serif;font-weight:900;font-size:14px;letter-spacing:1px;padding:18px 44px;border-radius:4px;text-decoration:none;text-transform:uppercase;">Get your blueprint free →</a>
-    <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-top:12px;">5 minutes. No card required. No generic plans.</p>
   </div>
 
+  <div style="text-align:center;margin-top:52px;">
+    <a href="/gait-app" style="display:inline-block;background:#0f0e0b;color:#c8f23a;font-family:'Unbounded',sans-serif;font-weight:900;font-size:14px;letter-spacing:1px;padding:18px 44px;border-radius:4px;text-decoration:none;text-transform:uppercase;">Start my comeback →</a>
+    <p style="font-family:'DM Mono',monospace;font-size:11px;color:#9a9688;margin-top:12px;">5 minutes. No card required. No generic plans.</p>
+  </div>
 </div>
 </section>
 
-<!-- QUOTE --><!-- QUOTE -->
+<!-- QUOTE -->
 <section style="background:var(--ink);padding:60px 40px;text-align:center;">
   <p id="lp-quote-text" style="font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(20px,4vw,36px);color:var(--bg);line-height:1.4;max-width:700px;margin:0 auto 16px;transition:opacity 0.4s ease;">
     "The miracle isn't that I finished. The miracle is that I had the courage to start."
@@ -987,7 +761,6 @@
   <h2 class="pricing-title reveal">Start your<br>comeback.<br>Free.</h2>
   <p class="pricing-sub reveal">Get your full personalised comeback blueprint free — no card required. Upgrade to Pro when you want daily coaching that adapts to how your body actually feels.</p>
 
-  <!-- Comparison table -->
   <div class="reveal" style="max-width:860px;margin:0 auto 48px;overflow-x:auto;">
     <table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;">
       <thead>
@@ -1003,67 +776,24 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Initial GAIT Blueprint</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">✦ Full personalised plan</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Full personalised plan</td>
-        </tr>
-        <tr style="background:var(--bg2);">
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Full Blueprint Refresh</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);">One-time only</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:var(--accent);">✦ 1 full refresh every evening</td>
-        </tr>
-        <tr>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Quick Coaching Responses</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);">—</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Unlimited (after every run or body check)</td>
-        </tr>
-        <tr style="background:var(--bg2);">
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Daily run & body logging</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);">—</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:var(--accent);">✦ Unlimited</td>
-        </tr>
-        <tr>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Strength circuits</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">Based on your equipment</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Progressive — gets harder as you improve</td>
-        </tr>
-        <tr style="background:var(--bg2);">
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Morning & evening routines</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">Included in blueprint</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:var(--accent);">✦ Personalised & updated daily</td>
-        </tr>
-        <tr>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Injury-aware adjustments</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">In initial plan only</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Daily adjustments + clear "why" explained</td>
-        </tr>
-        <tr style="background:var(--bg2);">
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Push Mode</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);">—</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:var(--accent);">✦ Unlocked after 28 pain-free days</td>
-        </tr>
-        <tr>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">PDF export</td>
-          <td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">✦ Your initial blueprint</td>
-          <td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Updated blueprints anytime</td>
-        </tr>
-        <tr style="background:var(--bg2);">
-          <td style="padding:14px 16px;border:1px solid rgba(0,0,0,0.06);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Best for</td>
-          <td style="padding:14px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);font-size:11px;line-height:1.6;">Trying GAIT — one solid starting plan</td>
-          <td style="padding:14px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:#9a9688;font-size:11px;line-height:1.6;">Injury-prone runners who want ongoing daily support</td>
-        </tr>
+        <tr><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Initial GAIT Blueprint</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">✦ Full personalised plan</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Full personalised plan</td></tr>
+        <tr style="background:var(--bg2);"><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Full Blueprint Refresh</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);">One-time only</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:var(--accent);">✦ 1 full refresh every evening</td></tr>
+        <tr><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Quick Coaching Responses</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);">—</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Unlimited (after every run or body check)</td></tr>
+        <tr style="background:var(--bg2);"><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Daily run & body logging</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);">—</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:var(--accent);">✦ Unlimited</td></tr>
+        <tr><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Strength circuits</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">Based on your equipment</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Progressive — gets harder as you improve</td></tr>
+        <tr style="background:var(--bg2);"><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Morning & evening routines</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">Included in blueprint</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:var(--accent);">✦ Personalised & updated daily</td></tr>
+        <tr><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Injury-aware adjustments</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">In initial plan only</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Daily adjustments + clear "why" explained</td></tr>
+        <tr style="background:var(--bg2);"><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">Push Mode</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);">—</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:var(--accent);">✦ Unlocked after 28 pain-free days</td></tr>
+        <tr><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);color:var(--ink);">PDF export</td><td style="padding:12px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--ink);">✦ Your initial blueprint</td><td style="padding:12px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:var(--ink2);color:var(--accent);">✦ Updated blueprints anytime</td></tr>
+        <tr style="background:var(--bg2);"><td style="padding:14px 16px;border:1px solid rgba(0,0,0,0.06);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Best for</td><td style="padding:14px 16px;border:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);font-size:11px;line-height:1.6;">Trying GAIT — one solid starting plan</td><td style="padding:14px 16px;border:1px solid rgba(255,255,255,0.06);text-align:center;background:#1a1917;color:#9a9688;font-size:11px;line-height:1.6;">Injury-prone runners who want ongoing daily support</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- CTA buttons -->
   <div class="reveal" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;">
-    <a href="/gait-app" style="background:var(--bg2);color:var(--ink);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;padding:16px 32px;border-radius:2px;text-decoration:none;text-transform:uppercase;border:1px solid rgba(0,0,0,0.1);">Get started free</a>
-    <a href="/gait-app" style="background:var(--ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;padding:16px 32px;border-radius:2px;text-decoration:none;text-transform:uppercase;">Start Pro — €4.99/month</a>
+    <a href="/gait-app" style="background:var(--bg2);color:var(--ink);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;padding:16px 32px;border-radius:2px;text-decoration:none;text-transform:uppercase;border:1px solid rgba(0,0,0,0.1);cursor:pointer;">Get started free</a>
+    <a href="/gait-app" style="background:var(--ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:1px;padding:16px 32px;border-radius:2px;text-decoration:none;text-transform:uppercase;cursor:pointer;">Start my comeback — €4.99/month</a>
   </div>
-
-
 </section>
 
 <!-- TESTIMONIAL -->
@@ -1072,7 +802,7 @@
   <blockquote class="quote-text reveal">
     Six years of PFPS. Every time I tried to come back, my knee would shut me down within weeks. I built GAIT for myself because nothing else understood my injuries. This month I ran 102km and I'm training for my first ultra. It's the comeback I stopped believing was possible.
   </blockquote>
-  <p class="quote-attr reveal">Jax · 39 · Porto · comeback runner · 6 years of PFPS</p>
+  <p class="quote-attr reveal">Jax · Comeback runner · 39 · Porto · 6 years of PFPS</p>
 </section>
 
 <!-- WAITLIST -->
@@ -1144,17 +874,21 @@
     }, 400);
   }
 
-  setInterval(rotateLandingQuote, 60000);
+  // Rotate every 25 seconds
+  setInterval(rotateLandingQuote, 25000);
 
+  // Custom cursor — only on hover-capable devices
   const cursor = document.getElementById('cursor');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-  });
-  document.querySelectorAll('a, button, input').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
-  });
+  if (cursor && window.matchMedia('(hover: hover)').matches) {
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, input').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+    });
+  }
 
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver(entries => {
@@ -1176,22 +910,17 @@
       await fetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: '',
-          email,
-          newsletter: true,
-          goal: 'Waitlist signup',
-          injuries: '',
-          terrain: ''
-        })
+        body: JSON.stringify({ name: '', email, newsletter: true, goal: 'Waitlist signup', injuries: '', terrain: '' })
       });
     } catch (e) {
       // Fail silently
     }
 
+    // Always show success — never hang
     document.querySelector('.email-form').style.display = 'none';
     document.getElementById('successMsg').style.display = 'block';
   }
+
   document.getElementById('emailInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleJoin();
   });
