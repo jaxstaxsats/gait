@@ -1444,22 +1444,7 @@
 // ══════════════════════════════════════════
 // JAX'S PRE-LOADED BIBLE DATA
 // ══════════════════════════════════════════
-const JAX_BIBLE = `
-RUNNER: Jax | Age: 39 | Weight: 75kg | Height: 180cm
-BACKGROUND: Previously very active, 10km PB 42 min, one marathon completed 4h47m in 2020.
-INJURY HISTORY:
-- Patellofemoral Pain Syndrome (PFPS): First severe episode 2020 marathon final 15km. Persisted on ALL 5km runs 2020-2025. Currently managed — mild 2/10 sensitivity on longer runs only. PRIMARY INJURY TO PROTECT.
-- Calf Strain: ~6 months ago (football). Occasional calf soreness returning.
-- Glute Soreness: particularly after hill running — weak hip stabilisers.
-- Recent: Back of knee soreness (biceps femoris tendon) 3/10 to touch — noted 25 March 2026.
-CURRENT STATS (March 2026): 96km total, longest run 11.69km, weekly volume 20-25km, pace range 5:19-6:44/km, terrain: hilly, Porto area.
-RECENT RUNS: Mar 1: 3.24km 4:54/km | Mar 2: 6.27km 5:39/km | Mar 3: 4.30km 6:29/km | Mar 5: 6.01km 5:22/km | Mar 9: 6.02km 5:40/km | Mar 10: 6.12km 5:19/km | Mar 12: 8.56km 5:51/km | Mar 15: 6.17km 6:44/km | Mar 17: 9.39km 5:39/km | Mar 18: 6.09km 6:18/km | Mar 20: 11.69km 5:56/km | Mar 21: 6.26km 5:46/km | Mar 23: 10.00km 5:50/km | Mar 24: 6.37km 5:22/km
-GOALS: Short term: pain-free 15km runs. 2026: 2-3 half marathons + 1 full marathon. 2027: Ultra marathon.
-WEEKLY TEMPLATE: Mon easy 6-8km @ 6:00-6:30/km | Tue strength circuit | Wed moderate 8-10km @ 5:40-6:00/km with hills | Thu rest/active recovery | Fri strength circuit | Sat long run 10-13km @ 5:50-6:30/km max 10% increase | Sun full rest + NSDR
-MILEAGE RULES: Never increase weekly mileage >10%. Every 4th week reduce 20-30%. 2/10 knee: shorten stride, quicken cadence. 4/10+: stop, rest 3 days. Calf tightness = early warning.
-MILESTONES: Q1: consistent 20-25km/week, pain-free 12-15km long run. Q2: build to 35-45km/week, first half marathon sub 2:10. Q3: 45-55km/week, second half marathon sub 2:00. Q4: Full marathon sub 4:30. 2027: First ultra 50km.
-KEY NOTES: Lives in hilly terrain Porto. Desk work background crypto industry. Hills = disguised strength. 10% rule on ALL variables. Morning routine essential. Couch stretch nightly for PFPS prevention.
-`;
+// JAX_BIBLE moved to server-side /api/coach.js
 
 // ══════════════════════════════════════════
 // SUPABASE CLIENT
@@ -1755,12 +1740,12 @@ function renderInjuryFollowUp() {
     const fu = followups[area] || {};
     const safeArea = area.replace(/'/g, "\\'");
     html += `
-    <div style="background:rgba(255,61,46,0.05);border:1px solid rgba(255,61,46,0.15);border-radius:8px;padding:14px 16px;margin-bottom:10px;">
-      <div style="font-family:var(--mono);font-size:10px;color:rgba(255,80,60,0.9);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">${area}</div>
+    <div style="background:var(--bg2);border:1px solid rgba(255,61,46,0.25);border-radius:8px;padding:14px 16px;margin-bottom:10px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">${area}</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
-          <label style="font-family:var(--mono);font-size:10px;color:var(--muted);display:block;margin-bottom:6px;letter-spacing:1px;">WHEN LAST BOTHERED YOU?</label>
-          <select onchange="setInjuryFollowUp('${safeArea}','when',this.value)" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:9px 10px;font-family:var(--mono);font-size:11px;color:white;outline:none;">
+          <label style="font-family:var(--mono);font-size:10px;color:var(--muted);display:block;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;">When last bothered you?</label>
+          <select onchange="setInjuryFollowUp('${safeArea}','when',this.value)" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:9px 10px;font-family:var(--mono);font-size:11px;color:var(--ink);outline:none;">
             <option value="">Select...</option>
             <option ${fu.when==='Currently active'?'selected':''}>Currently active</option>
             <option ${fu.when==='Within 3 months'?'selected':''}>Within 3 months</option>
@@ -1769,8 +1754,8 @@ function renderInjuryFollowUp() {
           </select>
         </div>
         <div>
-          <label style="font-family:var(--mono);font-size:10px;color:var(--muted);display:block;margin-bottom:6px;letter-spacing:1px;">CURRENTLY AN ISSUE?</label>
-          <select onchange="setInjuryFollowUp('${safeArea}','current',this.value)" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:9px 10px;font-family:var(--mono);font-size:11px;color:white;outline:none;">
+          <label style="font-family:var(--mono);font-size:10px;color:var(--muted);display:block;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;">Currently an issue?</label>
+          <select onchange="setInjuryFollowUp('${safeArea}','current',this.value)" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:9px 10px;font-family:var(--mono);font-size:11px;color:var(--ink);outline:none;">
             <option value="">Select...</option>
             <option ${fu.current==='Yes — active pain or limitation'?'selected':''}>Yes — active pain or limitation</option>
             <option ${fu.current==='Sometimes — comes and goes'?'selected':''}>Sometimes — comes and goes</option>
@@ -1795,115 +1780,6 @@ function startFreshQ() {
   renderQ();
 }
 
-async function generateFromBible() {
-  const container = document.getElementById('q-container');
-  container.innerHTML = `<div class="loading-wrap"><div class="spinner"></div><div class="loading-label">Building your GAIT Blueprint...</div></div>`;
-
-  const prompt = `You are GAIT, an expert injury-aware AI running coach. Generate a personalised GAIT Blueprint for Jax based on this detailed training bible data.
-
-${JAX_BIBLE}
-
-Write the GAIT Blueprint using these exact sections with ## headings:
-
-## Who You Are As A Runner
-3-4 sentences. Personal, specific, addresses Jax's background and the #1 thing to protect based on PFPS history and the recent back-of-knee signal.
-
-## Your Primary Injury Risk
-The main risks based on Jax's history. 3 specific things to watch for and 2 non-negotiable daily habits to prevent reinjury.
-
-## Your Weekly Training Template
-Mon–Sun. Specific distances, paces, and purpose for each day. Calibrated to current 20-25km/week and targeting half marathon.
-
-## Your Mileage Rules
-6 specific rules for Jax — when to push, when to back off, based on PFPS history, hilly Porto terrain, and marathon goal.
-
-## Your Milestone Roadmap
-Month 1 (Apr), Month 2 (May), Month 3 (Jun), then Q3, Q4 2026, then 2027 ultra. Specific and motivating.
-
-## Your Non-Negotiable Daily Habit
-One thing. Specific to PFPS and patellar tendon history. Concrete. No more than 3 sentences.
-
-Write with authority, warmth and deep specificity. You know this runner well. No preamble or sign-off.`;
-
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text;
-    if (text) {
-      blueprint = text;
-      profileData = { name: 'Jax', age: 39, weight: 75 };
-      const bpObj = typeof blueprint === 'string' ? JSON.parse(blueprint) : blueprint;
-      await saveBlueprint(currentUser?.id, bpObj);
-      await saveProfile(currentUser?.id, profileData);
-      renderBlueprint();
-    }
-  } catch (e) {
-    container.innerHTML = `<p style="color:var(--red);font-family:var(--mono);font-size:13px;padding:20px;">Something went wrong. Please try again.</p>
-    <button class="btn-next" onclick="generateFromBible()" style="width:100%;margin-top:16px;">Try again →</button>`;
-  }
-}
-
-
-
-function prevStep() {
-  if (currentStep > 0) {
-    currentStep--;
-    renderQ();
-    window.scrollTo(0, 0);
-  }
-}
-
-function nextStep() {
-  const step = steps[currentStep];
-  const requiredFields = step.fields.filter(f => f.required !== false);
-  const allFilled = requiredFields.every(f => answers[f.key]?.toString().trim());
-  if (!allFilled) {
-    alert('Please fill in all required fields before continuing.');
-    return;
-  }
-  if (currentStep < steps.length - 1) {
-    currentStep++;
-    renderQ();
-    window.scrollTo(0, 0);
-  } else {
-    showEmailCapture();
-  }
-}
-
-function showEmailCapture() {
-  const container = document.getElementById('q-container');
-  container.innerHTML = `
-    <div class="q-label">Almost there</div>
-    <h1 class="q-title">Where should<br>we send it?</h1>
-    <p style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:28px;">
-      Your GAIT Blueprint is ready to generate. Enter your email and we'll also send you a PDF copy to keep.
-    </p>
-    <div class="field">
-      <label>Email address</label>
-      <input type="email" id="capture-email" placeholder="your@email.com" oninput="answers.email=this.value">
-    </div>
-    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:28px;padding:16px;background:var(--bg2);border-radius:4px;">
-      <input type="checkbox" id="newsletter-opt" checked style="margin-top:3px;accent-color:var(--red);width:16px;height:16px;flex-shrink:0;">
-      <label for="newsletter-opt" style="font-family:var(--mono);font-size:12px;color:var(--ink2);line-height:1.7;cursor:pointer;">
-        Yes, keep me updated with GAIT news and tips — training advice, injury prevention, and early access to new features.
-      </label>
-    </div>
-    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.6;margin-bottom:24px;">
-      No spam. Unsubscribe anytime. Your data is never shared.
-    </p>
-    <div class="btn-row">
-      <button class="btn-back" onclick="currentStep=steps.length-1;renderQ();">← Back</button>
-      <button class="btn-next" onclick="captureEmailAndGenerate()">Generate My Blueprint →</button>
-    </div>`;
-}
 
 async function captureEmailAndGenerate() {
   const email = document.getElementById('capture-email').value;
@@ -1982,136 +1858,23 @@ GOALS: Short term: ${answers.shortGoal} | Race planned: ${answers.hasRace} ${ans
 6-12 month goal: ${answers.raceGoal} | 12 month vision: ${answers.bigVision || 'not shared'}
 Anything else: ${answers.anythingElse || 'nothing added'}`;
 
-  const prompt1 = `Generate part 1 of a GAIT Blueprint for this runner. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
-
-${runnerContext}
-
-Return ONLY this JSON:
-{
-  "name": "first name",
-  "tagline": "one sentence about who this runner is",
-  "primaryFocus": "the #1 thing to protect in one sentence",
-  "injuryAlert": {
-    "title": "main injury name",
-    "level": "high/medium/low",
-    "description": "2 sentences specific to this runner",
-    "rules": ["rule 1", "rule 2", "rule 3"]
-  },
-  "weeklyPlan": [
-    {"day": "MON", "type": "session type", "detail": "km and pace", "purpose": "one word purpose", "icon": "🏃", "color": "green", "zone": "Z2 — Zone 2 easy run | Z3 — moderate | Z4 — hard/tempo | strength — strength session | rest — rest or mobility"},
-    {"day": "TUE", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue", "zone": "strength"},
-    {"day": "WED", "type": "session type", "detail": "km and pace", "purpose": "purpose", "icon": "🏃", "color": "yellow", "zone": "Z3"},
-    {"day": "THU", "type": "Rest", "detail": "Mobility only", "purpose": "Recovery", "icon": "🧘", "color": "gray", "zone": "rest"},
-    {"day": "FRI", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue"},
-    {"day": "SAT", "type": "Long Run", "detail": "km and pace", "purpose": "Endurance", "icon": "🏃", "color": "orange", "zone": "Z2"},
-    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Recovery", "icon": "😴", "color": "gray", "zone": "rest"}
-  ],
-  "shoeAlert": "ONLY include this field if shoe age is Over 12 months — write a specific 2-sentence recommendation to replace their shoes, mentioning that running shoes typically last 500–800km and worn midsoles increase injury risk. Leave this field OUT entirely if shoes are under 12 months old.",
-  "strengthCircuit": {
-    "upperBody": [
-      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner in one sentence", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
-    ],
-    "legs": [
-      {"name": "name", "sets": "3 × 15", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 10", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
-    ],
-    "core": [
-      {"name": "name", "sets": "3 × 10", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "30 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "45 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
-    ]
-  }
-}`;
-
-  const prompt2 = `Generate part 2 of a GAIT Blueprint for this runner. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
-
-${runnerContext}
-
-Return ONLY this JSON:
-{
-  "morningRoutine": {
-    "note": "injury note or empty string",
-    "spineSection": [
-      {"name": "name", "duration": "1 min", "icon": "🌅", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "30 sec each side", "icon": "🌅", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "45 sec", "icon": "🌅", "instruction": "how to do it", "why": "why"}
-    ],
-    "hipSection": [
-      {"name": "name", "duration": "10 reps each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "60 sec", "icon": "🔄", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "20 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "30 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"}
-    ],
-    "activationSection": [
-      {"name": "name", "duration": "2 × 12 reps", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "10 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "15 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "12 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "10 reps each foot", "icon": "⚡", "instruction": "how to do it", "why": "why"}
-    ]
-  },
-  "eveningRoutine": {
-    "note": "injury note or empty string",
-    "stretches": [
-      {"name": "name", "duration": "60-90 sec each side", "icon": "🌙", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "60 sec", "icon": "🌙", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "90 sec each side", "icon": "🌙", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "60 sec each leg", "icon": "🌙", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "60 sec", "icon": "🌙", "instruction": "how to do it", "why": "why"}
-    ]
-  },
-  "mileageRules": [
-    {"rule": "rule 1", "type": "green"},
-    {"rule": "rule 2", "type": "amber"},
-    {"rule": "rule 3", "type": "red"},
-    {"rule": "rule 4", "type": "amber"},
-    {"rule": "rule 5", "type": "green"},
-    {"rule": "rule 6", "type": "red"}
-  ],
-  "milestones": [
-    {"period": "Month 1", "target": "target", "focus": "focus"},
-    {"period": "Month 2", "target": "target", "focus": "focus"},
-    {"period": "Month 3", "target": "target", "focus": "focus"},
-    {"period": "6 Months", "target": "target", "focus": "focus"},
-    {"period": "Big Vision", "target": "target", "focus": "focus"}
-  ],
-  "dailyHabit": {
-    "title": "habit name",
-    "duration": "X min daily",
-    "description": "what to do",
-    "why": "why this prevents their injury"
-  },
-  "sleepCoaching": "ONLY include if sleep quality is Poor or Average — write 3–4 sentences: why sleep is the single most important recovery tool for injury-prone runners (collagen synthesis, tissue repair, HRV, injury risk), then 3 specific actionable habits this runner can start tonight. Make it warm and practical, not clinical. Leave this field OUT entirely if sleep is Good or Excellent.",
-  "stressNote": "ONLY include if stress is High or Very high — write 2–3 sentences connecting their stress level directly to running injury risk (cortisol raises inflammation, slows tissue repair, increases perceived exertion) and give 2 specific low-effort stress management habits suited to a runner with a desk job. Do not be preachy. Leave this field OUT entirely if stress is Low or Moderate."
-}`;
-
+  // Prompts built server-side in /api/blueprint — client sends structured runner data only
   try {
-    // Two parallel API calls
-    const [res1, res2] = await Promise.all([
-      fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt1 }] })
-      }),
-      fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt2 }] })
-      })
-    ]);
+    const bpRes = await fetch('/api/blueprint', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ runnerContext, mode: 'generate' })
+    });
+    const bpData = await bpRes.json();
+    const data1 = bpData.part1;
+    const data2 = bpData.part2;
 
-    const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
-    const text1 = data1.content?.[0]?.text;
-    const text2 = data2.content?.[0]?.text;
+
+    const text1 = data1?.content?.[0]?.text;
+    const text2 = data2?.content?.[0]?.text;
 
     if (!text1 || !text2) {
-      console.error('Blueprint API error:', data1.error || data2.error, data1, data2);
+      console.error('Blueprint API error:', data1?.error || data2?.error);
       container.innerHTML = `
         <p style="color:var(--red);font-family:var(--mono);font-size:12px;padding:20px 0;">Something went wrong generating your blueprint. Please try again.</p>
         <button class="btn-next" onclick="generateBlueprint()" style="width:100%;margin-top:16px;">Try again →</button>`;
@@ -2560,8 +2323,7 @@ function renderBlueprint() {
   renderEveningRoutineContent();
   renderBlueprintCharts();
 
-  // Always silently sync blueprint to Supabase when it renders and user is logged in
-  // This ensures cross-device access works even if original save failed
+  // Show sync banner if user is logged in — lets them manually push to Supabase
   if (currentUser?.id && blueprint && _supa) {
     _supa.from('blueprints')
       .select('user_id')
@@ -2570,19 +2332,7 @@ function renderBlueprint() {
       .maybeSingle()
       .then(({ data }) => {
         const banner = document.getElementById('blueprint-sync-banner');
-        if (!data) {
-          // Not in Supabase — save it now and show banner briefly
-          saveBlueprint(currentUser.id, blueprint).then(() => {
-            if (banner) {
-              banner.style.display = 'flex';
-              banner.querySelector('div').textContent = '✦ Blueprint saved to your account — now accessible on all devices.';
-              banner.querySelector('button').style.display = 'none';
-              setTimeout(() => { if (banner) banner.style.display = 'none'; }, 4000);
-            }
-          });
-        } else {
-          if (banner) banner.style.display = 'none';
-        }
+        if (banner) banner.style.display = data ? 'none' : 'flex';
       }).catch(() => {});
   }
 }
@@ -2662,132 +2412,19 @@ Vision: ${a.bigVision || 'not shared'}`;
   // Push Mode status
   const pushNote = pushModeActive ? '\n\nMODE: PUSH — runner has been pain-free 28+ consecutive days. Apply Push Mode progression rules.' : '';
 
-  const prompt1 = `Generate part 1 of an updated GAIT Blueprint for this runner. This is a DAILY REFRESH — use the recent log data to adapt the weekly plan and injury guidance based on how they've actually been feeling. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
-
-${runnerContext}${recentSection}${pushNote}
-
-Return ONLY this JSON:
-{
-  "name": "first name",
-  "tagline": "one sentence — updated to reflect current momentum or challenge from the logs",
-  "primaryFocus": "the #1 thing to protect right now based on recent log data",
-  "injuryAlert": {
-    "title": "main injury risk based on recent logs",
-    "level": "high/medium/low",
-    "description": "2 sentences specific to what the logs show this week",
-    "rules": ["rule 1", "rule 2", "rule 3"]
-  },
-  "weeklyPlan": [
-    {"day": "MON", "type": "session type", "detail": "km and pace", "purpose": "purpose", "icon": "🏃", "color": "green", "zone": "Z2"},
-    {"day": "TUE", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue", "zone": "strength"},
-    {"day": "WED", "type": "session type", "detail": "km and pace", "purpose": "purpose", "icon": "🏃", "color": "yellow", "zone": "Z3"},
-    {"day": "THU", "type": "Rest", "detail": "Mobility only", "purpose": "Recovery", "icon": "🧘", "color": "gray", "zone": "rest"},
-    {"day": "FRI", "type": "session type", "detail": "detail", "purpose": "purpose", "icon": "💪", "color": "blue", "zone": "strength"},
-    {"day": "SAT", "type": "Long Run", "detail": "km and pace", "purpose": "Endurance", "icon": "🏃", "color": "orange", "zone": "Z2"},
-    {"day": "SUN", "type": "Full Rest", "detail": "NSDR + stretch", "purpose": "Recovery", "icon": "😴", "color": "gray", "zone": "rest"}
-  ],
-  "shoeAlert": "only include if shoe age is Over 12 months — 2 sentences. Omit entirely otherwise.",
-  "strengthCircuit": {
-    "upperBody": [
-      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why for this runner", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 10", "icon": "💪", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
-    ],
-    "legs": [
-      {"name": "name", "sets": "3 × 15", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 10", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "🦵", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
-    ],
-    "core": [
-      {"name": "name", "sets": "3 × 10", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "30 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "3 × 12", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"},
-      {"name": "name", "sets": "45 sec", "icon": "🔥", "why": "why", "steps": ["step 1", "step 2", "step 3"], "cue": "cue"}
-    ]
-  }
-}`;
-
-  const prompt2 = `Generate part 2 of an updated GAIT Blueprint. This is a DAILY REFRESH — adapt routines based on recent log data. Respond ONLY with valid JSON — no backticks, no text outside the JSON.
-
-${runnerContext}${recentSection}${pushNote}
-
-Return ONLY this JSON:
-{
-  "morningRoutine": {
-    "note": "injury note based on recent logs, or empty string",
-    "spineSection": [
-      {"name": "name", "duration": "1 min", "icon": "🌅", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "30 sec each side", "icon": "🌅", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "45 sec", "icon": "🌅", "instruction": "how to do it", "why": "why"}
-    ],
-    "hipSection": [
-      {"name": "name", "duration": "10 reps each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "60 sec", "icon": "🔄", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "20 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "30 sec each side", "icon": "🔄", "instruction": "how to do it", "why": "why"}
-    ],
-    "activationSection": [
-      {"name": "name", "duration": "2 × 12 reps", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "10 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "15 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "12 reps each side", "icon": "⚡", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "10 reps each foot", "icon": "⚡", "instruction": "how to do it", "why": "why"}
-    ]
-  },
-  "eveningRoutine": {
-    "note": "injury note based on recent logs, or empty string",
-    "stretches": [
-      {"name": "name", "duration": "60-90 sec each side", "icon": "🌙", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "60 sec", "icon": "🌙", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "90 sec each side", "icon": "🌙", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "60 sec each leg", "icon": "🌙", "instruction": "how to do it", "why": "why"},
-      {"name": "name", "duration": "60 sec", "icon": "🌙", "instruction": "how to do it", "why": "why"}
-    ]
-  },
-  "mileageRules": [
-    {"rule": "rule adapted to recent log data", "type": "green"},
-    {"rule": "rule 2", "type": "amber"},
-    {"rule": "rule 3", "type": "red"},
-    {"rule": "rule 4", "type": "amber"},
-    {"rule": "rule 5", "type": "green"},
-    {"rule": "rule 6", "type": "red"}
-  ],
-  "milestones": [
-    {"period": "This Week", "target": "specific target based on recent logs", "focus": "focus"},
-    {"period": "Month 1", "target": "target", "focus": "focus"},
-    {"period": "Month 2", "target": "target", "focus": "focus"},
-    {"period": "6 Months", "target": "target", "focus": "focus"},
-    {"period": "Big Vision", "target": "target", "focus": "focus"}
-  ],
-  "dailyHabit": {
-    "title": "habit name — adapted to what the logs show they need most",
-    "duration": "X min daily",
-    "description": "what to do",
-    "why": "why this matters based on recent data"
-  },
-  "sleepCoaching": "only if sleep is Poor or Average in recent logs — 3-4 sentences practical and warm. Omit entirely otherwise.",
-  "stressNote": "only if stress is High or Very high in recent logs. Omit entirely otherwise."
-}`;
-
+  // Refresh prompts built server-side in /api/blueprint
   try {
-    const [res1, res2] = await Promise.all([
-      fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt1 }] })
-      }),
-      fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt2 }] })
-      })
-    ]);
+    const bpRes = await fetch('/api/blueprint', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ runnerContext, recentLogs, mode: 'refresh' })
+    });
+    const bpData = await bpRes.json();
+    const data1 = bpData.part1;
+    const data2 = bpData.part2;
 
-    const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
-    const text1 = data1.content?.[0]?.text;
-    const text2 = data2.content?.[0]?.text;
+    const text1 = data1?.content?.[0]?.text;
+    const text2 = data2?.content?.[0]?.text;
 
     if (text1 && text2) {
       const clean1 = text1.replace(/```json|```/g, '').trim();
@@ -2970,29 +2607,10 @@ function togglePushMode() {
 
 // ══════════════════════════════════════════
 // PRO STATUS & COACHING LIMITS
-// ══════════════════════════════════════════
 // isPro defaults to true for testing — swap to false or check Stripe when payments are built
-let isPro = JSON.parse(localStorage.getItem('gait_is_pro') || 'true');
-
-function getTodayKey() {
-  return new Date().toISOString().split('T')[0];
-}
-
-function getCoachingCount() {
-  const data = JSON.parse(localStorage.getItem('gait_coaching_count') || '{}');
-  const today = getTodayKey();
-  if (data.date !== today) return 0;
-  return data.count || 0;
-}
-
-function incrementCoachingCount() {
-  const today = getTodayKey();
-  const count = getCoachingCount() + 1;
-  localStorage.setItem('gait_coaching_count', JSON.stringify({ date: today, count }));
-}
-
+// NOTE: getTodayKey, incrementCoachingCount defined above — no duplicates here
 function coachingsRemaining() {
-  return Math.max(0, 2 - getCoachingCount());
+  return Math.max(0, 2 - getQuickCoachingsUsed());
 }
 
 function renderProStatus() {
@@ -3503,7 +3121,6 @@ async function submitLog() {
     eveningSession, eveningBody, eveningPainLoc, eveningSleepTarget
   };
 
-  const bibleContext = blueprint ? JSON.stringify(blueprint) : JAX_BIBLE;
   const recentLogs = logs.slice(-7).map(l => {
     if (l.mode === 'cross') { const cUnit = l.crossActivity === 'swimming' ? 'm' : 'km'; return `${new Date(l.date).toLocaleDateString('en-GB')}: CROSS TRAINING — ${l.crossActivity} ${l.crossDistance ? l.crossDistance + cUnit : ''} ${l.crossDuration ? l.crossDuration + 'min' : ''} ${l.crossIntensity || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`; }
     if (l.mode === 'walk') return `${new Date(l.date).toLocaleDateString('en-GB')}: WALK/HIKE — ${l.walkType} ${l.walkDistance ? l.walkDistance + 'km' : ''} ${l.walkDuration ? l.walkDuration + 'min' : ''} ${l.walkElevation ? l.walkElevation + 'm elev' : ''} ${l.walkTerrain || ''} | Pain: ${l.painScore}/10 | Notes: ${l.notes}`;
@@ -3548,84 +3165,21 @@ Energy/mood: ${bodyEnergy} | Pain score: ${painScore}/10 | Pain location: ${body
 Today's plan: ${bodyDayType}`;
   }
 
-  const prompt = `RUNNER'S BLUEPRINT & HISTORY:
-${bibleContext}
-
-RECENT LOG HISTORY (last 7 entries):
-${recentLogs || 'No previous logs yet'}
-
-TODAY — ${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}:
-${todayContext}
-Sleep last night: ${sleep || 'Not specified'}
-Stress: ${stress || 'Not specified'}
-Notes: ${notes}
-${pushModeActive ? '\nMODE: PUSH — runner has been pain-free 28+ days. Apply Push Mode rules.' : ''}
-
-${dayMode === 'walk' ? `This is a walk or hike session. Consider how the terrain, elevation and pace affect load relative to the runner's injury history. Advise on recovery appropriate to the effort and how it influences tomorrow's plan.` : ''}
-${dayMode === 'cross' ? `This is a cross training session. Consider how ${crossActivity} affects the runner's overall training load and recovery needs relative to their running plan and injury history. Advise on recovery specific to cross training and how it should influence tomorrow's run plan.` : ''}
-${dayMode === 'body' ? `This is a mid-day body check — the runner has NOT run yet today. Their plan for today is: ${bodyDayType}.
-For the "recovery" array: give 3-4 PRE-SESSION preparation movements they should do BEFORE their session today — warmup, activation drills, or mobility work specific to what they are doing (${bodyDayType}) and their injury history. NOT an evening routine.
-For "tomorrowPlan": use type "Today's Plan" and give exactly what they should do in today's session, with specific details adjusted based on how they feel right now.` : ''}
-${dayMode === 'morning' ? `This is a MORNING CHECK-IN at the start of the day.
-Always give 7-8 morning exercises ordered from shortest/easiest to longest — the runner will pick 15/30/45 min on the response page which filters how many they see. So order matters: put the 3 most essential exercises first (spine, glute activation, one hip mobility), then add more for 30 min, then the full set for 45 min.
-For "tomorrowPlan": use type "Today's Session" and give exactly what they should do in their planned session today (${morningPlan}), adjusted to their pain score and energy level this morning.` : ''}
-${dayMode === 'evening' ? `This is an EVENING CHECK-IN at the end of the day.
-Always give 7-8 evening recovery movements ordered from most essential to least — the runner will pick 15/30/45 min on the response page. Order matters: put the 3 most essential first (parasympathetic reset, one long-hold stretch, one gentle mobility), then build to the full set for 45 min.
-Include sleep hygiene tips in the tomorrowPlan based on their target sleep time (${eveningSleepTarget}).
-For "tomorrowPlan": give a specific plan for tomorrow based on how they felt today and their injury history.` : ''}
-
-Respond with ONLY a raw JSON object. No backticks. No markdown. No text before or after the JSON. Start your response with { and end with }. Nothing else.
-Optional field: include "zone2Nudge" (string) when the run pace or HR data suggests the runner was above Zone 2 on what should have been an easy day. Keep it warm, specific, and encouraging — reference their actual pace if provided. Example: "Your pace today (5:05/km) looks like it drifted above Zone 2 — at your current fitness, easy runs should feel closer to 5:30–5:50/km at conversational effort. Slowing down on easy days is exactly how we protect your comeback."
-{
-  "assessment": {
-    "emoji": "one emoji",
-    "headline": "one punchy sentence",
-    "detail": "2-3 sentences specific to their data and injury history"
-  },
-  "recovery": [
-    {
-      "name": "exercise or stretch name",
-      "duration": "time or reps",
-      "icon": "emoji",
-      "instruction": "exactly how in one sentence",
-      "why": "why this helps their specific situation today"
-    }
-  ],
-  "tomorrowPlan": {
-    "type": "Run / Strength / Rest / Active Recovery / Today's Plan",
-    "icon": "emoji",
-    "detail": "specific detail — km and pace if run, exercises if strength, movements if recovery",
-    "reason": "one sentence why based on today's data"
-  },
-  "watchThis": {
-    "pattern": "specific thing to watch",
-    "action": "one concrete action"
-  },
-  "acuteProtocol": {
-    "ice": "ice protocol instruction or null if no acute injury",
-    "compression": "compression guidance or null",
-    "avoidances": ["thing to avoid 1", "thing to avoid 2"],
-    "dayByDay": [
-      {"day": "Day 1 — Today", "plan": "exactly what to do"},
-      {"day": "Days 2–3", "plan": "what changes"},
-      {"day": "Days 4–5", "plan": "when to ease back in"}
-    ],
-    "redFlags": ["flag 1", "flag 2"],
-    "recoverySupport": "sleep, protein, hydration notes or null",
-    "professionalAdvice": "strong recommendation to see physio/doctor if moderate or severe — or null if minor"
-  }
-}
-
-Only populate acuteProtocol if today's log describes a new or acute injury (fresh strain, pull, new pain above 2/10, or symptoms that feel like the start of an injury). Otherwise set acuteProtocol to null or empty object.`;
-
+  // Send structured data to /api/coach — prompt is built server-side
+  // This keeps all prompt logic, runner context and system instructions off the client
   try {
-    const res = await fetch('/api/chat', {
+    const res = await fetch('/api/coach', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1600,
-        messages: [{ role: 'user', content: prompt }]
+        blueprint,
+        recentLogs,
+        todayContext,
+        dayMode,
+        sleep, stress, notes,
+        pushModeActive,
+        crossActivity, crossDistance, bodyDayType,
+        morningPlan, morningDuration, eveningDuration, eveningSleepTarget
       })
     });
     const data = await res.json();
@@ -4002,7 +3556,10 @@ function showView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(`view-${name}`).classList.add('active');
-  event.target.classList.add('active');
+  // Find the matching tab by its onclick attribute rather than relying on event.target
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').includes(`'${name}'`)) t.classList.add('active');
+  });
   if (name === 'history') { renderHistory(); renderHistoryCharts(); }
   if (name === 'log') renderPushModeBar();
 }
@@ -4076,7 +3633,8 @@ async function handleSignout() {
   await _supa.auth.signOut();
   currentUser = null;
   blueprint = null; blueprintRaw = null; logs = []; profileData = null; answers = {}; currentStep = 0;
-  localStorage.clear();
+  // Use specific keys — never nuke all localStorage as other apps on the domain may use it
+  ['gait_blueprint','gait_profile','gait_logs','gait_coaching_count','gait_is_pro'].forEach(k => localStorage.removeItem(k));
   document.getElementById('nav-user').style.display = 'none';
   document.getElementById('auth-screen').style.display = 'flex';
   document.getElementById('login-btn').disabled = false;
@@ -4098,21 +3656,24 @@ async function loadUserData(userId) {
       .limit(1)
       .maybeSingle();
     if (bpData?.blueprint) {
-      // Found in Supabase — use it
-      blueprint = bpData.blueprint;
+      // Found in Supabase — compare timestamps with localStorage and use the newer one
+      const lsRaw = localStorage.getItem('gait_blueprint');
+      let lsBp = null;
+      try { lsBp = lsRaw ? JSON.parse(lsRaw) : null; } catch(e) {}
+      const supabaseTime = bpData.blueprint._saved_at || 0;
+      const localTime = lsBp?._saved_at || 0;
+      blueprint = supabaseTime >= localTime ? bpData.blueprint : lsBp;
       blueprintRaw = JSON.stringify(blueprint);
       localStorage.setItem('gait_blueprint', blueprintRaw);
+      // If local was newer, push it up to Supabase
+      if (localTime > supabaseTime && userId) {
+        saveBlueprint(userId, lsBp).catch(() => {});
+      }
     } else {
-      // Not in Supabase — check localStorage and sync up if found
+      // Nothing in Supabase — fall back to localStorage silently
       const lsRaw = localStorage.getItem('gait_blueprint');
       if (lsRaw) {
-        try {
-          blueprint = JSON.parse(lsRaw);
-          // Push it to Supabase now so other devices can access it
-          _supa.from('blueprints').delete().eq('user_id', userId)
-            .then(() => _supa.from('blueprints').insert({ user_id: userId, blueprint }))
-            .catch(() => {});
-        } catch(e) {}
+        try { blueprint = JSON.parse(lsRaw); } catch(e) {}
       }
     }
   } catch(e) {
@@ -4159,13 +3720,26 @@ async function loadUserData(userId) {
 }
 
 async function saveBlueprint(userId, bpObj) {
-  localStorage.setItem('gait_blueprint', JSON.stringify(bpObj));
-  if (!userId) return;
+  // Always save to localStorage first — safe fallback
+  const bpWithTimestamp = { ...bpObj, _saved_at: Date.now() };
+  localStorage.setItem('gait_blueprint', JSON.stringify(bpWithTimestamp));
+  if (!userId || !_supa) return;
   try {
-    // Upsert — delete old and insert new (simplest approach for now)
-    await _supa.from('blueprints').delete().eq('user_id', userId);
-    await _supa.from('blueprints').insert({ user_id: userId, blueprint: bpObj });
-  } catch(e) { console.warn('Error saving blueprint:', e); }
+    const { data: existing } = await _supa
+      .from('blueprints')
+      .select('id, updated_at')
+      .eq('user_id', userId)
+      .limit(1)
+      .maybeSingle();
+    if (existing?.id) {
+      await _supa.from('blueprints')
+        .update({ blueprint: bpWithTimestamp, updated_at: new Date().toISOString() })
+        .eq('user_id', userId);
+    } else {
+      await _supa.from('blueprints')
+        .insert({ user_id: userId, blueprint: bpWithTimestamp, updated_at: new Date().toISOString() });
+    }
+  } catch(e) { console.warn('Error saving blueprint to Supabase:', e); }
 }
 
 async function syncBlueprintNow(btn) {
