@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   const isRefresh = mode === 'refresh';
   const prefix = isRefresh
     ? 'Generate part {n} of an updated GAIT Blueprint for this runner. This is a DAILY REFRESH — use the recent log data to adapt the weekly plan and injury guidance based on how they\'ve actually been feeling. Respond ONLY with valid JSON — no backticks, no text outside the JSON.'
-    : 'Generate part {n} of a GAIT Blueprint for this runner. Respond ONLY with valid JSON — no backticks, no text outside the JSON.';
+    : 'Generate part {n} of a GAIT Blueprint for this runner. The RUNNER TYPE field tells you how to frame the plan — injury-comeback runners need injury-first planning, fitness/health/prevention runners need progressive safe build-up without over-emphasising injury. Tailor the tone, weekly plan, and coaching language accordingly. Respond ONLY with valid JSON — no backticks, no text outside the JSON.';
 
   const logContext = recentLogs
     ? `\nRECENT LOG DATA (last 14 days):\n${recentLogs}\n`
