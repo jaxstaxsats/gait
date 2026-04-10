@@ -1572,76 +1572,87 @@ const RECOVERY_OPTIONS = [
 // ══════════════════════════════════════════
 const steps = [
   {
-    label: '01 — YOU',
-    title: 'Let\'s get to know you',
-    subtitle: 'A few basics to personalise your blueprint',
+    label: 'Quick start',
+    title: 'Let\'s build your blueprint.',
+    subtitle: 'Four questions. 60 seconds. Built around you.',
     fields: [
       { key: 'name', label: 'What should we call you?', type: 'text', placeholder: 'Your name or nickname', required: true },
-      { key: 'age', label: 'Age', type: 'number', placeholder: '35', required: true },
+      { key: 'runnerType', label: 'Which best describes you?', type: 'runnerType', required: true },
+      { key: 'injuryAreas', label: 'Which areas have ever given you trouble while running? (select all that apply)', type: 'multiselect', options: INJURY_AREAS, required: false, optional: true, showIf: 'hasInjuryHistory' },
+      { key: 'injuryFollowUp', label: '', type: 'injuryFollowUp', showIf: 'hasInjuryHistory' },
+      { key: 'weeklyKm', label: 'Current weekly running volume', type: 'select', options: ['0 — just starting', '1–15 km', '15–25 km', '25–40 km', '40–60 km', '60 km+'], required: true },
+      { key: 'raceGoal', label: 'Main goal for the next 6–12 months', type: 'select', options: ['Run regularly without getting injured', 'Build consistent base without injury', 'Complete a 5km', 'Get a 5km PB', 'Complete a 10km', 'Get a 10km PB', 'Complete a half marathon', 'Get a half marathon PB', 'Complete a marathon', 'Get a marathon PB', 'Complete an ultra marathon'], required: true },
+    ]
+  }
+];
+
+// Deep profile fields — collected after blueprint is generated
+const deepProfileSteps = [
+  {
+    label: '01 — YOU',
+    title: 'A bit more about you.',
+    subtitle: 'Helps us personalise your routines and coaching responses',
+    fields: [
+      { key: 'age', label: 'Age', type: 'number', placeholder: '35', required: false, optional: true },
       { key: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Non-binary', 'Prefer not to say'], required: false, optional: true },
-      { key: 'runTime', label: 'What time of day do you usually run?', type: 'select', options: ['Morning — before 9am', 'Lunchtime', 'Evening — after 5pm', 'Varies a lot', 'Not consistent yet'], required: true },
-      { key: 'units', label: 'Preferred distance units', type: 'select', options: ['Kilometres (km)', 'Miles'], required: true },
+      { key: 'runTime', label: 'What time of day do you usually run?', type: 'select', options: ['Morning — before 9am', 'Lunchtime', 'Evening — after 5pm', 'Varies a lot', 'Not consistent yet'], required: false, optional: true },
+      { key: 'units', label: 'Preferred distance units', type: 'select', options: ['Kilometres (km)', 'Miles'], required: false, optional: true },
     ]
   },
   {
     label: '02 — YOUR STORY',
-    title: 'Your running story',
-    subtitle: 'Tell us where you\'re coming from — the more you share, the better your blueprint',
+    title: 'Tell us your running history.',
+    subtitle: 'The more you share, the better your blueprint gets',
     fields: [
-      { key: 'yearsRunning', label: 'How long have you been running or trying to get back into it?', type: 'select', options: ['Complete beginner — first time', 'Less than 6 months', '6–12 months', '1–3 years', '3–7 years', '7+ years', 'Returning after a long break'], required: true },
-      { key: 'weeklyKm', label: 'Current weekly running volume', type: 'select', options: ['0 — just starting', '1–15 km', '15–25 km', '25–40 km', '40–60 km', '60 km+'], required: true },
-      { key: 'daysRunning', label: 'How many days per week are you currently running?', type: 'select', options: ['1–2 days', '3 days', '4 days', '5 days', '6+ days'], required: true },
+      { key: 'yearsRunning', label: 'How long have you been running or trying to get back into it?', type: 'select', options: ['Complete beginner — first time', 'Less than 6 months', '6–12 months', '1–3 years', '3–7 years', '7+ years', 'Returning after a long break'], required: false, optional: true },
+      { key: 'daysRunning', label: 'How many days per week are you currently running?', type: 'select', options: ['1–2 days', '3 days', '4 days', '5 days', '6+ days'], required: false, optional: true },
       { key: 'longestRun', label: 'Longest run you\'ve done recently', type: 'text', placeholder: 'e.g. 8km, half marathon, not sure yet', required: false, optional: true },
-      { key: 'proudRun', label: 'Tell us about a run you are proud of — even if it was small', type: 'textarea', placeholder: 'e.g. Ran 5km without stopping for the first time, finished a race, ran every day for a month...', required: false, optional: true },
-      { key: 'whyNow', label: 'Why did you decide to start or return to running right now?', type: 'textarea', placeholder: 'What made this the moment? A health scare, a race, a friend, just felt ready...', required: false, optional: true },
+      { key: 'whyNow', label: 'Why did you decide to start or return to running right now?', type: 'textarea', placeholder: 'What made this the moment?', required: false, optional: true },
     ]
   },
   {
     label: '03 — INJURIES',
-    title: 'Injuries & how your body feels',
-    subtitle: 'This is the most important section — be as honest and specific as you can',
+    title: 'More about your injuries.',
+    subtitle: 'The more detail here, the more specific your coaching',
     fields: [
-      { key: 'injuryAreas', label: 'Which areas have ever given you trouble while running? (select all that apply)', type: 'multiselect', options: INJURY_AREAS, required: false, optional: true },
-      { key: 'injuryFollowUp', label: '', type: 'injuryFollowUp' },
-      { key: 'previousInjuryStop', label: 'Has an injury ever forced you to stop running for more than 2 weeks?', type: 'select', options: ['No', 'Yes — once', 'Yes — multiple times'], required: true },
+      { key: 'previousInjuryStop', label: 'Has an injury ever forced you to stop running for more than 2 weeks?', type: 'select', options: ['No', 'Yes — once', 'Yes — multiple times'], required: false, optional: true },
       { key: 'currentRehab', label: 'Are you currently doing any rehab or physio exercises?', type: 'select', options: ['No', 'Yes — following a physio programme', 'Yes — self-directed exercises'], required: false, optional: true },
       { key: 'chronicConditions', label: 'Any medical conditions we should know about?', type: 'select', options: ['None', 'Asthma or breathing issues', 'Arthritis or joint condition', 'Heart condition', 'Diabetes', 'Osteoporosis or bone density concerns', 'Other'], required: false, optional: true },
     ]
   },
   {
     label: '04 — EQUIPMENT',
-    title: 'Equipment & training habits',
+    title: 'What do you train with?',
     subtitle: 'So we only ever prescribe what you can actually do',
     fields: [
-      { key: 'equipment', label: 'What equipment do you have at home? (select all that apply)', type: 'multiselect', options: EQUIPMENT_OPTIONS, required: true },
-      { key: 'equipmentDetail', label: 'Any details on weights or equipment?', type: 'text', placeholder: 'e.g. Two 5kg dumbbells, one 8kg kettlebell, 3kg medicine ball', required: false, optional: true },
-      { key: 'shoeType', label: 'Main running shoe type', type: 'select', options: ['Road — cushioned', 'Road — lightweight / racing', 'Trail', 'Minimalist / barefoot style', 'Maximalist — very cushioned', 'Not sure'], required: true },
-      { key: 'shoeAge', label: 'How old are your main running shoes?', type: 'select', options: ['Under 3 months', '3–6 months', '6–12 months', 'Over 12 months', 'Not sure'], required: true },
-      { key: 'warmUp', label: 'Do you usually warm up before runs?', type: 'select', options: ['No — I just start running', 'Quick stretch only', 'Proper dynamic warm-up', 'Not consistent'], required: true },
-      { key: 'hrMonitor', label: 'Do you use a heart rate monitor when running?', type: 'select', options: ['Yes — Garmin or GPS watch', 'Yes — Apple Watch', 'Yes — chest strap or other device', 'Sometimes', 'No — I run by feel'], required: true },
+      { key: 'equipment', label: 'What equipment do you have at home? (select all that apply)', type: 'multiselect', options: EQUIPMENT_OPTIONS, required: false, optional: true },
+      { key: 'equipmentDetail', label: 'Any details on weights or equipment?', type: 'text', placeholder: 'e.g. Two 5kg dumbbells, one 8kg kettlebell', required: false, optional: true },
+      { key: 'shoeType', label: 'Main running shoe type', type: 'select', options: ['Road — cushioned', 'Road — lightweight / racing', 'Trail', 'Minimalist / barefoot style', 'Maximalist — very cushioned', 'Not sure'], required: false, optional: true },
+      { key: 'shoeAge', label: 'How old are your main running shoes?', type: 'select', options: ['Under 3 months', '3–6 months', '6–12 months', 'Over 12 months', 'Not sure'], required: false, optional: true },
+      { key: 'warmUp', label: 'Do you usually warm up before runs?', type: 'select', options: ['No — I just start running', 'Quick stretch only', 'Proper dynamic warm-up', 'Not consistent'], required: false, optional: true },
+      { key: 'hrMonitor', label: 'Do you use a heart rate monitor when running?', type: 'select', options: ['Yes — Garmin or GPS watch', 'Yes — Apple Watch', 'Yes — chest strap or other device', 'Sometimes', 'No — I run by feel'], required: false, optional: true },
     ]
   },
   {
     label: '05 — LIFESTYLE',
-    title: 'Life outside running',
-    subtitle: 'Recovery happens 23 hours a day — not just after runs',
+    title: 'How you live shapes how you recover.',
+    subtitle: 'Recovery happens 23 hours a day',
     fields: [
-      { key: 'job', label: 'Type of work or daily life', type: 'select', options: ['Mostly desk-based / sedentary', 'Mixed — some sitting some moving', 'On my feet most of the day', 'Physical labour', 'Shift work'], required: true },
-      { key: 'sleepQuality', label: 'Sleep quality on average', type: 'select', options: ['Poor — often under 6hrs', 'Average — around 6–7hrs', 'Good — 7–8hrs most nights', 'Excellent — 8hrs+ consistently'], required: true },
-      { key: 'stressLevel', label: 'Stress level most days', type: 'select', options: ['Low — pretty relaxed', 'Moderate — manageable', 'High — quite stressed often', 'Very high — affecting sleep and recovery'], required: true },
-      { key: 'nutrition', label: 'Do you feel you eat enough to fuel your running?', type: 'select', options: ['Yes — consistently well fuelled', 'Usually — occasional gaps', 'Often not enough', 'Not sure'], required: true },
+      { key: 'job', label: 'Type of work or daily life', type: 'select', options: ['Mostly desk-based / sedentary', 'Mixed — some sitting some moving', 'On my feet most of the day', 'Physical labour', 'Shift work'], required: false, optional: true },
+      { key: 'sleepQuality', label: 'Sleep quality on average', type: 'select', options: ['Poor — often under 6hrs', 'Average — around 6–7hrs', 'Good — 7–8hrs most nights', 'Excellent — 8hrs+ consistently'], required: false, optional: true },
+      { key: 'stressLevel', label: 'Stress level most days', type: 'select', options: ['Low — pretty relaxed', 'Moderate — manageable', 'High — quite stressed often', 'Very high — affecting sleep and recovery'], required: false, optional: true },
+      { key: 'nutrition', label: 'Do you feel you eat enough to fuel your running?', type: 'select', options: ['Yes — consistently well fuelled', 'Usually — occasional gaps', 'Often not enough', 'Not sure'], required: false, optional: true },
     ]
   },
   {
     label: '06 — GOALS',
-    title: 'What are you chasing?',
-    subtitle: 'Your goals shape everything in your blueprint',
+    title: 'Fine-tune your goals.',
+    subtitle: 'Give us more detail to sharpen your blueprint',
     fields: [
-      { key: 'shortGoal', label: 'Main short-term goal (next 8–12 weeks)', type: 'text', placeholder: 'e.g. Run pain-free for 15km, complete a 5km, build a consistent routine', required: true },
+      { key: 'shortGoal', label: 'Main short-term goal (next 8–12 weeks)', type: 'text', placeholder: 'e.g. Run pain-free for 15km, build a consistent routine', required: false, optional: true },
       { key: 'hasRace', label: 'Do you have a specific race or event planned?', type: 'select', options: ['No — no race planned yet', 'Yes — race booked'], required: false, optional: true },
       { key: 'raceDetails', label: 'Race distance and approximate date', type: 'text', placeholder: 'e.g. Half marathon — October 2026', required: false, optional: true },
-      { key: 'raceGoal', label: 'Main goal for the next 6–12 months', type: 'select', options: ['Build consistent base without injury', 'Complete a 5km', 'Get a 5km PB', 'Complete a 10km', 'Get a 10km PB', 'Complete a half marathon', 'Get a half marathon PB', 'Complete a marathon', 'Get a marathon PB', 'Complete an ultra marathon'], required: true },
-      { key: 'bigVision', label: 'What does success look like for you in 12 months?', type: 'textarea', placeholder: 'Describe it in your own words — running pain-free, crossing a finish line, feeling strong again...', required: false, optional: true },
+      { key: 'bigVision', label: 'What does success look like for you in 12 months?', type: 'textarea', placeholder: 'Describe it in your own words...', required: false, optional: true },
       { key: 'anythingElse', label: 'Anything else you\'d like us to know?', type: 'textarea', placeholder: 'The more you share, the more personal your blueprint will be.', required: false, optional: true },
     ]
   }
@@ -1670,6 +1681,11 @@ function renderQ() {
   if (step.subtitle) html += `<p class="q-subtitle">${step.subtitle}</p>`;
 
   step.fields.forEach(f => {
+    // showIf logic — hide injury fields for non-injury runner types
+    if (f.showIf === 'hasInjuryHistory') {
+      const injuryTypes = ['comeback', 'injury_prone'];
+      if (!injuryTypes.includes(answers.runnerType)) return;
+    }
     const optionalTag = f.required === false ? ' <span style="color:var(--muted);font-size:9px;letter-spacing:1px;">OPTIONAL</span>' : '';
     html += `<div class="field"><label>${f.label}${optionalTag}</label>`;
 
@@ -1691,6 +1707,27 @@ function renderQ() {
         </div>`;
       });
       html += `</div>`;
+    } else if (f.type === 'runnerType') {
+      const types = [
+        { value: 'comeback', emoji: '🔄', label: 'Comeback runner', desc: 'I had an injury that stopped me and I want to get back' },
+        { value: 'injury_prone', emoji: '⚠️', label: 'Injury-prone runner', desc: 'I keep getting hurt and want to run without breaking down' },
+        { value: 'prevention', emoji: '🛡️', label: 'Smart starter', desc: 'I\'m new or returning and want to avoid injury from the start' },
+        { value: 'fitness', emoji: '💪', label: 'Fitness & health', desc: 'I want to run regularly for fitness, weight, or mental health' },
+      ];
+      html += `<div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">`;
+      types.forEach(t => {
+        const selected = answers.runnerType === t.value;
+        html += `<div onclick="selectRunnerType('${t.value}')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:${selected ? 'var(--ink)' : 'var(--bg2)'};border:2px solid ${selected ? 'var(--ink)' : 'var(--border)'};border-radius:8px;cursor:pointer;transition:all 0.15s;">
+          <div style="font-size:22px;flex-shrink:0;">${t.emoji}</div>
+          <div>
+            <div style="font-family:var(--display);font-weight:700;font-size:13px;color:${selected ? 'var(--accent)' : 'var(--ink)'};">${t.label}</div>
+            <div style="font-family:var(--mono);font-size:11px;color:${selected ? 'rgba(255,255,255,0.5)' : 'var(--muted)'};margin-top:2px;">${t.desc}</div>
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+      html += `</div>`;
+      return;
     } else if (f.type === 'injuryFollowUp') {
       html += `<div id="injury-followup-container"></div>`;
       html += `</div>`;
@@ -1702,14 +1739,14 @@ function renderQ() {
   });
 
   html += `<div class="btn-row">`;
-  if (currentStep > 0) html += `<button class="btn-back" onclick="prevStep()">← Back</button>`;
-  html += `<button class="btn-next" id="next-btn" onclick="nextStep()">
-    ${currentStep === steps.length - 1 ? 'Continue →' : 'Continue →'}
+  // Quick start is a single step — button always generates the blueprint
+  html += `<button class="btn-next" id="next-btn" onclick="handleQuickStart()">
+    Build my blueprint →
   </button></div>`;
 
   container.innerHTML = html;
-  // Populate injury follow-up panel if on injuries step
-  if (currentStep === 2) renderInjuryFollowUp();
+  // Populate injury follow-up panel
+  if (steps[currentStep]?.fields?.some(f => f.type === 'injuryFollowUp')) renderInjuryFollowUp();
 }
 
 function toggleMultiselect(key, value, el) {
@@ -1727,6 +1764,14 @@ function toggleMultiselect(key, value, el) {
   answers[key] = selected.join('|');
   // Refresh injury follow-up panel when injury areas change
   if (key === 'injuryAreas') renderInjuryFollowUp();
+}
+
+function selectRunnerType(value) {
+  answers.runnerType = value;
+  // Re-render to show/hide injury fields based on selection
+  renderQ();
+  // Scroll to top of form smoothly
+  document.getElementById('q-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderInjuryFollowUp() {
@@ -1778,6 +1823,27 @@ function setInjuryFollowUp(area, key, value) {
 function startFreshQ() {
   answers = { _started: true };
   renderQ();
+}
+
+function handleQuickStart() {
+  if (!answers.name || !answers.name.trim()) {
+    alert('Please enter your name to continue.');
+    document.getElementById('q_name')?.focus();
+    return;
+  }
+  if (!answers.runnerType) {
+    alert('Please tell us which type of runner you are.');
+    return;
+  }
+  if (!answers.weeklyKm) {
+    alert('Please select your current weekly volume.');
+    return;
+  }
+  if (!answers.raceGoal) {
+    alert('Please select your main goal.');
+    return;
+  }
+  generateBlueprint();
 }
 
 
@@ -1838,25 +1904,42 @@ async function generateBlueprint() {
     <span class="loading-quote-attr">— ${lq.attr}</span>
   </div>`;
 
-  const runnerContext = `RUNNER: ${answers.name}, ${answers.age}yo${answers.gender ? ', ' + answers.gender : ''}
-RUNS: ${answers.runTime || 'time not specified'} | Units: ${answers.units}
-HISTORY: Running for ${answers.yearsRunning} | Weekly: ${answers.weeklyKm} | Days/week: ${answers.daysRunning}
-Longest recent run: ${answers.longestRun || 'not specified'}
-Proud run: ${answers.proudRun || 'not shared'}
-Why returning now: ${answers.whyNow || 'not shared'}
-INJURIES: Areas affected: ${answers.injuryAreas ? answers.injuryAreas.replace(/\|/g, ', ') : 'none selected'}
-${answers.injuryFollowUps ? 'Injury detail per area: ' + Object.entries(answers.injuryFollowUps).map(([area, d]) => `${area}: last bothered ${d.when || 'not specified'}, currently ${d.current || 'not specified'}`).join(' | ') : ''}
-Stopped running 2+ weeks from injury: ${answers.previousInjuryStop} | Current rehab: ${answers.currentRehab}
-Medical conditions: ${answers.chronicConditions || 'none'}
-EQUIPMENT: ${answers.equipment ? answers.equipment.replace(/\|/g, ', ') : 'not specified'} | Details: ${answers.equipmentDetail || 'none'}
-Shoes: ${answers.shoeType} — ${answers.shoeAge} old | Warm-up habit: ${answers.warmUp}
-HEART RATE: Monitor: ${answers.hrMonitor || 'not specified'}
-LIFESTYLE: Work: ${answers.job}
-Sleep: ${answers.sleepQuality} | Stress: ${answers.stressLevel}
-Nutrition: ${answers.nutrition}
-GOALS: Short term: ${answers.shortGoal} | Race planned: ${answers.hasRace} ${answers.raceDetails ? '— ' + answers.raceDetails : ''}
-6-12 month goal: ${answers.raceGoal} | 12 month vision: ${answers.bigVision || 'not shared'}
-Anything else: ${answers.anythingElse || 'nothing added'}`;
+  // Build runner context — gracefully handles missing fields (quick-start users)
+  const injuryDetail = answers.injuryFollowUps
+    ? 'Injury detail: ' + Object.entries(answers.injuryFollowUps).map(([area, d]) => `${area}: last bothered ${d.when || 'unknown'}, currently ${d.current || 'unknown'}`).join(' | ')
+    : '';
+  const runnerContext = [
+    `RUNNER: ${answers.name}${answers.age ? ', ' + answers.age + 'yo' : ''}${answers.gender ? ', ' + answers.gender : ''}`,
+    `RUNNER TYPE: ${{'comeback': 'Comeback runner — had injury that stopped them, returning to running', 'injury_prone': 'Injury-prone runner — keeps getting hurt, wants to run without breaking down', 'prevention': 'Smart starter — new or returning runner, wants to avoid injury from the start', 'fitness': 'Fitness & health runner — running for fitness, weight loss, or mental health, no significant injury history'}[answers.runnerType] || answers.runnerType}`,
+    answers.runTime ? `Runs: ${answers.runTime}` : '',
+    `Weekly volume: ${answers.weeklyKm || 'not specified'} | Days/week: ${answers.daysRunning || 'not specified'}`,
+    answers.yearsRunning ? `Running history: ${answers.yearsRunning}` : '',
+    answers.longestRun ? `Longest recent run: ${answers.longestRun}` : '',
+    answers.whyNow ? `Why now: ${answers.whyNow}` : '',
+    answers.runnerType === 'fitness' || answers.runnerType === 'prevention'
+      ? `INJURY HISTORY: ${answers.injuryAreas ? 'Some history: ' + answers.injuryAreas.replace(/\|/g, ', ') : 'No significant injury history — focus on safe progression and injury prevention'}`
+      : `INJURIES: ${answers.injuryAreas ? answers.injuryAreas.replace(/\|/g, ', ') : 'none reported'}`,
+    injuryDetail,
+    answers.previousInjuryStop ? `Stopped 2+ weeks from injury: ${answers.previousInjuryStop}` : '',
+    answers.currentRehab ? `Current rehab: ${answers.currentRehab}` : '',
+    answers.chronicConditions ? `Medical: ${answers.chronicConditions}` : '',
+    answers.equipment
+      ? `EQUIPMENT: ${answers.equipment.replace(/\|/g, ', ')}${answers.equipmentDetail ? ' — ' + answers.equipmentDetail : ''}`
+      : 'EQUIPMENT: not yet provided — use bodyweight exercises only for now',
+    answers.shoeType ? `Shoes: ${answers.shoeType}${answers.shoeAge ? ' — ' + answers.shoeAge + ' old' : ''}` : '',
+    answers.warmUp ? `Warm-up habit: ${answers.warmUp}` : '',
+    answers.hrMonitor ? `HR monitor: ${answers.hrMonitor}` : '',
+    answers.job ? `Work: ${answers.job}` : '',
+    answers.sleepQuality ? `Sleep: ${answers.sleepQuality}` : '',
+    answers.stressLevel ? `Stress: ${answers.stressLevel}` : '',
+    answers.nutrition ? `Nutrition: ${answers.nutrition}` : '',
+    `GOAL: ${answers.raceGoal || 'not specified'}`,
+    answers.shortGoal ? `Short-term: ${answers.shortGoal}` : '',
+    answers.hasRace ? `Race: ${answers.hasRace}${answers.raceDetails ? ' — ' + answers.raceDetails : ''}` : '',
+    answers.bigVision ? `12-month vision: ${answers.bigVision}` : '',
+    answers.anythingElse ? `Notes: ${answers.anythingElse}` : '',
+    !answers.deepProfileDone ? 'NOTE: Quick-start blueprint. Full profile not yet complete. Build best possible plan from available data.' : ''
+  ].filter(Boolean).join('\n');
 
   // Prompts built server-side in /api/blueprint — client sends structured runner data only
   try {
@@ -2315,6 +2398,9 @@ function renderBlueprint() {
     <button onclick="syncBlueprintNow(this)" style="background:var(--ink);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:8px 14px;border-radius:4px;border:none;cursor:pointer;white-space:nowrap;">Sync now</button>
   </div>
 
+  ${!answers.deepProfileDone ? renderDeepProfileNudge() : ''}
+
+
   </div>`;
 
   container.innerHTML = html;
@@ -2335,6 +2421,130 @@ function renderBlueprint() {
         if (banner) banner.style.display = data ? 'none' : 'flex';
       }).catch(() => {});
   }
+}
+
+
+// ══════════════════════════════════════════
+// DEEP PROFILE — progressive profile completion
+// ══════════════════════════════════════════
+let deepProfileStep = 0;
+
+function renderDeepProfileNudge() {
+  if (answers.deepProfileDone) return '';
+  const totalDeepSteps = deepProfileSteps.length;
+  const completedSteps = answers._deepStepsCompleted || 0;
+  const progressPct = Math.round((completedSteps / totalDeepSteps) * 100);
+
+  return `
+  <div id="deep-profile-card" style="margin-top:32px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+    <div style="padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;">
+        <div style="font-family:var(--display);font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px;">Make your blueprint sharper</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.6;">Two more minutes of detail and your coaching gets significantly more specific — equipment, lifestyle, terrain and more.</div>
+      </div>
+      <button onclick="openDeepProfile()" style="background:var(--ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:1px;padding:12px 20px;border-radius:4px;border:none;cursor:pointer;text-transform:uppercase;white-space:nowrap;flex-shrink:0;">
+        Complete profile →
+      </button>
+    </div>
+    ${completedSteps > 0 ? `
+    <div style="padding:0 24px 16px;">
+      <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+        <div style="height:100%;width:${progressPct}%;background:var(--accent);border-radius:2px;transition:width 0.4s;"></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px;">${completedSteps} of ${totalDeepSteps} sections completed</div>
+    </div>` : ''}
+    <div id="deep-profile-form" style="display:none;padding:0 24px 24px;"></div>
+  </div>`;
+}
+
+function openDeepProfile() {
+  deepProfileStep = answers._deepStepsCompleted || 0;
+  renderDeepProfileStep();
+  const form = document.getElementById('deep-profile-form');
+  if (form) form.style.display = 'block';
+  const btn = document.querySelector('[onclick="openDeepProfile()"]');
+  if (btn) btn.style.display = 'none';
+}
+
+function renderDeepProfileStep() {
+  const form = document.getElementById('deep-profile-form');
+  if (!form) return;
+  if (deepProfileStep >= deepProfileSteps.length) {
+    // All done
+    answers.deepProfileDone = true;
+    answers._deepStepsCompleted = deepProfileSteps.length;
+    saveProfile(currentUser?.id, answers);
+    const card = document.getElementById('deep-profile-card');
+    if (card) card.innerHTML = `
+      <div style="padding:20px 24px;display:flex;align-items:center;gap:16px;">
+        <div style="font-size:24px;">✦</div>
+        <div>
+          <div style="font-family:var(--display);font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px;">Profile complete</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);">Your next evening blueprint refresh will use everything you've shared.</div>
+        </div>
+      </div>`;
+    // Trigger a background blueprint refresh now that we have more data
+    if (currentUser?.id) refreshBlueprintInBackground();
+    return;
+  }
+
+  const step = deepProfileSteps[deepProfileStep];
+  const totalDeepSteps = deepProfileSteps.length;
+  let html = `
+    <div style="border-top:1px solid var(--border);padding-top:20px;margin-top:4px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">${step.label}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">${deepProfileStep + 1} of ${totalDeepSteps}</div>
+      </div>
+      <div style="font-family:var(--display);font-weight:700;font-size:16px;color:var(--ink);margin-bottom:4px;">${step.title}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:20px;">${step.subtitle}</div>
+  `;
+
+  step.fields.forEach(f => {
+    html += `<div class="field"><label>${f.label} <span style="color:var(--muted);font-size:9px;letter-spacing:1px;">OPTIONAL</span></label>`;
+    if (f.type === 'select') {
+      html += `<select id="dp_${f.key}" onchange="answers['${f.key}']=this.value" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:var(--mono);font-size:12px;color:var(--ink);width:100%;">
+        <option value="">Select...</option>
+        ${f.options.map(o => `<option value="${o}" ${answers[f.key] === o ? 'selected' : ''}>${o}</option>`).join('')}
+      </select>`;
+    } else if (f.type === 'textarea') {
+      html += `<textarea id="dp_${f.key}" placeholder="${f.placeholder || ''}" oninput="answers['${f.key}']=this.value" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:var(--mono);font-size:12px;color:var(--ink);width:100%;min-height:80px;resize:vertical;">${answers[f.key] || ''}</textarea>`;
+    } else if (f.type === 'multiselect') {
+      const selected = answers[f.key] ? answers[f.key].split('|') : [];
+      html += `<div class="multiselect-grid" id="ms_${f.key}">`;
+      f.options.forEach(o => {
+        const isSel = selected.includes(o);
+        html += `<div class="multiselect-option ${isSel ? 'selected' : ''}" onclick="toggleMultiselect('${f.key}', '${o.replace(/'/g,"\\'")}', this)">
+          <div class="ms-check">${isSel ? '✓' : ''}</div><span>${o}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<input type="${f.type}" id="dp_${f.key}" placeholder="${f.placeholder || ''}" value="${answers[f.key] || ''}" oninput="answers['${f.key}']=this.value" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:var(--mono);font-size:12px;color:var(--ink);width:100%;">`;
+    }
+    html += `</div>`;
+  });
+
+  html += `
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      ${deepProfileStep > 0 ? `<button onclick="deepProfileStep--;renderDeepProfileStep();" style="background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:11px;padding:12px 20px;border-radius:4px;cursor:pointer;">← Back</button>` : ''}
+      <button onclick="advanceDeepProfile()" style="flex:1;background:var(--ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:1px;padding:12px 20px;border-radius:4px;border:none;cursor:pointer;text-transform:uppercase;">
+        ${deepProfileStep === deepProfileSteps.length - 1 ? 'Save & update blueprint ✦' : 'Continue →'}
+      </button>
+    </div>
+  </div>`;
+
+  form.innerHTML = html;
+}
+
+function advanceDeepProfile() {
+  answers._deepStepsCompleted = (answers._deepStepsCompleted || 0);
+  if (deepProfileStep >= (answers._deepStepsCompleted || 0)) {
+    answers._deepStepsCompleted = deepProfileStep + 1;
+  }
+  saveProfile(currentUser?.id, answers);
+  deepProfileStep++;
+  renderDeepProfileStep();
 }
 
 function resetBlueprint() {
