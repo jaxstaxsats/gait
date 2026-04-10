@@ -16,5 +16,5 @@ export default function handler(req, res) {
   const key = process.env.SUPABASE_ANON_KEY;
   if (!key) return res.status(500).json({ error: 'Key not configured' });
 
-  res.status(200).json({ supabaseAnonKey: key });
+  res.status(200).json({ supabaseKey: key });
 }
